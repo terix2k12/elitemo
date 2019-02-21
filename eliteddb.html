@@ -59,33 +59,31 @@ function loadDoc() {
                   f.size, ' bytes, last modified: ',
                   f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
                   '</li>');
-
-
- 		var reader = new FileReader();
-	    reader.onload = function() {
-  			// alert('File loaded');    
-  			var output = [];
-  			// output.push(reader.result);
-
-	        var jsonArray = JSON.parse(reader.result);
  
-	        var firstElem = jsonArray[0];
 
-	        output.push(firstElem.id);
+	var reader = new FileReader();
+    reader.onload = function() {
+ 	     
+ 		var output = [];
+ 	 
+       var jsonArray = JSON.parse(reader.result);
 
-	        for( x in jsonArray) {
-	        	output.push( jsonArray[x].name );
-	        	output.push( "#");
-	         }
-
+        var firstElem = jsonArray[0];
+        output.push(firstElem.id);
+       for( x in jsonArray) {
+       	output.push( jsonArray[x].name );
+  
+         }
 
 			document.getElementById('contents').innerHTML = output.join('');
        	};
 
- 		reader.readAsText(f);
-    }
+ 	reader.readAsText(f);
 
-    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+ }
+    
+
+    document.getElementById('list').innerHTML = '<ul>' + output.join(' # ') + '</ul>';
   }
 
  
