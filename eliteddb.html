@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html>
  <head>
-
-
-
+ 	<title>Elite:Dangerous - Mission Optimizer</title>
  </head>
  <body>
-
+ 	<h1>Elite:Dangerous - Mission Optimizer</h1>
 
 <input type="file" id="files" name="files[]" multiple />
 <output id="list"></output>
@@ -15,7 +13,7 @@
 
  	<script>
 
-// CORS is prohibting access to external APIs
+// CORS is prohibiting access to external APIs
 //  function loadDoc() {
 //  	var xhttp = new XMLHttpRequest();
 //  	xhttp.onreadystatechange = function() {
@@ -65,16 +63,21 @@ function loadDoc() {
 
  		var reader = new FileReader();
 	    reader.onload = function() {
-  			alert('File loaded');    
-  			output = [];
-  			output.push(reader.result);
+  			// alert('File loaded');    
+  			var output = [];
+  			// output.push(reader.result);
 
 	        var jsonArray = JSON.parse(reader.result);
  
 	        var firstElem = jsonArray[0];
 
 	        output.push(firstElem.id);
-	         
+
+	        for( x in jsonArray) {
+	        	output.push( jsonArray[x].name );
+	        	output.push( "#");
+	         }
+
 
 			document.getElementById('contents').innerHTML = output.join('');
        	};
@@ -89,6 +92,6 @@ function loadDoc() {
 
 
 </script>
-
+ <div id="imprint">&copy; 2019</div>
  </body>
 </html>
