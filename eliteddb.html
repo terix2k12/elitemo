@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+ <head>
+
+
+
+ </head>
+ <body>
+
+
+<input type="file" id="files" name="files[]" multiple />
+<output id="list"></output>
+
+ 	<script>
+
+// CORS is prohibting access to external APIs
+//  function loadDoc() {
+//  	var xhttp = new XMLHttpRequest();
+//  	xhttp.onreadystatechange = function() {
+//     // if (this.readyState == 4 && this.status == 200) {
+//      document.getElementById("demo").innerHTML = "Hello" + this.responseText;
+//     // }
+//   	};
+//   	xhttp.open("GET", "https://ghibliapi.herokuapp.com/films");
+//   	xhttp.send();
+// } 
+
+alert('hi');
+
+ document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+
+function loadDoc() {
+	// Check for the various File API support.
+	if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
+  	alert('The File APIs are not fully supported in this browser.');
+
+	} 
+
+}
+
+// Great success! All the File APIs are supported.
+
+
+ 
+  function handleFileSelect(evt) {
+  	alert('Files selcted');
+
+    var files = evt.target.files; // FileList object
+
+    // files is a FileList of File objects. List some properties.
+    var output = [];
+    for (var i = 0, f; f = files[i]; i++) {
+      output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+                  f.size, ' bytes, last modified: ',
+                  f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+                  '</li>');
+
+ 		var reader = new FileReader();
+
+ 		 // Closure to capture the file information.
+      reader.onload = (function(theFile) {
+        return function(e) {
+          output.push(e)
+        };
+      })(f);
+
+ 		reader.readAsText(f);
+
+      
+    }
+
+    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+  }
+
+ 
+
+
+</script>
+
+
+  
+
+ </body>
+</html>
