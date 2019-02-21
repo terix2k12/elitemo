@@ -11,6 +11,8 @@
 <input type="file" id="files" name="files[]" multiple />
 <output id="list"></output>
 
+<output id="contents"></output>
+
  	<script>
 
 // CORS is prohibting access to external APIs
@@ -25,7 +27,11 @@
 //   	xhttp.send();
 // } 
 
-alert('hi');
+
+// get most recent from https://eddb.io/archive/v6/stations.json
+
+// infos about FileReader https://www.html5rocks.com/en/tutorials/file/dndfiles/
+
 
  document.getElementById('files').addEventListener('change', handleFileSelect, false);
 
@@ -44,7 +50,7 @@ function loadDoc() {
 
  
   function handleFileSelect(evt) {
-  	alert('Files selcted');
+  
 
     var files = evt.target.files; // FileList object
 
@@ -59,11 +65,16 @@ function loadDoc() {
  		var reader = new FileReader();
 
  		 // Closure to capture the file information.
-      reader.onload = (function(theFile) {
-        return function(e) {
-          output.push(e)
-        };
-      })(f);
+      reader.onload = function(e) {
+  			
+  			alert('File loaded');    
+  			 output = [];
+
+          output.push(reader.result);
+
+          document.getElementById('contents').innerHTML = output.join('');
+       }
+         ;
 
  		reader.readAsText(f);
 
@@ -77,9 +88,6 @@ function loadDoc() {
 
 
 </script>
-
-
-  
 
  </body>
 </html>
