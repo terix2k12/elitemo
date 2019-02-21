@@ -62,23 +62,24 @@ function loadDoc() {
                   f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
                   '</li>');
 
+
  		var reader = new FileReader();
-
- 		 // Closure to capture the file information.
-      reader.onload = function(e) {
-  			
+	    reader.onload = function() {
   			alert('File loaded');    
-  			 output = [];
+  			output = [];
+  			output.push(reader.result);
 
-          output.push(reader.result);
+	        var jsonArray = JSON.parse(reader.result);
+ 
+	        var firstElem = jsonArray[0];
 
-          document.getElementById('contents').innerHTML = output.join('');
-       }
-         ;
+	        output.push(firstElem.id);
+	         
+
+			document.getElementById('contents').innerHTML = output.join('');
+       	};
 
  		reader.readAsText(f);
-
-      
     }
 
     document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
