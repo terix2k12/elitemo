@@ -28,9 +28,24 @@
  function myFunction() {
  	var xhttp = new XMLHttpRequest();
  	xhttp.onreadystatechange = function() {
-    // if (this.readyState == 4 && this.status == 200) {
-     document.getElementById("demo").innerHTML = "Hello" + this.status + this.responseText;
-    // }
+		if (this.readyState == 4 && this.status == 200) {
+			var resp = this.responseText;
+
+			try {
+    			var jsonArray = JSON.parse(resp );
+    		} catch(e) {
+    		    alert( e); 
+    		}		
+  	
+  			var liste = [];
+  			for( x in jsonArray) {
+				liste.push( jsonArray[x].name );
+  			} 			
+
+    		 document.getElementById("demo").innerHTML =   liste.join(' # ');
+    	}else{
+    		document.getElementById("demo").innerHTML = "Error on commodities receive " + this.readyState + this.status;
+    	}
   	};
   	xhttp.open("GET", "http://localhost:8000/commodities");
   	xhttp.send();
@@ -75,10 +90,10 @@ function testApi() {
  	     
  		var output = [];
  	 
-       var jsonArray = JSON.parse(reader.result);
+       var jsonArray = JSON.parse(reader.result );//
 
         var firstElem = jsonArray[0];
-        output.push(firstElem.id);
+        // output.push(firstElem.id);
        for( x in jsonArray) {
        	output.push( jsonArray[x].name );
   

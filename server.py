@@ -23,9 +23,9 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 		if(self.path == "/commodities"):
 			self.send_response(200)
-			self.send_header("Content-type", "text/json")
+			self.send_header("Content-type", "application/json")
 			self.setCORSHeader()
-			self.wfile.write(commoditiesJSON)
+			self.wfile.write(json.dumps(commoditiesJSON))
 		else:
 			self.send_response(500)
 			self.send_header("Content-type", "text/plain")
