@@ -2,44 +2,26 @@
 <html>
  <head>
  	<title>Elite:Dangerous - Mission Optimizer</title>
+
+	<link href="http://code.jquery.com/ui/1.10.3/jquery-ui.css" rel="stylesheet">
+	<link href="stylesheet.css" rel="stylesheet">
+
  	<!-- script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script -->
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-<link href="http://code.jquery.com/ui/1.10.3/jquery-ui.css" rel="stylesheet">
-<link href="stylesheet.css" rel="stylesheet">
 
-	<script>
-  // Basic jQuery
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+	<script src="elite.js"></script>
 
-$(document).ready(function() {
-	
-   $("#demo").html("Hello, World!");
-
-$('#startSystem').autocomplete({
-    source: "http://localhost:8000/systems"
-});
-
-
-});
-   /* onSelect: function (suggestion) {
-        alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
-    }*/
-
-
-	</script>
  </head>
  <body>
+	<div id="jsCheck">Your browser needs to allow javascript for this page.</div>
+	<div id="jQueryCheck">Your browser needs to allow jQuery for this page.</div>
  	<h1>Elite:Dangerous - Mission Optimizer</h1>
 
-<div id="jswarning">Your browsers needs to allow javascript for this page.</div>
-
-<input type="file" id="files" name="files[]" multiple />
+<!-- input type="file" id="files" name="files[]" multiple />
 <output id="list"></output>
 
-<button onclick="myFunction()">Click me</button>
-
-<div id="demo">No jquery</div>
-
+<button onclick="myFunction()">Click me</button -->
 
 <form action="/action_page.php">
 <datalist id="commoditiesDropdown">	
@@ -102,8 +84,7 @@ $('#startSystem').autocomplete({
 
  	<script>
 
-    var jswarning = document.getElementById("jswarning");
-    jswarning.innerHTML = "JS active :) !";
+
 
 
  function myFunction() {
