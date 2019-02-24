@@ -1,5 +1,6 @@
 import time
 import json
+from numpy import linalg, array
 import BaseHTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 
@@ -60,13 +61,38 @@ def loadJSON(name, path):
 	f.close()
 	return j
 
+def findSystem(name):
+	for sys in systems:
+		if( sys[u'name'] == name ):
+			return sys
+
+def distance(sys1, sys2):
+	a = array( (sys1[u'x'], sys1[u'y'], sys1[u'z']) );
+	b = array( (sys2[u'x'], sys2[u'y'], sys2[u'z']) );
+	return linalg.norm(a-b);
+
+
 if __name__ == "__main__":
 	print "Loading assets:"
 
-	commodities = loadJSON("commodities","commodities.json")
+	#commodities = loadJSON("commodities","commodities.json")
 	systems = loadJSON("systems","systems_populated.json")
 	stations = loadJSON("stations","stations.json")
 
-	#for s in stationsJSON:
-	print json.dumps(systems[:1])
-	#	pass
+	sid = 0
+
+	eravate = findSystem("Eravate")
+	lhs = findSystem("LHS 3447")
+
+
+	sid = eravate[u'id']
+
+	for sta in stations:
+		if( sta[u'system_id'] == sid):
+			print "\t", sta[u'name'], sta[u'id']
+
+	for sys in systems:
+		if( distance(sys, eravate) < 10):
+			print sys[u'name']
+
+	print "Done"
