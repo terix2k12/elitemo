@@ -6,24 +6,35 @@
  <body>
  	<h1>Elite:Dangerous - Mission Optimizer</h1>
 
+<div id="jswarning">Your browsers needs to allow javascript for this page.</div>
+
 <input type="file" id="files" name="files[]" multiple />
 <output id="list"></output>
+
+<button onclick="myFunction()">Click me</button>
+<div id="demo">foo</div>
 
 <output id="contents"></output>
 
  	<script>
 
+    var jswarning = document.getElementById("jswarning");
+    jswarning.innerHTML = "JS active :) !";
+
 // CORS is prohibiting access to external APIs
-//  function loadDoc() {
-//  	var xhttp = new XMLHttpRequest();
-//  	xhttp.onreadystatechange = function() {
-//     // if (this.readyState == 4 && this.status == 200) {
-//      document.getElementById("demo").innerHTML = "Hello" + this.responseText;
-//     // }
-//   	};
-//   	xhttp.open("GET", "https://ghibliapi.herokuapp.com/films");
-//   	xhttp.send();
-// } 
+ // http://localhost:8000/
+ // python –m SimpleHTTPServer
+
+ function myFunction() {
+ 	var xhttp = new XMLHttpRequest();
+ 	xhttp.onreadystatechange = function() {
+    // if (this.readyState == 4 && this.status == 200) {
+     document.getElementById("demo").innerHTML = "Hello" + this.status + this.responseText;
+    // }
+  	};
+  	xhttp.open("GET", "http://localhost:8000");
+  	xhttp.send();
+} 
 
 
 // get most recent from https://eddb.io/archive/v6/stations.json
@@ -34,13 +45,11 @@
  document.getElementById('files').addEventListener('change', handleFileSelect, false);
 
 
-function loadDoc() {
+function testApi() {
 	// Check for the various File API support.
 	if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
   	alert('The File APIs are not fully supported in this browser.');
-
 	} 
-
 }
 
 // Great success! All the File APIs are supported.
@@ -86,7 +95,7 @@ function loadDoc() {
     document.getElementById('list').innerHTML = '<ul>' + output.join(' # ') + '</ul>';
   }
 
- 
+
 
 
 </script>
