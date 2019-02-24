@@ -12,7 +12,16 @@
 <output id="list"></output>
 
 <button onclick="myFunction()">Click me</button>
-<div id="demo">foo</div>
+
+<div id="demo"></div>
+
+
+<input list="commoditiesDropdown" name="commodity">
+<datalist id="commoditiesDropdown">
+	<option value="Empty without JS">	
+</datalist>
+
+
 
 <output id="contents"></output>
 
@@ -38,13 +47,18 @@
     		}		
   	
   			var liste = [];
+
+  			var dropdown = document.getElementById("commoditiesDropdown"); 
+  			dropdown.innerHTML = '';
+
   			for( x in jsonArray) {
-				liste.push( jsonArray[x].name );
+  				var item = jsonArray[x];
+				dropdown.innerHTML += '<option data-id="'+item.id+'" value="'+ item.name +'"></option>';
   			} 			
 
-    		 document.getElementById("demo").innerHTML =   liste.join(' # ');
+    		 
     	}else{
-    		document.getElementById("demo").innerHTML = "Error on commodities receive " + this.readyState + this.status;
+    		// document.getElementById("demo").innerHTML = "Error on commodities receive " + this.readyState + " " + this.status;
     	}
   	};
   	xhttp.open("GET", "http://localhost:8000/commodities");
