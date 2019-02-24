@@ -1,6 +1,7 @@
 import time
 import json
 from numpy import linalg, array
+from urlparse import urlparse
 import BaseHTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 
@@ -25,13 +26,31 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 		self.send_header("Content-type", "text/plain")
 		self.end_headers()
 	def do_GET(self):
-		print "Handles GET request:"
+		parse = urlparse(self.path)
+		print "Handles GET request: ", parse
 
 		if(self.path == "/commodities"):
 			self.send_response(200)
 			self.send_header("Content-type", "application/json")
 			self.setCORSHeader()
-			self.wfile.write(json.dumps(commoditiesJSON))
+			self.wfile.write(json.dumps(commodities))
+		elif(parse.path == "/systems"):
+			self.send_response(200)
+			self.send_header("Content-type", "application/json")
+			self.setCORSHeader()
+
+			term = parse.query.split("=")[1]
+
+			systemsLike = findSystemLike(term)
+
+			response = []
+			for sys in systemsLike:
+				dic = { "value" : sys[u'name'], "data" : sys[u'id'] }
+				response.append(dic)
+
+			# print "<" + str(response) + ">"
+
+			self.wfile.write(json.dumps(response))
 		else:
 			self.send_response(500)
 			self.send_header("Content-type", "text/plain")
@@ -66,33 +85,42 @@ def findSystem(name):
 		if( sys[u'name'] == name ):
 			return sys
 
+def findSystemLike(name):
+	result = []
+	for sys in systems: 
+		if( sys[u'name'].upper().find(name.upper()) >= 0):
+			result.append(sys)
+	return result
+
 def distance(sys1, sys2):
 	a = array( (sys1[u'x'], sys1[u'y'], sys1[u'z']) );
 	b = array( (sys2[u'x'], sys2[u'y'], sys2[u'z']) );
 	return linalg.norm(a-b);
 
-
 if __name__ == "__main__":
 	print "Loading assets:"
 
-	#commodities = loadJSON("commodities","commodities.json")
+	commodities = loadJSON("commodities","commodities.json")
 	systems = loadJSON("systems","systems_populated.json")
-	stations = loadJSON("stations","stations.json")
+	# stations = loadJSON("stations","stations.json")
 
-	sid = 0
+	runServer()
 
-	eravate = findSystem("Eravate")
-	lhs = findSystem("LHS 3447")
-
-
-	sid = eravate[u'id']
-
-	for sta in stations:
-		if( sta[u'system_id'] == sid):
-			print "\t", sta[u'name'], sta[u'id']
-
-	for sys in systems:
-		if( distance(sys, eravate) < 10):
-			print sys[u'name']
-
-	print "Done"
+#	sid = 0
+#
+#	eravate = findSystem("Eravate")
+#	lhs = findSystem("LHS 3447")
+#
+#	print findSystemLike("rava")
+#
+#	sid = eravate[u'id']
+#
+#	for sta in stations:
+#		if( sta[u'system_id'] == sid):
+#			print "\t", sta[u'name'], sta[u'id']
+#
+#	for sys in systems:
+#		if( distance(sys, eravate) < 10):
+#			print sys[u'name']
+#
+#	print "Done"

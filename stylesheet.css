@@ -1,0 +1,8 @@
+.ui-helper-hidden-accessible {
+	display: none;	
+}
+
+.ui-menu-item {
+	border: 1px solid red;
+	border-color : #f00;
+}
