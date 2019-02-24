@@ -2,6 +2,34 @@
 <html>
  <head>
  	<title>Elite:Dangerous - Mission Optimizer</title>
+ 	<!-- script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script -->
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+	<script>
+  // Basic jQuery
+
+$(document).ready(function() {
+	
+   $("#demo").html("Hello, World!");
+
+  	var countries = [
+   { value: 'Andorra', data: 'AD' },
+   { value: 'Zimbabwe', data: 'ZZ' }
+	];
+
+$('#startSystem').autocomplete({
+    source: countries
+});
+
+
+});
+   /* onSelect: function (suggestion) {
+        alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
+    }*/
+
+
+	</script>
  </head>
  <body>
  	<h1>Elite:Dangerous - Mission Optimizer</h1>
@@ -13,7 +41,7 @@
 
 <button onclick="myFunction()">Click me</button>
 
-<div id="demo"></div>
+<div id="demo">No jquery</div>
 
 
 <form action="/action_page.php">
@@ -38,7 +66,7 @@
 	Max. hops from distance: <input name="maxHopDistance" type="number"> <br>
 </div>
 <div>
-	System: <input name="startSystem"> Station: <input name="startStation"> <br>
+	System: <input id="startSystem" name="startSys" value="test">DUMMY</input> Station: <input name="startStation"> <br>
 
 	<div>Missions:<br>
 		<div>
@@ -173,6 +201,36 @@ function testApi() {
 
 
 
+  /*$("#ssstartSystem").autocomplete({
+      source: function( request, response ) {
+      	alert("jQuery begin");
+
+        $.ajax({
+          url: "/systems",
+          dataType: "json",
+          data: {
+            q: request.term
+          },
+          success: function( data ) {
+            response( data );
+          }
+        });
+      },
+      minLength: 3
+      /*,
+      select: function( event, ui ) {
+        alert( ui.item ?
+          "Selected: " + ui :
+          "Nothing selected, input was " + this.value);
+      },
+      open: function() {
+        $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+      },
+      close: function() {
+        $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+      }
+    }
+    );*/
 
 </script>
   <div id="imprint">CMDR terix2k18 &copy; 2019</div>
