@@ -1,9 +1,9 @@
 import time
+import json
 import BaseHTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 
-HOST_NAME = "localhost" 
-#// "127.0.0.1" 
+HOST_NAME = "localhost" #// "127.0.0.1" 
 PORT_NUMBER = 8000
 
 class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -34,7 +34,8 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
 	print "Loading assets:"
-	commoditiesJSON = "{ name: 'cheese'}"
+	f = open("commodities.json","r")
+	commoditiesJSON = json.load(f)
 
 	print "Starting Server"
 
