@@ -16,23 +16,70 @@
 <div id="demo"></div>
 
 
-<input list="commoditiesDropdown" name="commodity">
-<datalist id="commoditiesDropdown">
-	<option value="Empty without JS">	
+<form action="/action_page.php">
+<datalist id="commoditiesDropdown">	
+</datalist>
+<datalist id="landingpadDropdown">
+	<option value="S"></option>
+	<option value="M"></option>
+	<option value="L"></option>	
+</datalist>
+<datalist id="missionDropdown">	
+	<option value="Delivery"></option>
+	<option value="Source"></option>
+	<option value="Intel"></option>
 </datalist>
 
+<div>
+	<h2>General</h2>
+	Cargohold: <input name="maxCargohold" type="number"> <br>
+	Landingpad size: <input list="landingpadDropdown" name="landingpad"> <br>
+	Jumprange (laden): <input name="maxJumprange" type="number"> <br>
+	Max. hops from distance: <input name="maxHopDistance" type="number"> <br>
+</div>
+<div>
+	System: <input name="startSystem"> Station: <input name="startStation"> <br>
+
+	<div>Missions:<br>
+		<div>
+			Type: <input list="missionDropdown" name="mission">
+			Commodity: <input list="commoditiesDropdown" name="commodity">
+			Target: <input name="commodity">
+			Tonnes: <input name="commodity">
+			Value: <input name="commodity">
+		</div>
+		<input type="submit" value="Add mission">
+	</div>
+
+	<div>Instructions:
+		<ul>
+			<li>Load xy tonnes of z
+			<li>Unload xy tonnes of y
+		</ul>
+	</div>
+</div>
+
+<div>
+	1st hop
+</div>
+
+<div>
+	2nd hop
+</div>
+
+<div>
+	last hop
+</div>
 
 
-<output id="contents"></output>
+	<input type="submit">
+</form>
 
  	<script>
 
     var jswarning = document.getElementById("jswarning");
     jswarning.innerHTML = "JS active :) !";
 
-// CORS is prohibiting access to external APIs
- // http://localhost:8000/
- // python –m SimpleHTTPServer
 
  function myFunction() {
  	var xhttp = new XMLHttpRequest();
@@ -128,6 +175,6 @@ function testApi() {
 
 
 </script>
- <div id="imprint">&copy; 2019</div>
+  <div id="imprint">CMDR terix2k18 &copy; 2019</div>
  </body>
 </html>
