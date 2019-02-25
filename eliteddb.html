@@ -18,7 +18,7 @@
 	<div id="jQueryCheck">Your browser needs to allow jQuery for this page.</div>
  	<h1>Elite:Dangerous - Mission Optimizer</h1>
 
-<form action="/action_page.php">
+<form action="http://localhost:8000/compute">
 <datalist id="landingpadDropdown">
 	<option value="S"></option>
 	<option value="M"></option>
@@ -37,11 +37,11 @@
 	Jumprange (laden): <input name="maxJumprange" type="number"> <br>
 	Max. hops from distance: <input name="maxHopDistance" type="number"> <br>
 </div>
-<div class="step">
+<div id="step0" class="step">
 	System: <input class="systemsAutocomplete" id="startSystem"/>
 	Station: <input class="stationsAutocomplete" id="startStation"/> <br>
 
-	<div class="mission">Missions: <button onClick="addMission(this)" type="button">Add</button> <br/>
+	<div class="mission">Missions: <button onClick="addMission(this)" disabled="true" type="button">Add</button> <br/>
 	</div>
 
 	<!--div>Instructions:
@@ -52,7 +52,7 @@
 	</div-->
 </div>
 
-<div class="step">
+<!-- div class="step">
 	1st hop
 </div>
 
@@ -62,120 +62,12 @@
 
 <div class="step">
 	last hop
-</div>
+</div-->
 
-
-	<input type="submit">
+	<input type="button" onclick="compute()" value="Compute"/>
 </form>
 
- 	<script>
- function myFunction() {
- 	var xhttp = new XMLHttpRequest();
- 	xhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) {
-			var resp = this.responseText;
-    		 
-    	}else{
-    		// document.getElementById("demo").innerHTML = "Error on commodities receive " + this.readyState + " " + this.status;
-    	}
-  	};
-  	xhttp.open("GET", "http://localhost:8000/commodities");
-  	xhttp.send();
-} 
 
-
-// get most recent from https://eddb.io/archive/v6/stations.json
-
-// infos about FileReader https://www.html5rocks.com/en/tutorials/file/dndfiles/
-
-
- document.getElementById('files').addEventListener('change', handleFileSelect, false);
-
-
-function testApi() {
-	// Check for the various File API support.
-	if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
-  	alert('The File APIs are not fully supported in this browser.');
-	} 
-}
-
-// Great success! All the File APIs are supported.
-
-
- 
-  function handleFileSelect(evt) {
-  
-
-    var files = evt.target.files; // FileList object
-
-    // files is a FileList of File objects. List some properties.
-    var output = [];
-    for (var i = 0, f; f = files[i]; i++) {
-      output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
-                  f.size, ' bytes, last modified: ',
-                  f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
-                  '</li>');
- 
-
-	var reader = new FileReader();
-    reader.onload = function() {
- 	     
- 		var output = [];
- 	 
-       var jsonArray = JSON.parse(reader.result );//
-
-        var firstElem = jsonArray[0];
-        // output.push(firstElem.id);
-       for( x in jsonArray) {
-       	output.push( jsonArray[x].name );
-  
-         }
-
-			document.getElementById('contents').innerHTML = output.join('');
-       	};
-
- 	reader.readAsText(f);
-
- }
-    
-
-    document.getElementById('list').innerHTML = '<ul>' + output.join(' # ') + '</ul>';
-  }
-
-
-
-  /*$("#ssstartSystem").autocomplete({
-      source: function( request, response ) {
-      	alert("jQuery begin");
-
-        $.ajax({
-          url: "/systems",
-          dataType: "json",
-          data: {
-            q: request.term
-          },
-          success: function( data ) {
-            response( data );
-          }
-        });
-      },
-      minLength: 3
-      /*,
-      select: function( event, ui ) {
-        alert( ui.item ?
-          "Selected: " + ui :
-          "Nothing selected, input was " + this.value);
-      },
-      open: function() {
-        $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
-      },
-      close: function() {
-        $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
-      }
-    }
-    );*/
-
-</script>
   <div id="imprint">CMDR terix2k18 &copy; 2019</div>
  </body>
 </html>

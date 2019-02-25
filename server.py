@@ -25,6 +25,9 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 		self.send_header("Content-type", "application/json")
 		self.setCORSHeader()
 
+	def do_POST():
+		print "do_POST"
+
 	def do_HEAD(self):
 		print "do_HEAD"
 		self.send_response(200)
@@ -49,6 +52,15 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 			term = parse.query.split("=")[1]
 
 			self.wfile.write(ajaxAutocomplete(findStationLike(term)))
+		elif(parse.path == "/compute"):
+
+			print parse
+
+			self.send_response(200)
+			self.send_header("Content-type", "text/plain")
+			self.setCORSHeader()
+			self.wfile.write("My answer")
+
 		else:
 			self.send_response(500)
 			self.send_header("Content-type", "text/plain")
