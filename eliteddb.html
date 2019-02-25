@@ -3,8 +3,8 @@
  <head>
  	<title>Elite:Dangerous - Mission Optimizer</title>
 
-	<link href="http://code.jquery.com/ui/1.10.3/jquery-ui.css" rel="stylesheet">
-	<link href="stylesheet.css" rel="stylesheet">
+	<link href="http://code.jquery.com/ui/1.10.3/jquery-ui.css" rel="stylesheet"/>
+	<link href="stylesheet.css" rel="stylesheet"/>
 
  	<!-- script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script -->
 
@@ -18,14 +18,7 @@
 	<div id="jQueryCheck">Your browser needs to allow jQuery for this page.</div>
  	<h1>Elite:Dangerous - Mission Optimizer</h1>
 
-<!-- input type="file" id="files" name="files[]" multiple />
-<output id="list"></output>
-
-<button onclick="myFunction()">Click me</button -->
-
 <form action="/action_page.php">
-<datalist id="commoditiesDropdown">	
-</datalist>
 <datalist id="landingpadDropdown">
 	<option value="S"></option>
 	<option value="M"></option>
@@ -37,23 +30,24 @@
 	<option value="Intel"></option>
 </datalist>
 
-<div>
+<div id="general">
 	<h2>General</h2>
 	Cargohold: <input name="maxCargohold" type="number"> <br>
 	Landingpad size: <input list="landingpadDropdown" name="landingpad"> <br>
 	Jumprange (laden): <input name="maxJumprange" type="number"> <br>
 	Max. hops from distance: <input name="maxHopDistance" type="number"> <br>
 </div>
-<div>
-	System: <input id="startSystem" name="startSys" value="test"> Station: <input name="startStation"> <br>
+<div class="step">
+	System: <input class="systemsAutocomplete" id="startSystem"/>
+	Station: <input class="stationsAutocomplete" id="startStation"/> <br>
 
-	<div>Missions:<br>
+	<div class="mission">Missions: <br/>
 		<div>
 			Type: <input list="missionDropdown" name="mission">
-			Commodity: <input list="commoditiesDropdown" name="commodity">
-			Target: <input name="commodity">
-			Tonnes: <input name="commodity">
-			Value: <input name="commodity">
+			Commodity: <input class="commoditiesAutocomplete" name="commodity">
+			Target: <input class="stationsAutocomplete" name="commodity"/>
+			Tonnes: <input name="commodity"/>
+			Value: <input name="commodity"/>
 		</div>
 		<input type="submit" value="Add mission">
 	</div>
@@ -66,15 +60,15 @@
 	</div>
 </div>
 
-<div>
+<div class="step">
 	1st hop
 </div>
 
-<div>
+<div class="step">
 	2nd hop
 </div>
 
-<div>
+<div class="step">
 	last hop
 </div>
 
@@ -83,32 +77,11 @@
 </form>
 
  	<script>
-
-
-
-
  function myFunction() {
  	var xhttp = new XMLHttpRequest();
  	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			var resp = this.responseText;
-
-			try {
-    			var jsonArray = JSON.parse(resp );
-    		} catch(e) {
-    		    alert( e); 
-    		}		
-  	
-  			var liste = [];
-
-  			var dropdown = document.getElementById("commoditiesDropdown"); 
-  			dropdown.innerHTML = '';
-
-  			for( x in jsonArray) {
-  				var item = jsonArray[x];
-				dropdown.innerHTML += '<option data-id="'+item.id+'" value="'+ item.name +'"></option>';
-  			} 			
-
     		 
     	}else{
     		// document.getElementById("demo").innerHTML = "Error on commodities receive " + this.readyState + " " + this.status;

@@ -1,3 +1,16 @@
+div {
+	padding: 5px;
+	margin: 5px;
+}
+
+#general {
+	border : 1px solid black;
+}
+
+.step {
+	border : 1px solid grey;
+}
+
 .ui-helper-hidden-accessible {
 	display: none;	
 }

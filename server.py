@@ -20,6 +20,11 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 		self.send_header('Access-Control-Allow-Methods', 'GET') # ,PUT,POST,DELETE	 
 		self.end_headers()
 
+	def jsonOKHeader(self):
+		self.send_response(200)
+		self.send_header("Content-type", "application/json")
+		self.setCORSHeader()
+
 	def do_HEAD(self):
 		print "do_HEAD"
 		self.send_response(200)
@@ -29,33 +34,33 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 		parse = urlparse(self.path)
 		print "Handles GET request: ", parse
 
-		if(self.path == "/commodities"):
-			self.send_response(200)
-			self.send_header("Content-type", "application/json")
-			self.setCORSHeader()
-			self.wfile.write(json.dumps(commodities))
-		elif(parse.path == "/systems"):
-			self.send_response(200)
-			self.send_header("Content-type", "application/json")
-			self.setCORSHeader()
-
+		if(parse.path == "/commodities"):
+			self.jsonOKHeader()
 			term = parse.query.split("=")[1]
 
-			systemsLike = findSystemLike(term)
+			self.wfile.write(ajaxAutocomplete(findCommoditiyLike(term)))
+		elif(parse.path == "/systems"):
+			self.jsonOKHeader()
+			term = parse.query.split("=")[1]
 
-			response = []
-			for sys in systemsLike:
-				dic = { "value" : sys[u'name'], "data" : sys[u'id'] }
-				response.append(dic)
+			self.wfile.write(ajaxAutocomplete(findSystemLike(term)))
+		elif(parse.path == "/stations"):
+			self.jsonOKHeader()
+			term = parse.query.split("=")[1]
 
-			# print "<" + str(response) + ">"
-
-			self.wfile.write(json.dumps(response))
+			self.wfile.write(ajaxAutocomplete(findStationLike(term)))
 		else:
 			self.send_response(500)
 			self.send_header("Content-type", "text/plain")
 			self.setCORSHeader()
 			self.wfile.write("Access denied.")
+
+def ajaxAutocomplete(items):
+	response = []
+	for item in items:
+		dic = { "value" : item[u'name'], "data" : item[u'id'] }
+		response.append(dic)
+	return json.dumps(response)
 
 def runServer():
 	print "Starting Server"
@@ -86,11 +91,24 @@ def findSystem(name):
 			return sys
 
 def findSystemLike(name):
+	return findNameLike(name, systems)
+
+def findStationLike(name):
+	return findNameLike(name, stations)
+
+def findCommoditiyLike(name):
+	return findNameLike(name, commodities)
+
+def findNameLike(name, items):
 	result = []
-	for sys in systems: 
-		if( sys[u'name'].upper().find(name.upper()) >= 0):
-			result.append(sys)
+	for item in items: 
+		if( simple(item[u'name']).find(simple(name)) >= 0):
+			result.append(item)
 	return result
+
+def simple(string):
+	s = string.upper().replace(" ", "").replace("+","")
+	return s 
 
 def distance(sys1, sys2):
 	a = array( (sys1[u'x'], sys1[u'y'], sys1[u'z']) );
@@ -102,7 +120,7 @@ if __name__ == "__main__":
 
 	commodities = loadJSON("commodities","commodities.json")
 	systems = loadJSON("systems","systems_populated.json")
-	# stations = loadJSON("stations","stations.json")
+	stations = loadJSON("stations","stations.json")
 
 	runServer()
 

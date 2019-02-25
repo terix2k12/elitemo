@@ -9,8 +9,14 @@
 	// Basic jQuery
 	$(document).ready(function() {
 		$("#jQueryCheck").html("");
-		$('#startSystem').autocomplete({
+		$('.systemsAutocomplete').autocomplete({
     		source: "http://localhost:8000/systems"
+		});
+		$('.stationsAutocomplete').autocomplete({
+    		source: "http://localhost:8000/stations"
+		});
+		$('.commoditiesAutocomplete').autocomplete({
+    		source: "http://localhost:8000/commodities"
 		});
 	});
 
