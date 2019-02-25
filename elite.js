@@ -4,6 +4,21 @@
 		jsCheck.innerHTML = "";
   	}
 
+  	function addMission(element) {
+  		var newMission = "";
+		newMission += "	Type: <input list='missionDropdown' name='mission'>";
+		newMission += "	Commodity: <input class='commoditiesAutocomplete' name='commodity'>";
+		newMission += "	Target: <input class='stationsAutocomplete' name='commodity'/>";
+		newMission += "	Tonnes: <input name='commodity'/>";
+		newMission += "	Value: <input name='commodity'/>";
+
+		var newDiv = document.createElement('div');
+		newDiv.innerHTML = newMission;
+
+  		element.parentNode.appendChild(newDiv);
+  	}
+  		
+
   	window.onload=onWindowLoad;
   	
 	// Basic jQuery

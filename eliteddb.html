@@ -41,23 +41,15 @@
 	System: <input class="systemsAutocomplete" id="startSystem"/>
 	Station: <input class="stationsAutocomplete" id="startStation"/> <br>
 
-	<div class="mission">Missions: <br/>
-		<div>
-			Type: <input list="missionDropdown" name="mission">
-			Commodity: <input class="commoditiesAutocomplete" name="commodity">
-			Target: <input class="stationsAutocomplete" name="commodity"/>
-			Tonnes: <input name="commodity"/>
-			Value: <input name="commodity"/>
-		</div>
-		<input type="submit" value="Add mission">
+	<div class="mission">Missions: <button onClick="addMission(this)" type="button">Add</button> <br/>
 	</div>
 
-	<div>Instructions:
+	<!--div>Instructions:
 		<ul>
 			<li>Load xy tonnes of z
 			<li>Unload xy tonnes of y
 		</ul>
-	</div>
+	</div-->
 </div>
 
 <div class="step">
