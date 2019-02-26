@@ -25,8 +25,8 @@
 		});
   	}
 
-	function removeMission(element) {
-		var oldDiv = element.parentNode;
+  function removeMission(element) {
+    var oldDiv = element.parentNode;
 		oldDiv.parentNode.removeChild(oldDiv);		
 	}
   	
@@ -45,12 +45,27 @@
   		element.parentNode.appendChild(newDiv);
   	}
 
+    function addStep(step) {
+      steps = document.getElementById('steps');
+      var newStep = document.createElement('div');
+      newStep.setAttribute("class", "step");
+      newStep.id = "step1";
+      content = "System: " + step.systemId + " Station:" + step.stationId;
+      newStep.innerHTML = content;      
+      steps.appendChild(newStep);
+    }
+
   	function compute() {
  		   var xhttp = new XMLHttpRequest();
  		   xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
 			   var resp = this.responseText;
-    	   alert(resp); 
+    	   data = JSON.parse(resp);
+
+         step1 = data.route[1]
+
+         addStep(step1)
+
         } else {
     			// document.getElementById("demo").innerHTML = "Error on commodities receive " + this.readyState + " " + this.status;
     		}

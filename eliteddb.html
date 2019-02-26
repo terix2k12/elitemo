@@ -37,11 +37,13 @@
 	Jumprange (laden): <input id="jumprange" name="maxJumprange" type="number"> <br>
 	Max. hops from distance: <input id="maxhops" name="maxHopDistance" type="number"> <br>
 </div>
+<div id="steps">
+
 <div id="step0" class="step">
 	System: <input class="systemsAutocomplete" id="startSystem"/>
 	Station: <input class="stationsAutocomplete" id="startStation"/> <br>
 
-	<div class="mission">Missions: <button onClick="addMission(this)" disabled="true" type="button">Add</button> <br/>
+	<div id="missions" class="mission">Missions: <button onClick="addMission(this)" disabled="true" type="button">Add</button> <br/>
 	</div>
 
 	<!--div>Instructions:
@@ -52,17 +54,7 @@
 	</div-->
 </div>
 
-<!-- div class="step">
-	1st hop
 </div>
-
-<div class="step">
-	2nd hop
-</div>
-
-<div class="step">
-	last hop
-</div-->
 
 	<input type="button" onclick="compute()" value="Compute"/>
 </form>
