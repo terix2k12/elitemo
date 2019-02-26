@@ -1,4 +1,4 @@
-  	window.onload=onWindowLoad;
+  window.onload=onWindowLoad;
 
  	function onWindowLoad()
   	{
@@ -46,16 +46,30 @@
   	}
 
   	function compute() {
- 		var xhttp = new XMLHttpRequest();
- 		xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				var resp = this.responseText;
-    			alert(resp); 
-    		} else {
+ 		   var xhttp = new XMLHttpRequest();
+ 		   xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+			   var resp = this.responseText;
+    	   alert(resp); 
+        } else {
     			// document.getElementById("demo").innerHTML = "Error on commodities receive " + this.readyState + " " + this.status;
     		}
   		};
-  		xhttp.open("GET", "http://localhost:8000/compute");
+
+      var data = {};
+      data.cargohold = document.getElementById('cargohold').value;
+      data.landingpad = document.getElementById('landingpad').value;
+      data.jumprange = document.getElementById('jumprange').value;
+      data.maxhops = document.getElementById('maxhops').value;
+      data.route = [];
+      var step0 = {};
+      step0.systemId = document.getElementById('startSystem').value;
+      step0.stationId = document.getElementById('startStation').value;
+      data.route.push( step0 );
+
+      alert(JSON.stringify(data, null, 2));
+
+  		xhttp.open("GET", "http://localhost:8000/compute?data=" + JSON.stringify(data));
   		xhttp.send();  		
   	}
 
