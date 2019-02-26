@@ -61,9 +61,16 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 			data = json.loads(decoded)
 
-			
+			print data
 
-			self.wfile.write("My answer")
+			step1 = {}
+			step1[u'systemId'] = u'LHS 3447'
+			step1["stationId"] = "Bluford Orbital"
+			data[u'route'].append(step1)
+
+			print data
+
+			self.wfile.write(json.dumps(data))
 		else:
 			self.send_response(500)
 			self.send_header("Content-type", "text/plain")
