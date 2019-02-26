@@ -67,7 +67,7 @@
       step0.stationId = document.getElementById('startStation').value;
       data.route.push( step0 );
 
-      alert(JSON.stringify(data, null, 2));
+      // alert(JSON.stringify(data, null, 2));
 
   		xhttp.open("GET", "http://localhost:8000/compute?data=" + JSON.stringify(data));
   		xhttp.send();  		

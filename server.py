@@ -2,6 +2,7 @@ import time
 import json
 from numpy import linalg, array
 from urlparse import urlparse
+import urllib
 import BaseHTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 
@@ -53,14 +54,16 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 			self.wfile.write(ajaxAutocomplete(findStationLike(term)))
 		elif(parse.path == "/compute"):
+			self.jsonOKHeader()
 
-			print parse
+			term = parse.query.split("=")[1]
+			decoded = urllib.unquote(term)
 
-			self.send_response(200)
-			self.send_header("Content-type", "text/plain")
-			self.setCORSHeader()
+			data = json.loads(decoded)
+
+			
+
 			self.wfile.write("My answer")
-
 		else:
 			self.send_response(500)
 			self.send_header("Content-type", "text/plain")
@@ -131,8 +134,8 @@ if __name__ == "__main__":
 	print "Loading assets:"
 
 	commodities = loadJSON("commodities","commodities.json")
-	systems = loadJSON("systems","systems_populated.json")
-	stations = loadJSON("stations","stations.json")
+#	systems = loadJSON("systems","systems_populated.json")
+#	stations = loadJSON("stations","stations.json")
 
 	runServer()
 
