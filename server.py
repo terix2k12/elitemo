@@ -6,15 +6,17 @@ import urllib
 import BaseHTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 
-HOST_NAME = "localhost" #// "127.0.0.1" 
-PORT_NUMBER = 8000
-
-
 #// CORS is prohibiting access to external APIs
 # // http://localhost:8000/
 # // python -m SimpleHTTPServer
 
-class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+HOST_NAME = "localhost" #// "127.0.0.1" 
+PORT_NUMBER = 8000
+
+global elite
+
+class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):	
+
 	def setCORSHeader(self):
 		self.send_header('Access-Control-Allow-Origin', '*')
 		self.send_header('Access-Control-Allow-Headers', 'Content-Type,Authorization')
@@ -35,6 +37,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 		self.send_header("Content-type", "text/plain")
 		self.end_headers()
 	def do_GET(self):
+		global elite
 		parse = urlparse(self.path)
 		print "Handles GET request: ", parse
 
@@ -42,17 +45,17 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 			self.jsonOKHeader()
 			term = parse.query.split("=")[1]
 
-			self.wfile.write(ajaxAutocomplete(findCommoditiyLike(term)))
+			self.wfile.write(self.ajaxAutocomplete(elite.findCommoditiyLike(term)))
 		elif(parse.path == "/systems"):
 			self.jsonOKHeader()
 			term = parse.query.split("=")[1]
 
-			self.wfile.write(ajaxAutocomplete(findSystemLike(term)))
+			self.wfile.write(self.ajaxAutocomplete(elite.findSystemLike(term)))
 		elif(parse.path == "/stations"):
 			self.jsonOKHeader()
 			term = parse.query.split("=")[1]
 
-			self.wfile.write(ajaxAutocomplete(findStationLike(term)))
+			self.wfile.write(self.ajaxAutocomplete(elite.findStationLike(term)))
 		elif(parse.path == "/compute"):
 			self.jsonOKHeader()
 
@@ -61,14 +64,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 			data = json.loads(decoded)
 
-			print data
-
-			step1 = {}
-			step1[u'systemId'] = u'LHS 3447'
-			step1["stationId"] = "Bluford Orbital"
-			data[u'route'].append(step1)
-
-			print data
+			data = elite.compute(data)
 
 			self.wfile.write(json.dumps(data))
 		else:
@@ -76,91 +72,34 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 			self.send_header("Content-type", "text/plain")
 			self.setCORSHeader()
 			self.wfile.write("Access denied.")
-
-def ajaxAutocomplete(items):
-	response = []
-	for item in items:
-		dic = { "value" : item[u'name'], "data" : item[u'id'] }
-		response.append(dic)
-	return json.dumps(response)
-
-def runServer():
-	print "Starting Server"
-
-	server_class = BaseHTTPServer.HTTPServer
-	httpd = server_class((HOST_NAME, PORT_NUMBER), MyHandler)
-	print time.asctime(), "Server Starts - %s:%s" % (HOST_NAME, PORT_NUMBER)
-
-	try:
-			httpd.serve_forever()
-	except KeyboardInterrupt:
 			pass
 
-	httpd.server_close()
-	print time.asctime(), "Server Stops - %s:%s" % (HOST_NAME, PORT_NUMBER)
+	def ajaxAutocomplete(self, items):
+		response = []
+		for item in items:
+			dic = { "value" : item[u'name'], "data" : item[u'id'] }
+			response.append(dic)
+		return json.dumps(response)
 
-def loadJSON(name, path):
-	print "Loading " +name+ ":"
-	f = open(path,"r")
-	j = json.load(f)
-	print str(len(j)) + " " + name + " parsed"
-	f.close()
-	return j
+class server:
+	def __init__(self, nelite):
+		global elite 
+		elite = nelite
+		pass
 
-def findSystem(name):
-	for sys in systems:
-		if( sys[u'name'] == name ):
-			return sys
+	def runServer(self):
+		print "Starting Server"
 
-def findSystemLike(name):
-	return findNameLike(name, systems)
+		server_class = BaseHTTPServer.HTTPServer
+		# handler = MyHandler()
+		# handler.setElite(self.elite)
+		httpd = server_class((HOST_NAME, PORT_NUMBER), MyHandler)
+		print time.asctime(), "Server Starts - %s:%s" % (HOST_NAME, PORT_NUMBER)
 
-def findStationLike(name):
-	return findNameLike(name, stations)
+		try:
+			httpd.serve_forever()
+		except KeyboardInterrupt:
+			pass
 
-def findCommoditiyLike(name):
-	return findNameLike(name, commodities)
-
-def findNameLike(name, items):
-	result = []
-	for item in items: 
-		if( simple(item[u'name']).find(simple(name)) >= 0):
-			result.append(item)
-	return result
-
-def simple(string):
-	s = string.upper().replace(" ", "").replace("+","")
-	return s 
-
-def distance(sys1, sys2):
-	a = array( (sys1[u'x'], sys1[u'y'], sys1[u'z']) );
-	b = array( (sys2[u'x'], sys2[u'y'], sys2[u'z']) );
-	return linalg.norm(a-b);
-
-if __name__ == "__main__":
-	print "Loading assets:"
-
-	commodities = loadJSON("commodities","commodities.json")
-#	systems = loadJSON("systems","systems_populated.json")
-#	stations = loadJSON("stations","stations.json")
-
-	runServer()
-
-#	sid = 0
-#
-#	eravate = findSystem("Eravate")
-#	lhs = findSystem("LHS 3447")
-#
-#	print findSystemLike("rava")
-#
-#	sid = eravate[u'id']
-#
-#	for sta in stations:
-#		if( sta[u'system_id'] == sid):
-#			print "\t", sta[u'name'], sta[u'id']
-#
-#	for sys in systems:
-#		if( distance(sys, eravate) < 10):
-#			print sys[u'name']
-#
-#	print "Done"
+		httpd.server_close()
+		print time.asctime(), "Server Stops - %s:%s" % (HOST_NAME, PORT_NUMBER)
