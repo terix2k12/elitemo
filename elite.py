@@ -39,7 +39,6 @@ class elite:
 		step1["stationId"] = "Bluford Orbital"
 		data[u'route'].append(step1)
 
-		print data
 		return data
 
 if __name__ == "__main__":

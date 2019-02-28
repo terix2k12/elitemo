@@ -1,4 +1,5 @@
 import json
+import csv
 
 class assets:
 
@@ -10,6 +11,14 @@ class assets:
 		f.close()
 		return j
 
+	def loadCSV(self, path):
+		f = open(path, "r")
+		content = []
+		csvrows = csv.DictReader(f, delimiter=",")
+		for row in csvrows:
+			content.append(row)
+		return content
+
 	def loadCommodities(self):
 		return self.loadJSON("commodities","commodities.json")
 
@@ -19,6 +28,10 @@ class assets:
 	def loadStations(self):
 		return self.loadJSON("stations","stations.json")
 
+	def loadMarkets(self):
+		return self.loadCSV("mini-listings.csv")
+
 	def loadAssets(self):
 		print "Loading assets: "
 		return (self.loadCommodities(), self.loadSystems(), self.loadStations())
+
