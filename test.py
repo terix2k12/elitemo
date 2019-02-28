@@ -28,7 +28,18 @@ class MyTestSuite(unittest.TestCase):
 		self.assertEqual(len(result[u'route']), 2)
 
 	def test_loadListing(self):
+		elite.markets = assets().loadMarkets()
+
 		self.assertEqual(len(elite.markets), 7)
+
+	def test_showMostExpensiveName(self):
+		self.assertEqual(len(elite.markets), 7)
+
+	#def test_findBestCommodityAtStation(self):
+#
+#	#	data = self.inputData()
+#
+	#	currentStation = data["route"].
 	
 #	def test_orderPresentCommodities(self):
 #		station = {}
@@ -48,6 +59,6 @@ if __name__ == "__main__":
 
 	# (elite.commodities, elite.systems, elite.stations) = assets().loadAssets()
 
-	elite.markets = assets().loadMarkets()
+	
 
 	unittest.main()
