@@ -2,13 +2,13 @@ from assets import assets
 from server import server
 
 class market:
-	
+
 	def __init__(self, marketId):
 		self.id = marketId
 		self.items = []
 
-	def hasCommodity(self, commoditiyId):
-		return self.marketCommodity(commoditiyId)
+#	def hasCommodity(self, commoditiyId):
+#		return self.marketCommodity(commoditiyId)
 
 	def item(self, commoditiyId):
 		for item in self.items:
@@ -69,13 +69,19 @@ class elite:
 				return commodity
 		raise Exception("Commodity not found")
 
+	def deals(self, market1, market2):
+		profits = []
+		for item1 in market1.items:
+			c = item1["commodity_id"]
+			sellPrice = 0
+			for i2 in market2.items:
+				if(i2["commodity_id"] == c):
+					buyPrice = int(i2["sell_price"]) 
 
+			profits.append((c, int(item1["buy_price"]) - sellPrice))
 
-#	def profits(self, market1, market2):
-#		profits = []
-#		for item in market1:
-#			profit = {}
-#		return profits
+		profits.sort(key=lambda (i,p) :p, reverse=True)
+		return profits 
 
 
 if __name__ == "__main__":

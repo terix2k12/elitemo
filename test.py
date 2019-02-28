@@ -75,18 +75,17 @@ class MyTestSuite(unittest.TestCase):
 
 		self.assertEqual(market.items[0]["demand"], "8898")
 
-#	def test_bestDeal(self):
-#		self.elite.markets = self.assets.loadMarkets()
-#		self.elite.commodities = self.assets.loadCommodities()
-#		station1 = 1
-#		station2 = 2
-#		
-#		market1 = self.elite.loadMarket(station1)
-#		market2 = self.elite.loadMarket(station2)
-#
-#		self.elite.profits(market1, market2)
-#
-#
+	def test_elite_deals(self):
+		self.elite.markets = self.assets.markets()
+		self.elite.commodities = self.assets.loadCommodities()
+		market1 = self.elite.market(1)
+		market2 = self.elite.market(2)
+
+		deals = self.elite.deals(market1, market2)
+
+		self.assertEqual(len(deals), 7)
+
+
 	#def test_findBestCommodityAtStation(self):
 #
 #	#	data = self.inputData()
