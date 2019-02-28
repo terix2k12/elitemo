@@ -1,6 +1,23 @@
 from assets import assets
 from server import server
 
+class market:
+	
+	def __init__(self, marketId):
+		self.id = marketId
+		self.items = []
+
+	def hasCommodity(self, commoditiyId):
+		return self.marketCommodity(commoditiyId)
+
+	def item(self, commoditiyId):
+		for item in self.items:
+			if(int(item["commodity_id"]) == commoditiyId):
+				return item
+
+	def sortFor(self, option):
+		self.items.sort(key=lambda i: int(i[option]), reverse=True)
+
 class elite:
 
 	def findSystem(name):
@@ -41,18 +58,25 @@ class elite:
 
 		return data
 
-	def loadMarket(self, stationId):
-		items = []
-		for item in self.markets:
-			if(int(item["station_id"]) == stationId):
-				items.append(item)
-		return items
+	def market(self, marketId):
+		for market in self.markets:
+			if(market.id == marketId):
+				return market
 
-	def getCommodity(self, commoditiyId):
+	def commodity(self, commoditiyId):
 		for commodity in self.commodities:
 			if(commodity["id"] == commoditiyId):
 				return commodity
 		raise Exception("Commodity not found")
+
+
+
+#	def profits(self, market1, market2):
+#		profits = []
+#		for item in market1:
+#			profit = {}
+#		return profits
+
 
 if __name__ == "__main__":
 	print "Start Elite:Dangerous Mission Optimizer"

@@ -1,5 +1,6 @@
 import json
 import csv
+import elite
 
 class assets:
 
@@ -28,8 +29,21 @@ class assets:
 	def loadStations(self):
 		return self.loadJSON("stations","stations.json")
 
-	def loadMarkets(self):
-		return self.loadCSV("mini-listings.csv")
+	def markets(self):
+		items = self.loadCSV("mini-listings.csv")
+		markets = []
+		for item in items:
+			marketId = int(item["station_id"])
+			market = None
+			for m in markets:
+				if(m.id == marketId):
+					market = m
+					break
+			if not market:
+				market = elite.market(marketId)
+				markets.append(market)
+			market.items.append(item) 
+		return markets
 
 	def loadAssets(self):
 		print "Loading assets: "

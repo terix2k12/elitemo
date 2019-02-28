@@ -31,43 +31,62 @@ class MyTestSuite(unittest.TestCase):
 	
 		self.assertEqual(len(result[u'route']), 2)
 
-	def test_loadAllMarkets(self):
-		self.elite.markets = self.assets.loadMarkets()
+	def test_assets_markets(self):
+		self.elite.markets = self.assets.markets()
+		self.assertEqual(len(self.elite.markets), 2)
 
-		self.assertEqual(len(self.elite.markets), 7)
-
-	def test_loadSpecificMarket(self):
-		self.elite.markets = self.assets.loadMarkets()
-
-		stationId = 1
-
-		market = self.elite.loadMarket(stationId)
-
-		self.assertEqual(len(market), 7)
-
-	def test_loadCommodity(self):
+	def test_assets_commodities(self):
 		self.elite.commodities = self.assets.loadCommodities()
+		self.assertEqual(len(self.elite.commodities), 355)
 
+	def test_elite_market(self):
+		self.elite.markets = self.assets.markets()
+		marketId = 1
+
+		market = self.elite.market(marketId)
+
+		self.assertEqual(len(market.items), 7)
+
+	def test_elite_commodity(self):
+		self.elite.commodities = self.assets.loadCommodities()
 		commodityId = 5	
 		commodityName = "Clothing"
 
-		commodity = self.elite.getCommodity(commodityId)
+		commodity = self.elite.commodity(commodityId)
 
 		self.assertEqual(commodityName, commodity["name"])
 
-	def test_showCommoditiesPerMarket(self):
-		self.elite.markets = self.assets.loadMarkets()
-		self.elite.commodities = self.assets.loadCommodities()
-		
+	def test_market_item(self):
+		self.elite.markets = self.assets.markets()
+		marketId = 1
+		market = self.elite.market(marketId)
+		commodityId = 5	
+
+		commodity = market.item(commodityId)
+
+		self.assertEqual(commodityId, int(commodity["commodity_id"]))
+
+	def test_market_sort(self):
+		self.elite.markets = self.assets.markets()
 		stationId = 1
+		market = self.elite.market(stationId)
 
-		market = self.elite.loadMarket(stationId)
+		market.sortFor("demand")
 
-		print market
+		self.assertEqual(market.items[0]["demand"], "8898")
 
-		self.assertEqual(False, True)
-
-
+#	def test_bestDeal(self):
+#		self.elite.markets = self.assets.loadMarkets()
+#		self.elite.commodities = self.assets.loadCommodities()
+#		station1 = 1
+#		station2 = 2
+#		
+#		market1 = self.elite.loadMarket(station1)
+#		market2 = self.elite.loadMarket(station2)
+#
+#		self.elite.profits(market1, market2)
+#
+#
 	#def test_findBestCommodityAtStation(self):
 #
 #	#	data = self.inputData()
