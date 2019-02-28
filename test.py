@@ -6,6 +6,7 @@ from assets import assets
 class MyTestSuite(unittest.TestCase):
 
 	def setUp(self):
+		self.assets = assets()
 		self.elite = elite()
 
 	def inputData(self):
@@ -38,13 +39,33 @@ class MyTestSuite(unittest.TestCase):
 	def test_loadMarket(self):
 		a = assets()
 		self.elite.markets = a.loadMarkets()
-		self.elite.commodities = a.loadCommodities()
 
 		stationId = 1
 
 		market = self.elite.loadMarket(stationId)
 
 		self.assertEqual(len(market), 7)
+
+	def test_showCommodities(self):
+		self.elite.commodities = self.assets.loadCommodities()
+
+		commodityId = 5	
+		commodityName = "Clothing"
+
+		commodity = self.elite.getCommodity(commodityId)
+
+		self.assertEqual(commodityName, commodity["name"])
+
+	def test_showCommoditiesPerMarket(self):
+		self.elite.markets = self.assets.loadMarkets()
+		self.elite.commodities = a.loadCommodities()
+		
+		stationId = 1
+
+		market = self.elite.loadMarket(stationId)
+
+
+
 
 	#def test_findBestCommodityAtStation(self):
 #
@@ -66,10 +87,4 @@ class MyTestSuite(unittest.TestCase):
 
 
 if __name__ == "__main__":
-	
-
-	# (elite.commodities, elite.systems, elite.stations) = assets().loadAssets()
-
-	
-
 	unittest.main()

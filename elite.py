@@ -48,6 +48,12 @@ class elite:
 				items.append(item)
 		return items
 
+	def getCommodity(self, commoditiyId):
+		for commodity in self.commodities:
+			if(commodity["id"] == commoditiyId):
+				return commodity
+		raise Exception("Commodity not found")
+
 if __name__ == "__main__":
 	print "Start Elite:Dangerous Mission Optimizer"
 
