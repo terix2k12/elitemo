@@ -41,6 +41,13 @@ class elite:
 
 		return data
 
+	def loadMarket(self, stationId):
+		items = []
+		for item in self.markets:
+			if(int(item["station_id"]) == stationId):
+				items.append(item)
+		return items
+
 if __name__ == "__main__":
 	print "Start Elite:Dangerous Mission Optimizer"
 

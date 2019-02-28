@@ -5,6 +5,9 @@ from assets import assets
 
 class MyTestSuite(unittest.TestCase):
 
+	def setUp(self):
+		self.elite = elite()
+
 	def inputData(self):
 		data = {}
 		data['cargohold'] = 288
@@ -14,7 +17,7 @@ class MyTestSuite(unittest.TestCase):
 	
 		step0 = {}
 		step0[u'systemId'] = u'LHS 3447'
-		step0["stationId"] = "Bluford Orbital"
+		step0["stationId"] = 1
 		data[u'route'] = []
 		data[u'route'].append(step0)
 
@@ -23,17 +26,25 @@ class MyTestSuite(unittest.TestCase):
 	def test_simplecompute(self):
 		data = self.inputData()	
 
-		result = elite.compute(data)
+		result = self.elite.compute(data)
 	
 		self.assertEqual(len(result[u'route']), 2)
 
 	def test_loadListing(self):
-		elite.markets = assets().loadMarkets()
+		self.elite.markets = assets().loadMarkets()
 
-		self.assertEqual(len(elite.markets), 7)
+		self.assertEqual(len(self.elite.markets), 7)
 
-	def test_showMostExpensiveName(self):
-		self.assertEqual(len(elite.markets), 7)
+	def test_loadMarket(self):
+		a = assets()
+		self.elite.markets = a.loadMarkets()
+		self.elite.commodities = a.loadCommodities()
+
+		stationId = 1
+
+		market = self.elite.loadMarket(stationId)
+
+		self.assertEqual(len(market), 7)
 
 	#def test_findBestCommodityAtStation(self):
 #
@@ -55,7 +66,7 @@ class MyTestSuite(unittest.TestCase):
 
 
 if __name__ == "__main__":
-	elite = elite()
+	
 
 	# (elite.commodities, elite.systems, elite.stations) = assets().loadAssets()
 
