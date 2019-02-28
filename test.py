@@ -66,6 +66,24 @@ class MyTestSuite(unittest.TestCase):
 
 		self.assertEqual(commodityId, int(commodity["commodity_id"]))
 
+	def test_market_itemTime(self):
+		self.elite.markets = self.assets.markets()
+		market = self.elite.market(1)
+		item = market.item(5)
+
+		utc = item["collected_at"]
+
+		self.assertEqual('2019-02-17 18:07:43', self.elite.time(utc) )
+
+	def test_market_itemAge(self):
+		self.elite.markets = self.assets.markets()
+		market = self.elite.market(1)
+		item = market.item(5)
+
+		utc = item["collected_at"]
+
+		self.assertEqual(4, self.elite.age(utc) )
+
 	def test_market_sort(self):
 		self.elite.markets = self.assets.markets()
 		stationId = 1

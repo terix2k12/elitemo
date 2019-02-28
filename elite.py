@@ -1,5 +1,6 @@
 from assets import assets
 from server import server
+import datetime
 
 class market:
 
@@ -19,6 +20,18 @@ class market:
 		self.items.sort(key=lambda i: int(i[option]), reverse=True)
 
 class elite:
+
+	def time(self, utc):
+		dt = datetime.datetime.fromtimestamp(int(utc))
+		return dt.strftime('%Y-%m-%d %H:%M:%S')
+
+	def age(self, utc):
+		dt = datetime.datetime.fromtimestamp(int(utc))
+		dx = datetime.datetime.now()
+
+		print (dx - dt)
+
+		return 4
 
 	def findSystem(name):
 		for sys in systems:
