@@ -22,7 +22,7 @@ class assets:
 		print str(len(content)) + " parsed"
 		return content
 
-	def loadCommodities(self):
+	def commodities(self):
 		return self.loadJSON("commodities","commodities.json")
 
 	def loadSystems(self):

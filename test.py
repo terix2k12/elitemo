@@ -31,18 +31,6 @@ class MyTestSuite(unittest.TestCase):
 	
 		self.assertEqual(len(result[u'route']), 2)
 
-	def test_assets_markets(self):
-		self.elite.markets = self.assets.markets()
-		self.assertEqual(len(self.elite.markets), 2)
-
-	def test_assets_commodities(self):
-		self.elite.commodities = self.assets.loadCommodities()
-		self.assertEqual(len(self.elite.commodities), 355)
-
-	# TODO category long run?
-	def tes_assets_bigdata(self):
-		self.assets.loadCSV("listings.csv")
-
 	def test_elite_market(self):
 		self.elite.markets = self.assets.markets()
 		marketId = 1
@@ -52,7 +40,7 @@ class MyTestSuite(unittest.TestCase):
 		self.assertEqual(len(market.items), 7)
 
 	def test_elite_commodity(self):
-		self.elite.commodities = self.assets.loadCommodities()
+		self.elite.commodities = self.assets.commodities()
 		commodityId = 5	
 		commodityName = "Clothing"
 
@@ -99,7 +87,7 @@ class MyTestSuite(unittest.TestCase):
 
 	def test_elite_deals(self):
 		self.elite.markets = self.assets.markets()
-		self.elite.commodities = self.assets.loadCommodities()
+		self.elite.commodities = self.assets.commodities()
 		market1 = self.elite.market(1)
 		market2 = self.elite.market(2)
 
