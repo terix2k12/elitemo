@@ -31,14 +31,13 @@ class MyTestSuite(unittest.TestCase):
 	
 		self.assertEqual(len(result[u'route']), 2)
 
-	def test_loadListing(self):
-		self.elite.markets = assets().loadMarkets()
+	def test_loadAllMarkets(self):
+		self.elite.markets = self.assets.loadMarkets()
 
 		self.assertEqual(len(self.elite.markets), 7)
 
-	def test_loadMarket(self):
-		a = assets()
-		self.elite.markets = a.loadMarkets()
+	def test_loadSpecificMarket(self):
+		self.elite.markets = self.assets.loadMarkets()
 
 		stationId = 1
 
@@ -46,7 +45,7 @@ class MyTestSuite(unittest.TestCase):
 
 		self.assertEqual(len(market), 7)
 
-	def test_showCommodities(self):
+	def test_loadCommodity(self):
 		self.elite.commodities = self.assets.loadCommodities()
 
 		commodityId = 5	
@@ -58,13 +57,15 @@ class MyTestSuite(unittest.TestCase):
 
 	def test_showCommoditiesPerMarket(self):
 		self.elite.markets = self.assets.loadMarkets()
-		self.elite.commodities = a.loadCommodities()
+		self.elite.commodities = self.assets.loadCommodities()
 		
 		stationId = 1
 
 		market = self.elite.loadMarket(stationId)
 
+		print market
 
+		self.assertEqual(False, True)
 
 
 	#def test_findBestCommodityAtStation(self):
