@@ -39,6 +39,10 @@ class MyTestSuite(unittest.TestCase):
 		self.elite.commodities = self.assets.loadCommodities()
 		self.assertEqual(len(self.elite.commodities), 355)
 
+	# TODO category long run?
+	def tes_assets_bigdata(self):
+		self.assets.loadCSV("listings.csv")
+
 	def test_elite_market(self):
 		self.elite.markets = self.assets.markets()
 		marketId = 1

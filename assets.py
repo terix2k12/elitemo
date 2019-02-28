@@ -13,11 +13,13 @@ class assets:
 		return j
 
 	def loadCSV(self, path):
+		print "Loading " + path
 		f = open(path, "r")
 		content = []
 		csvrows = csv.DictReader(f, delimiter=",")
 		for row in csvrows:
 			content.append(row)
+		print str(len(content)) + " parsed"
 		return content
 
 	def loadCommodities(self):
