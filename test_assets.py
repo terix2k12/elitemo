@@ -7,6 +7,7 @@ class TestAsset(unittest.TestCase):
 
 	def setUp(self):
 		self.assets = assets()
+		self.assets.listing = "mini-listings.csv"
 
 	def test_assets_markets(self):
 		markets = self.assets.markets()
@@ -18,4 +19,12 @@ class TestAsset(unittest.TestCase):
 
 	# TODO category long run?
 	def tes_assets_bigdata(self):
-		self.assets.loadCSV("listings.csv")
+		rows = self.assets.loadCSV("listings.csv")
+		self.assertEqual(len(rows), 5664189)
+
+	# this is inefficient
+	def tes_assets_bigmarkets(self):
+		self.assets.listing = "listings.csv" 
+		self.assets.markets()
+
+		self.assertEqual(len(markets), 5664189)

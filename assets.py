@@ -32,7 +32,7 @@ class assets:
 		return self.loadJSON("stations","stations.json")
 
 	def markets(self):
-		items = self.loadCSV("mini-listings.csv")
+		items = self.loadCSV(self.listing)
 		markets = []
 		for item in items:
 			marketId = int(item["station_id"])

@@ -7,6 +7,7 @@ class MyTestSuite(unittest.TestCase):
 
 	def setUp(self):
 		self.assets = assets()
+		self.assets.listing = "mini-listings.csv"
 		self.elite = elite()
 
 	def inputData(self):
