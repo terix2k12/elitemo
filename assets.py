@@ -25,7 +25,7 @@ class assets:
 	def commodities(self):
 		return self.loadJSON("commodities","commodities.json")
 
-	def loadSystems(self):
+	def systems(self):
 		return self.loadJSON("systems","systems_populated.json")
 
 	def loadStations(self):

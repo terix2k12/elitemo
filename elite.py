@@ -1,5 +1,6 @@
 from assets import assets
 from server import server
+from numpy import linalg, array
 import datetime
 
 class market:
@@ -33,9 +34,9 @@ class elite:
 
 		return 4
 
-	def findSystem(name):
-		for sys in systems:
-			if( sys[u'name'] == name ):
+	def system(self, name=None, id=None):
+		for sys in self.systems:
+			if( sys[u'name'] == name ) or sys[u'id'] == id:
 				return sys
 	
 	def findSystemLike(self, name):
@@ -57,11 +58,18 @@ class elite:
 	def simple(self, string):
 		s = string.upper().replace(" ", "").replace("+","")
 		return s 
-	
+
 	def distance(self, sys1, sys2):
 		a = array( (sys1[u'x'], sys1[u'y'], sys1[u'z']) );
 		b = array( (sys2[u'x'], sys2[u'y'], sys2[u'z']) );
 		return linalg.norm(a-b);
+
+	def proximity(self, ly, system):
+		proximity = []
+		for sys in self.systems:
+			if(ly > abs(self.distance(sys, system))):
+				proximity.append(sys)
+		return proximity
 
 	def compute(self, data):
 		step1 = {}

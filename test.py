@@ -96,6 +96,31 @@ class MyTestSuite(unittest.TestCase):
 
 		self.assertEqual(len(deals), 7)
 
+	def test_elite_system_name(self):
+		self.elite.systems = self.assets.systems()
+
+		system = self.elite.system(name="Eravate")
+
+		self.assertEqual(system["name"], "Eravate")
+
+	def test_elite_system_id(self):
+		self.elite.systems = self.assets.systems()
+
+		system = self.elite.system(id=123)
+
+		self.assertEqual(system["name"], "25 G. Canis Minoris")		
+
+	def test_elite_proximity(self):
+		self.elite.systems = self.assets.systems()
+
+		system = self.elite.system(name="Eravate")
+		proximity = self.elite.proximity(15, system)
+
+		print [sys["name"] for sys in proximity]
+
+		self.assertEqual(len(proximity), 18)
+
+
 
 	#def test_findBestCommodityAtStation(self):
 #

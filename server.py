@@ -1,6 +1,6 @@
 import time
 import json
-from numpy import linalg, array
+
 from urlparse import urlparse
 import urllib
 import BaseHTTPServer
