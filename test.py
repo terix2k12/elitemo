@@ -86,16 +86,6 @@ class MyTestSuite(unittest.TestCase):
 
 		self.assertEqual(market.items[0]["demand"], "8898")
 
-	def test_elite_deals(self):
-		self.elite.markets = self.assets.markets()
-		self.elite.commodities = self.assets.commodities()
-		market1 = self.elite.market(1)
-		market2 = self.elite.market(2)
-
-		deals = self.elite.deals(market1, market2)
-
-		self.assertEqual(len(deals), 7)
-
 	def test_elite_system_name(self):
 		self.elite.systems = self.assets.systems()
 
@@ -120,6 +110,25 @@ class MyTestSuite(unittest.TestCase):
 
 		self.assertEqual(len(proximity), 18)
 
+	def test_elite_deals(self):
+		self.elite.markets = self.assets.markets()
+		self.elite.commodities = self.assets.commodities()
+		market1 = self.elite.market(1)
+		market2 = self.elite.market(2)
+
+		deals = self.elite.deals(market1, market2)
+
+		self.assertEqual(len(deals), 7)
+
+	def test_elite_deals_eravate(self):
+		self.elite.markets = self.assets.markets()
+		self.elite.commodities = self.assets.commodities()
+		market1 = self.elite.market(1)
+		market2 = self.elite.market(2)
+
+		deals = self.elite.deals(market1, market2)
+
+		self.assertEqual(len(deals), 7)
 
 
 	#def test_findBestCommodityAtStation(self):

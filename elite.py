@@ -80,9 +80,7 @@ class elite:
 		return data
 
 	def market(self, marketId):
-		for market in self.markets:
-			if(market.id == marketId):
-				return market
+		return self.markets[marketId]
 
 	def commodity(self, commoditiyId):
 		for commodity in self.commodities:

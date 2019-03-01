@@ -23,8 +23,8 @@ class TestAsset(unittest.TestCase):
 		self.assertEqual(len(rows), 5664189)
 
 	# this is inefficient
-	def tes_assets_bigmarkets(self):
+	def test_assets_bigmarkets(self):
 		self.assets.listing = "listings.csv" 
-		self.assets.markets()
+		markets = self.assets.markets()
 
-		self.assertEqual(len(markets), 5664189)
+		self.assertEqual(len(markets), 53899)

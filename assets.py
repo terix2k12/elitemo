@@ -33,17 +33,12 @@ class assets:
 
 	def markets(self):
 		items = self.loadCSV(self.listing)
-		markets = []
+		markets = {}
 		for item in items:
 			marketId = int(item["station_id"])
-			market = None
-			for m in markets:
-				if(m.id == marketId):
-					market = m
-					break
-			if not market:
-				market = elite.market(marketId)
-				markets.append(market)
+			if marketId not in markets:
+				markets[marketId] = elite.market(marketId)
+			market = markets[marketId]
 			market.items.append(item) 
 		return markets
 
