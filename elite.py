@@ -99,8 +99,18 @@ class elite:
 
 			profits.append((c, int(item1["buy_price"]) - sellPrice))
 
-		profits.sort(key=lambda (i,p) :p, reverse=True)
+		profits.sort(key=lambda (i,p):p, reverse=True)
 		return profits 
+
+	def bestdeals(self, system, proximity):
+		profits = []
+		market1 = self.market(system["id"])
+		for target in proximity:
+			market2 = self.market(target["id"])
+			(i,p) = self.deals(market1, market2)[0]
+			profits.append( (target["id"],i,p) )
+		profits.sort(key=lambda (t,i,p):p , reverse=True)
+		return profits
 
 
 if __name__ == "__main__":

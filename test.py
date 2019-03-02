@@ -121,12 +121,18 @@ class MyTestSuite(unittest.TestCase):
 		self.assertEqual(len(deals), 7)
 
 	def test_elite_deals_eravate(self):
+		self.assets.listing = "test/best-deal-one-way.csv"
+
 		self.elite.markets = self.assets.markets()
 		self.elite.commodities = self.assets.commodities()
-		market1 = self.elite.market(1)
-		market2 = self.elite.market(2)
+		self.elite.systems = self.assets.systems()
+ 
+		system = self.elite.system("Eravate")
+		proximity = self.elite.proximity(15, system)
 
-		deals = self.elite.deals(market1, market2)
+		deals = self.elite.bestdeals(system, proximity)
+
+		print deals
 
 		self.assertEqual(len(deals), 7)
 
