@@ -1,24 +1,7 @@
-from assets import assets
+import assets
 from server import server
 from numpy import linalg, array
 import datetime
-
-class market:
-
-	def __init__(self, marketId):
-		self.id = marketId
-		self.items = []
-
-#	def hasCommodity(self, commoditiyId):
-#		return self.marketCommodity(commoditiyId)
-
-	def item(self, commoditiyId):
-		for item in self.items:
-			if(int(item["commodity_id"]) == commoditiyId):
-				return item
-
-	def sortFor(self, option):
-		self.items.sort(key=lambda i: int(i[option]), reverse=True)
 
 class elite:
 
@@ -36,24 +19,31 @@ class elite:
 
 	def system(self, name=None, id=None):
 		for sys in self.systems:
-			if( sys[u'name'] == name ) or sys[u'id'] == id:
+			print sys["id"]
+			if( sys[u'name'] == name ) or int(sys[u'id']) == id:
+				return sys
+
+	def station(self, name=None, id=None):
+		for sys in self.stations:
+			print sys["id"]
+			if( sys[u'name'] == name ) or int(sys[u'id']) == id:
 				return sys
 	
-	def findSystemLike(self, name):
-		return self.findNameLike(name, self.systems)
-	
-	def findStationLike(self, name):
-		return self.findNameLike(name, self.stations)
-	
-	def findCommoditiyLike(self, name):
-		return self.findNameLike(name, self.commodities)
-	
-	def findNameLike(self, name, items):
-		result = []
-		for item in items: 
-			if( self.simple(item[u'name']).find(self.simple(name)) >= 0):
-				result.append(item)
-		return result
+#	def findSystemLike(self, name):
+#		return self.findNameLike(name, self.systems)
+#	
+#	def findStationLike(self, name):
+#		return self.findNameLike(name, self.stations)
+#	
+#	def findCommoditiyLike(self, name):
+#		return self.findNameLike(name, self.commodities)
+#	
+#	def findNameLike(self, name, items):
+#		result = []
+#		for item in items: 
+#			if( self.simple(item[u'name']).find(self.simple(name)) >= 0):
+#				result.append(item)
+#		return result
 	
 	def simple(self, string):
 		s = string.upper().replace(" ", "").replace("+","")
@@ -82,6 +72,14 @@ class elite:
 	def market(self, marketId):
 		return self.markets[marketId]
 
+	def item(self, market, commoditiyId):
+		for item in market:
+			if(int(item["commodity_id"])==commoditiyId):
+				return item
+
+	def sortMarket(self, market, option):
+		market.sort(key=lambda i: int(i[option]), reverse=True)
+
 	def commodity(self, commoditiyId):
 		for commodity in self.commodities:
 			if(commodity["id"] == commoditiyId):
@@ -90,10 +88,10 @@ class elite:
 
 	def deals(self, market1, market2):
 		profits = []
-		for item1 in market1.items:
+		for item1 in market1:
 			c = item1["commodity_id"]
 			sellPrice = 0
-			for i2 in market2.items:
+			for i2 in market2:
 				if(i2["commodity_id"] == c):
 					buyPrice = int(i2["sell_price"]) 
 
@@ -116,9 +114,15 @@ class elite:
 if __name__ == "__main__":
 	print "Start Elite:Dangerous Mission Optimizer"
 
+	
+	self.stationsPath = "stations.json"
+	self.systemsPath = "systems_populated.json"
+	self.commoditiesPath = "commodities.json"
+	self.marketsPath = "blubb"
+
 	elite = elite()
 
-	(elite.commodities, elite.systems, elite.stations) = assets().loadAssets()
+	# (elite.commodities, elite.systems, elite.stations) = assets.loadAssets()
 
 	server(elite).runServer()
 

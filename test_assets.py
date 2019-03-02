@@ -18,7 +18,7 @@ class TestAsset(unittest.TestCase):
 
 	def test_assets_stations(self):
 		stations = assets.systems("test/test-stations.json")
-		# print [s["name"] for s in stations]
+		# print [(s["name"],s["id"]) for s in stations]
 		self.assertEqual(len(stations), 20)
 
 	# make this somehow only executed in SLOW tests
