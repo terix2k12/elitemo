@@ -70,6 +70,21 @@ class elite:
 	def market(self, marketId):
 		return self.markets[marketId]
 
+	def children(self, systemId):
+		children = []
+		for station in self.stations:
+			if(int(station["system_id"]) == systemId):
+				children.append(int(station["id"]))
+		return children
+
+	# marketIds within distance "ly" of "system"
+	def proxies(self, ly, system):
+		proxies = []
+		for sys in self.proximity(ly, system):
+			for market in self.children(int(sys["id"])):
+				proxies.append(market)
+		return proxies
+
 	def item(self, market, commoditiyId):
 		for item in market:
 			if(int(item["commodity_id"])==commoditiyId):
@@ -89,24 +104,29 @@ class elite:
 		for item1 in market1:
 			i1Id = item1["commodity_id"]
 			buyPrice = int(item1["buy_price"])
-			sellPrice = 0
-			for item2 in market2:
-				if(item2["commodity_id"] == i1Id):
-					sellPrice = int(item2["sell_price"]) 
+			supply = int(item1["supply"])
+			if(supply > 0):
+				sellPrice = 0
+				for item2 in market2:
+					if(item2["commodity_id"] == i1Id):
+						sellPrice = int(item2["sell_price"])
+						diff =  sellPrice - buyPrice
+						if(diff > 0): 
+							profits.append((i1Id, diff, supply))
 
-			profits.append((i1Id, sellPrice - buyPrice))
-
-		profits.sort(key=lambda (i,p):p, reverse=True)
+		profits.sort(key=lambda (i,t,p):t, reverse=True)
 		return profits 
 
-	def bestdeals(self, system, proximity):
+	def bestdeals(self, marketId, proximity):
 		profits = []
-		market1 = self.market(int(system["id"]))
+		market1 = self.market(marketId)
 		for target in proximity:
-			market2 = self.market(int(target["id"]))
-			(i,p) = self.deals(market1, market2)[0]
-			profits.append( (target["id"],i,p) )
-		profits.sort(key=lambda (t,i,p):p , reverse=True)
+			market2 = self.market(target)
+			deals = self.deals(market1, market2)
+			if(len(deals)):
+				(c,p,s) = deals[0]
+				profits.append( (target,c,p,s) )
+		profits.sort(key=lambda (t,c,p,s):p , reverse=True)
 		return profits
 
 

@@ -83,29 +83,37 @@ class MyTestSuite(unittest.TestCase):
 	def test_elite_proximity(self):
 		system = self.elite.system(name="Eravate")
 		proximity = self.elite.proximity(15, system)
-
-		print([sys["name"] for sys in proximity])
-
+		# print([sys["name"] for sys in proximity])
 		self.assertEqual(len(proximity), 3)
 
-	def test_elite_deals(self):
-		self.elite.markets = assets.markets("test/test-markets.csv")
+	def test_elite_children(self):
+		systemId = 4615 
+		stations = self.elite.children(systemId)
+		self.assertEqual(len(stations), 11)
+
+	def test_elite_proxies(self):
+		system = self.elite.system(id=4615)
+		markets = self.elite.proxies(15, system)
+
+		self.assertEqual(len(markets), 16)
+
+	def test_elite_deals_simple(self):
+		self.elite.markets = assets.markets("test/test-deal-simple.csv")
 		market1 = self.elite.market(1)
 		market2 = self.elite.market(2)
 
 		deals = self.elite.deals(market1, market2)
 
-		self.assertEqual(deals[0], ("9", 1245))
+		self.assertEqual(deals[0], ("7", 673, 200))
 
-	def test_elite_deals_eravate(self):
-		self.elite.markets = assets.markets("test/best-deal-one-way.csv")
+	def test_elite_deals_return(self):
+		self.elite.markets = assets.markets("test/test-deal-return.csv")
+		market = 4615
+		proxies = [1081, 4857]
 
-		system = self.elite.system("Eravate")
-		proximity = self.elite.proximity(15, system)
+		deals = self.elite.bestdeals(market, proxies)
 
-		deals = self.elite.bestdeals(system, proximity)
-
-		self.assertEqual(deals[0], (4615, "6",7519))
+		self.assertEqual(deals[0], (1081, "30", 23, 10))
 
 
 	#def test_findBestCommodityAtStation(self):
