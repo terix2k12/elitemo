@@ -1,48 +1,42 @@
 import json
 import csv
-import elite
 
 class assets:
 
 	def loadJSON(self, name, path):
-		print "Loading " +name+ ":"
+		print "Loading " + name + ":"
 		f = open(path,"r")
 		j = json.load(f)
-		print str(len(j)) + " " + name + " parsed"
+		print str(len(j)) + " " + name + " parsed from JSON"
 		f.close()
 		return j
 
 	def loadCSV(self, path):
-		print "Loading " + path
+		print "Loading " + path + ":"
 		f = open(path, "r")
 		content = []
 		csvrows = csv.DictReader(f, delimiter=",")
 		for row in csvrows:
 			content.append(row)
-		print str(len(content)) + " parsed"
+		print str(len(content)) + " parsed from CSV"
 		return content
 
-	def commodities(self):
-		return self.loadJSON("commodities","commodities.json")
+	def commodities(self, path):
+		return self.loadJSON("commodities", path)
 
-	def systems(self):
-		return self.loadJSON("systems","systems_populated.json")
+	def systems(self, path):
+		return self.loadJSON("systems", path)
 
-	def loadStations(self):
-		return self.loadJSON("stations","stations.json")
+	def stations(self, path):
+		return self.loadJSON("stations", path)
 
-	def markets(self):
-		items = self.loadCSV(self.listing)
+	def markets(self, path):
+		items = self.loadCSV(path)
 		markets = {}
 		for item in items:
 			marketId = int(item["station_id"])
 			if marketId not in markets:
-				markets[marketId] = elite.market(marketId)
+				markets[marketId] = []
 			market = markets[marketId]
-			market.items.append(item) 
+			market.append(item) 
 		return markets
-
-	def loadAssets(self):
-		print "Loading assets: "
-		return (self.loadCommodities(), self.loadSystems(), self.loadStations())
-
