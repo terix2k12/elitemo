@@ -12,9 +12,7 @@ class elite:
 	def age(self, utc):
 		dt = datetime.datetime.fromtimestamp(int(utc))
 		dx = datetime.datetime.now()
-
 		print (dx - dt)
-
 		return 4
 
 	def system(self, name=None, id=None):
@@ -89,22 +87,23 @@ class elite:
 	def deals(self, market1, market2):
 		profits = []
 		for item1 in market1:
-			c = item1["commodity_id"]
+			i1Id = item1["commodity_id"]
+			buyPrice = int(item1["buy_price"])
 			sellPrice = 0
-			for i2 in market2:
-				if(i2["commodity_id"] == c):
-					buyPrice = int(i2["sell_price"]) 
+			for item2 in market2:
+				if(item2["commodity_id"] == i1Id):
+					sellPrice = int(item2["sell_price"]) 
 
-			profits.append((c, int(item1["buy_price"]) - sellPrice))
+			profits.append((i1Id, sellPrice - buyPrice))
 
 		profits.sort(key=lambda (i,p):p, reverse=True)
 		return profits 
 
 	def bestdeals(self, system, proximity):
 		profits = []
-		market1 = self.market(system["id"])
+		market1 = self.market(int(system["id"]))
 		for target in proximity:
-			market2 = self.market(target["id"])
+			market2 = self.market(int(target["id"]))
 			(i,p) = self.deals(market1, market2)[0]
 			profits.append( (target["id"],i,p) )
 		profits.sort(key=lambda (t,i,p):p , reverse=True)

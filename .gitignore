@@ -1,0 +1,5 @@
+*.pyc
+listings.csv
+stations.json
+systems_populated.json
+commodities.json
