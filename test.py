@@ -113,7 +113,7 @@ class MyTestSuite(unittest.TestCase):
 
 		deals = self.elite.bestdeals(market, proxies)
 
-		self.assertEqual(deals[0], (1081, "30", 23, 10))
+		self.assertEqual(deals, (24000, [(4615,"30",50,100),(4857,"12",190,100)] ))
 
 
 	#def test_findBestCommodityAtStation(self):

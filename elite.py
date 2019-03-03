@@ -122,13 +122,18 @@ class elite:
 		market1 = self.market(marketId)
 		for target in proximity:
 			market2 = self.market(target)
-			deals = self.deals(market1, market2)
-			if(len(deals)):
-				(c,p,s) = deals[0]
-				profits.append( (target,c,p,s) )
-		profits.sort(key=lambda (t,c,p,s):p , reverse=True)
-		return profits
+			dealsTo = self.deals(market1, market2)
+			dealsFrom = self.deals(market2, market1)
+			ct = cf = q = p = s = r = 0
+			if(len(dealsTo)):
+				(ct,p,s) = dealsTo[0]
+			if(len(dealsFrom)):
+				(cf,q,r) = dealsFrom[0]
+			e = (p * s) + (q * r)
+			profits.append( (e,[(marketId,ct,p,s),(target,cf,q,r)]) )
 
+		profits.sort(key=lambda (profit,instructions):profit, reverse=True)
+		return profits[0]
 
 if __name__ == "__main__":
 	print "Start Elite:Dangerous Mission Optimizer"
