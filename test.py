@@ -12,17 +12,7 @@ class MyTestSuite(unittest.TestCase):
 		self.elite.stations = assets.stations("test/test-stations.json")
 
 	#def inputData(self):
-#	#	data = {}
-#	#	data['cargohold'] = 288
-#	#	data['landingpad'] = "L"
-#	#	data['jumprange'] = 13
-#	#	data['maxhops'] = 5
-#	#
-#	#	step0 = {}
-#	#	step0[u'systemId'] = u'LHS 3447'
-#	#	step0["stationId"] = 1
-#	#	data[u'route'] = []
-#	#	data[u'route'].append(step0)
+
 #
 #	#	return data
 #
@@ -106,34 +96,60 @@ class MyTestSuite(unittest.TestCase):
 
 		self.assertEqual(deals[0], ("7", 673, 200))
 
-	def test_elite_deals_return(self):
-		self.elite.markets = assets.markets("test/test-deal-return.csv")
+	def test_elite_deals_return1(self):
+		self.elite.markets = assets.markets("test/test-deal-return1.csv")
 		market = 4615
 		proxies = [1081, 4857]
+		deals = self.elite.bestdeals(market, proxies, 20)
+		self.assertEqual(deals, (4800, [(4615,"30",50,20),(4857,"12",190,20)] ))
 
-		deals = self.elite.bestdeals(market, proxies)
+	def test_elite_deals_return2(self):
+		self.elite.markets = assets.markets("test/test-deal-return2.csv")
+		market = 4615
+		proxies = [1081, 4857]
+		deals = self.elite.bestdeals(market, proxies, 100)
+		self.assertEqual(deals, (35490, [(4615, '32', 433, 30), (4615, '30', 50, 70), (4857, '12', 190, 100)]))
 
-		self.assertEqual(deals, (24000, [(4615,"30",50,100),(4857,"12",190,100)] ))
+	def test_elite_deals_return3(self):
+		self.elite.markets = assets.markets("test/test-deal-return3.csv")
+		market = 4615
+		proxies = [1081, 4857]
+		deals = self.elite.bestdeals(market, proxies, 150)
+		self.assertEqual(deals, (9000, [(4615, 0, 0, 0), (1081, '12', 60, 150)]))
 
+	def dtest_elite_deals_real(self):
+		self.elite.markets = assets.markets("listings.csv")
+		self.elite.stations = assets.stations("stations.json")
+		self.elite.systems = assets.systems("systems_populated.json")
 
-	#def test_findBestCommodityAtStation(self):
-#
-#	#	data = self.inputData()
-#
-	#	currentStation = data["route"].
-	
-#	def test_orderPresentCommodities(self):
-#		station = {}
-#		station["name"] = "Merope"
-#		commodities = []
-#
-#		commodities.append(hydrogenFuel)
-#		station["commodities"] = commodities
-#		stations = []
-#		stations.append(station)
-#
-#		pass
+		station = self.elite.findStationLike("Russell Ring")[0]
+		marketId = station["id"]
 
+		system = self.elite.system(id=station["system_id"])
+		proxies = self.elite.proxies(15, system)
+
+		self.assertEqual(len(proxies), 77)
+
+		deals = self.elite.bestdeals(marketId, proxies, 200)
+
+		self.assertEqual(deals, (596000, [(68, '29', 992, 200), (1265, '24', 1988, 200)]))
+
+	def test_compute(self):
+		data = {}
+		data['cargohold'] = 100
+		data['landingpad'] = "L"
+		data['jumprange'] = 13
+		data['maxhops'] = 5
+
+		step0 = {}
+		step0[u'systemId'] = "Eravate"
+		step0["stationId"] = "Russell Ring"
+		data[u'route'] = []
+		data[u'route'].append(step0)
+
+		result = self.elite.compute(data)
+
+		self.assertEqual(result, "hi")
 
 if __name__ == "__main__":
 	unittest.main()

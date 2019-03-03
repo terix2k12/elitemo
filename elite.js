@@ -49,9 +49,20 @@
       steps = document.getElementById('steps');
       var newStep = document.createElement('div');
       newStep.setAttribute("class", "step");
-      newStep.id = "step1";
-      content = "System: " + step.systemId + " Station:" + step.stationId;
-      newStep.innerHTML = content;      
+			// newStep.id = "step1";
+			
+			var content = document.createElement('p');
+			content.innerHTML = "System: " + step.systemId + " Station:" + step.stationId;
+			newStep.appendChild(content);  
+			
+			for( m in step["missions"]){	
+				mission = step["missions"][m]
+				var missionDiv = document.createElement('div');
+				missionDiv.innerHTML = mission["type"] + mission["amount"] + " of " + mission["commodity"] 
+				newStep.appendChild(missionDiv)
+			}
+
+         
       steps.appendChild(newStep);
     }
 
@@ -62,10 +73,10 @@
 			   var resp = this.responseText;
     	   data = JSON.parse(resp);
 
-         step1 = data.route[1]
-
-         addStep(step1)
-
+         for( step in data.route) {
+					addStep(data.route[step])
+				 }		 
+				 
         } else {
     			// document.getElementById("demo").innerHTML = "Error on commodities receive " + this.readyState + " " + this.status;
     		}

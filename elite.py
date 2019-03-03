@@ -17,13 +17,13 @@ class elite:
 
 	def system(self, name=None, id=None):
 		for sys in self.systems:
-			print sys["id"]
+			# print sys["id"]
 			if( sys[u'name'] == name ) or int(sys[u'id']) == id:
 				return sys
 
 	def station(self, name=None, id=None):
 		for sys in self.stations:
-			print sys["id"]
+			# print sys["id"]
 			if( sys[u'name'] == name ) or int(sys[u'id']) == id:
 				return sys
 	
@@ -59,16 +59,10 @@ class elite:
 				proximity.append(sys)
 		return proximity
 
-	def compute(self, data):
-		step1 = {}
-		step1[u'systemId'] = u'LHS 3447'
-		step1["stationId"] = "Bluford Orbital"
-		data[u'route'].append(step1)
-
-		return data
-
 	def market(self, marketId):
-		return self.markets[marketId]
+		if( marketId in self.markets):
+			return self.markets[marketId]
+		return []
 
 	def children(self, systemId):
 		children = []
@@ -117,23 +111,97 @@ class elite:
 		profits.sort(key=lambda (i,t,p):t, reverse=True)
 		return profits 
 
-	def bestdeals(self, marketId, proximity):
+	def bestdeals(self, marketId, proximity, cargohold):
 		profits = []
 		market1 = self.market(marketId)
 		for target in proximity:
 			market2 = self.market(target)
 			dealsTo = self.deals(market1, market2)
 			dealsFrom = self.deals(market2, market1)
-			ct = cf = q = p = s = r = 0
-			if(len(dealsTo)):
-				(ct,p,s) = dealsTo[0]
-			if(len(dealsFrom)):
-				(cf,q,r) = dealsFrom[0]
-			e = (p * s) + (q * r)
-			profits.append( (e,[(marketId,ct,p,s),(target,cf,q,r)]) )
+			ct = cf = q = p = s = r = e = x = z = 0
+			instructions = []
+			for (ct,p,s) in dealsTo:
+				if( x == cargohold):
+					break
+				if( x+s > cargohold):
+					s = cargohold - x
+				instructions.append( (marketId,ct,p,s) )
+				x += s
+				e += (p * s)
+			if not len(dealsTo):
+				instructions.append( (marketId, 0,0,0) )
+ 			for (cf,q,r) in dealsFrom:
+				if( z == cargohold):
+					break
+				if( z+r > cargohold):
+					r = cargohold - z
+				instructions.append( (target,cf,q,r) )
+				z += r
+				e += (q * r)
+			profits.append( (e,instructions) )
+			if not len(dealsFrom):
+				instructions.append( (target, 0,0,0) )
 
 		profits.sort(key=lambda (profit,instructions):profit, reverse=True)
 		return profits[0]
+
+	def compute(self, data):
+		stationName = data["route"][0]["stationId"]
+
+		station = self.findStationLike(stationName)[0]
+		marketId = station["id"]
+		system = self.system(id=station["system_id"])
+
+		proxies = self.proxies(15, system)
+
+		(gross, deals) = self.bestdeals(marketId, proxies, 200)
+
+		step0 = data["route"][0]
+		missions = step0["missions"] = []
+		(t, c, p, s) = deals[0]
+		mission = {}
+		mission["type"] = "pickup"
+		mission["amount"] = s
+		mission["commodity"] = c 
+		missions.append(mission)
+
+		step1 = {}
+		targetStation = self.station(id=t)
+		targetSystem = self.system(id=targetStation["system_id"])
+		step1["systemId"] = targetSystem["name"]
+		step1["stationId"] = targetStation["name"]
+		step1["missions"] = []
+		mission11 = {}
+		mission11["type"] = "drop"
+		mission11["amount"] = s
+		mission11["commodity"] = c		
+		
+		(t, c, p, s) = deals[1]
+		mission12 = {}
+		mission12["type"] = "pickup"
+		mission12["amount"] = s
+		mission12["commodity"] = c
+
+		step1["missions"].append(mission11)
+		step1["missions"].append(mission12)
+
+		data[u'route'].append(step1)
+		
+		step2 = {}
+		targetStation = self.station(id=t)
+		targetSystem = self.system(id=targetStation["system_id"])
+		step2["systemId"] = targetSystem["name"]
+		step2["stationId"] = targetStation["name"]
+		step2["missions"] = []
+		mission2 = {}
+		mission2["type"] = "drop"
+		mission2["amount"] = s
+		mission2["commodity"] = c
+		step2["missions"].append(mission2)	
+		
+		data[u'route'].append(step2)
+
+		return data
 
 if __name__ == "__main__":
 	print "Start Elite:Dangerous Mission Optimizer"
