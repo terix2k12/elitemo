@@ -1,6 +1,6 @@
 import assets
 from server import server
-
+import galaxyfilter
 import entities
 import datetime
 
@@ -74,11 +74,12 @@ class elite:
 	def compute(self, data):
 		stationName = data["route"][0]["stationId"]
 
-		station = self.findStationLike(stationName)[0]
+		station = entities.stationLike(stationName)[0]
 		marketId = station["id"]
-		system = self.system(id=station["system_id"])
+		system = entities.system(id=station["system_id"])
 
-		proxies = self.proxies(15, system)
+		prox = galaxyfilter.stations(system=system, options = {"ly":15} )
+		proxies = [ p["id"] for p in prox] 
 
 		(gross, deals) = self.bestdeals(marketId, proxies, 200)
 
@@ -88,24 +89,24 @@ class elite:
 		mission = {}
 		mission["type"] = "Buy"
 		mission["amount"] = s
-		mission["commodity"] = self.commodity(id=c)["name"] 
+		mission["commodity"] = entities.commodity(id=c1)["name"] 
 		missions.append(mission)
 
 		step1 = {}
 		(t, c2, p, s) = deals[1]
-		targetStation = self.station(id=t)
-		targetSystem = self.system(id=targetStation["system_id"])
+		targetStation = entities.station(id=t)
+		targetSystem = entities.system(id=targetStation["system_id"])
 		step1["system"] = targetSystem["name"]
 		step1["station"] = targetStation["name"]
 		step1["missions"] = []
 		mission11 = {}
 		mission11["type"] = "Sell"
 		mission11["amount"] = s
-		mission11["commodity"] = self.commodity(id=c1)["name"]			
+		mission11["commodity"] = entities.commodity(id=c1)["name"]			
 		mission12 = {}
 		mission12["type"] = "Buy"
 		mission12["amount"] = s
-		mission12["commodity"] = self.commodity(id=c2)["name"]
+		mission12["commodity"] = entities.commodity(id=c2)["name"]
 
 		step1["missions"].append(mission11)
 		step1["missions"].append(mission12)
@@ -115,12 +116,12 @@ class elite:
 		mission2 = {}
 		mission2["type"] = "Sell"
 		mission2["amount"] = s
-		mission2["commodity"] = self.commodity(id=c2)["name"]
+		mission2["commodity"] = entities.commodity(id=c2)["name"]
 
 		(t, c, p, s) = deals[0]
 		step2 = {}
-		targetStation = self.station(id=t)
-		targetSystem = self.system(id=targetStation["system_id"])
+		targetStation = entities.station(id=t)
+		targetSystem = entities.system(id=targetStation["system_id"])
 		step2["system"] = targetSystem["name"]
 		step2["station"] = targetStation["name"]
 		step2["missions"] = []
@@ -136,10 +137,10 @@ if __name__ == "__main__":
 
 	elite = elite()
 
-	elite.stations = assets.stations("stations.json")
-	elite.systems = assets.systems("systems_populated.json")
-	elite.markets = assets.markets("listings.csv")
-	elite.commodities = assets.commodities("commodities.json") 
+	entities.stations = assets.stations("stations.json")
+	entities.systems = assets.systems("systems_populated.json")
+	entities.markets = assets.markets("listings.csv")
+	entities.commodities = assets.commodities("commodities.json") 
 
 	server(elite).runServer()
 

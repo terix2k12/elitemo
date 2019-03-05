@@ -1,5 +1,6 @@
 import time
 import json
+import entities
 
 from urlparse import urlparse
 import urllib
@@ -45,17 +46,17 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 			self.jsonOKHeader()
 			term = parse.query.split("=")[1]
 
-			self.wfile.write(self.ajaxAutocomplete(elite.findCommoditiyLike(term)))
+			self.wfile.write(self.ajaxAutocomplete(entities.commoditiyLike(term)))
 		elif(parse.path == "/systems"):
 			self.jsonOKHeader()
 			term = parse.query.split("=")[1]
 
-			self.wfile.write(self.ajaxAutocomplete(elite.findSystemLike(term)))
+			self.wfile.write(self.ajaxAutocomplete(entities.systemLike(term)))
 		elif(parse.path == "/stations"):
 			self.jsonOKHeader()
 			term = parse.query.split("=")[1]
 
-			self.wfile.write(self.ajaxAutocomplete(elite.findStationLike(term)))
+			self.wfile.write(self.ajaxAutocomplete(entities.stationLike(term)))
 		elif(parse.path == "/compute"):
 			self.jsonOKHeader()
 
