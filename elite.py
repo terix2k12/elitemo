@@ -1,6 +1,7 @@
 import assets
 from server import server
-from numpy import linalg, array
+
+import entities
 import datetime
 
 class elite:
@@ -15,83 +16,8 @@ class elite:
 		print (dx - dt)
 		return 4
 
-	def system(self, name=None, id=None):
-		for sys in self.systems:
-			# print sys["id"]
-			if( sys[u'name'] == name ) or int(sys[u'id']) == id:
-				return sys
-
-	def station(self, name=None, id=None):
-		for sys in self.stations:
-			# print sys["id"]
-			if( sys[u'name'] == name ) or int(sys[u'id']) == id:
-				return sys
-	
-	def findSystemLike(self, name):
-		return self.findNameLike(name, self.systems)
-	
-	def findStationLike(self, name):
-		return self.findNameLike(name, self.stations)
-	
-	def findCommoditiyLike(self, name):
-		return self.findNameLike(name, self.commodities)
-	
-	def findNameLike(self, name, items):
-		result = []
-		for item in items: 
-			if( self.simple(item[u'name']).find(self.simple(name)) >= 0):
-				result.append(item)
-		return result
-	
-	def simple(self, string):
-		s = string.upper().replace(" ", "").replace("+","")
-		return s 
-
-	def distance(self, sys1, sys2):
-		a = array( (sys1[u'x'], sys1[u'y'], sys1[u'z']) );
-		b = array( (sys2[u'x'], sys2[u'y'], sys2[u'z']) );
-		return linalg.norm(a-b);
-
-	def proximity(self, ly, system):
-		proximity = []
-		for sys in self.systems:
-			if(ly > abs(self.distance(sys, system))):
-				proximity.append(sys)
-		return proximity
-
-	def market(self, marketId):
-		if( marketId in self.markets):
-			return self.markets[marketId]
-		return []
-
-	def children(self, systemId):
-		children = []
-		for station in self.stations:
-			if(int(station["system_id"]) == systemId):
-				children.append(int(station["id"]))
-		return children
-
-	# marketIds within distance "ly" of "system"
-	def proxies(self, ly, system):
-		proxies = []
-		for sys in self.proximity(ly, system):
-			for market in self.children(int(sys["id"])):
-				proxies.append(market)
-		return proxies
-
-	def item(self, market, commoditiyId):
-		for item in market:
-			if(int(item["commodity_id"])==commoditiyId):
-				return item
-
 	def sortMarket(self, market, option):
 		market.sort(key=lambda i: int(i[option]), reverse=True)
-
-	def commodity(self, commoditiyId):
-		for commodity in self.commodities:
-			if(commodity["id"] == commoditiyId):
-				return commodity
-		raise Exception("Commodity not found")
 
 	def deals(self, market1, market2):
 		profits = []
@@ -113,9 +39,9 @@ class elite:
 
 	def bestdeals(self, marketId, proximity, cargohold):
 		profits = []
-		market1 = self.market(marketId)
+		market1 = entities.market(marketId)
 		for target in proximity:
-			market2 = self.market(target)
+			market2 = entities.market(target)
 			dealsTo = self.deals(market1, market2)
 			dealsFrom = self.deals(market2, market1)
 			ct = cf = q = p = s = r = e = x = z = 0
@@ -158,45 +84,47 @@ class elite:
 
 		step0 = data["route"][0]
 		missions = step0["missions"] = []
-		(t, c, p, s) = deals[0]
+		(t, c1, p, s) = deals[0]
 		mission = {}
-		mission["type"] = "pickup"
+		mission["type"] = "Buy"
 		mission["amount"] = s
-		mission["commodity"] = c 
+		mission["commodity"] = self.commodity(id=c)["name"] 
 		missions.append(mission)
 
 		step1 = {}
+		(t, c2, p, s) = deals[1]
 		targetStation = self.station(id=t)
 		targetSystem = self.system(id=targetStation["system_id"])
-		step1["systemId"] = targetSystem["name"]
-		step1["stationId"] = targetStation["name"]
+		step1["system"] = targetSystem["name"]
+		step1["station"] = targetStation["name"]
 		step1["missions"] = []
 		mission11 = {}
-		mission11["type"] = "drop"
+		mission11["type"] = "Sell"
 		mission11["amount"] = s
-		mission11["commodity"] = c		
-		
-		(t, c, p, s) = deals[1]
+		mission11["commodity"] = self.commodity(id=c1)["name"]			
 		mission12 = {}
-		mission12["type"] = "pickup"
+		mission12["type"] = "Buy"
 		mission12["amount"] = s
-		mission12["commodity"] = c
+		mission12["commodity"] = self.commodity(id=c2)["name"]
 
 		step1["missions"].append(mission11)
 		step1["missions"].append(mission12)
 
 		data[u'route'].append(step1)
-		
+
+		mission2 = {}
+		mission2["type"] = "Sell"
+		mission2["amount"] = s
+		mission2["commodity"] = self.commodity(id=c2)["name"]
+
+		(t, c, p, s) = deals[0]
 		step2 = {}
 		targetStation = self.station(id=t)
 		targetSystem = self.system(id=targetStation["system_id"])
-		step2["systemId"] = targetSystem["name"]
-		step2["stationId"] = targetStation["name"]
+		step2["system"] = targetSystem["name"]
+		step2["station"] = targetStation["name"]
 		step2["missions"] = []
-		mission2 = {}
-		mission2["type"] = "drop"
-		mission2["amount"] = s
-		mission2["commodity"] = c
+
 		step2["missions"].append(mission2)	
 		
 		data[u'route'].append(step2)

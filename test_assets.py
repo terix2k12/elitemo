@@ -21,7 +21,5 @@ class TestAsset(unittest.TestCase):
 		# print [(s["name"],s["id"]) for s in stations]
 		self.assertEqual(len(stations), 20)
 
-	# make this somehow only executed in SLOW tests
-	def slow_test_assets_markets_big(self):
-		markets = assets.markets("listings.csv")
-		self.assertEqual(len(markets), 53899)
+if __name__ == "__main__":
+	unittest.main()
