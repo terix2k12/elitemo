@@ -12,10 +12,15 @@ def systems(system=None, station=None, options={}):
     return []
 
 def stations(system=None, station=None, options={}):
-	proxies = []
-	for sys in systems(system=system, station=station, options=options):
-		for station in entities.station(system=sys):
-			proxies.append(station)
+    proxies = []
+    for sys in systems(system=system, station=station, options=options):
+        for station in entities.station(system=sys):
+            if(options["landingpad"]):
+                if(options["landingpad"]!=station["max_landing_pad_size"]):
+                    continue
+#            if(options[""])
+            
+            proxies.append(station)
 	return proxies
 
 def distance(sys1, sys2):

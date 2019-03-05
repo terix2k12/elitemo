@@ -78,10 +78,12 @@ class elite:
 		marketId = station["id"]
 		system = entities.system(id=station["system_id"])
 
-		prox = galaxyfilter.stations(system=system, options = {"ly":15} )
+		cargo = int(data["cargohold"])
+		opt = { "ly": int(data["jumprange"]), "cargohold":cargo, "landingpad":data["landingpad"]}
+		prox = galaxyfilter.stations(system=system, options = opt)
 		proxies = [ p["id"] for p in prox] 
 
-		(gross, deals) = self.bestdeals(marketId, proxies, 200)
+		(gross, deals) = self.bestdeals(marketId, proxies, cargo)
 
 		step0 = data["route"][0]
 		missions = step0["missions"] = []

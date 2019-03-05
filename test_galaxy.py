@@ -13,12 +13,14 @@ class TestFilter(unittest.TestCase):
 
     def test_galaxy_stations(self):
         system = entities.system(id=4615)
-        stations = galaxy.stations(system=system, options={"ly":15})
+        opt = { "ly":15, "landingpad":"L" }
+        stations = galaxy.stations(system=system, options=opt)
         self.assertEqual(len(stations), 16)
 
     def test_galaxy_system(self):
         system = entities.system(name="Eravate")
-        proximity = galaxy.systems(system=system, options={"ly":15})
+        opt = { "ly":15 }
+        proximity = galaxy.systems(system=system, options=opt)
         self.assertEqual(len(proximity), 3)
 
 if __name__ == "__main__":
