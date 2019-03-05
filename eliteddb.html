@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
  <head>
+	<meta charset="UTF-8"> 
  	<title>Elite:Dangerous - Mission Optimizer</title>
-
 	<link href="http://code.jquery.com/ui/1.10.3/jquery-ui.css" rel="stylesheet"/>
 	<link href="stylesheet.css" rel="stylesheet"/>
 
@@ -11,7 +11,6 @@
 	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 	<script src="elite.js"></script>
-
  </head>
  <body>
 	<div id="jsCheck">Your browser needs to allow javascript for this page.</div>
@@ -37,24 +36,8 @@
 	Jumprange (laden): <input id="jumprange" name="maxJumprange" type="number"> <br>
 	Max. hops from distance: <input id="maxhops" name="maxHopDistance" type="number"> <br>
 </div>
-<div id="steps">
 
-<div id="step0" class="step">
-	System: <input class="systemsAutocomplete" id="startSystem"/>
-	Station: <input class="stationsAutocomplete" id="startStation"/> <br>
-
-	<div id="missions" class="mission">Missions: <button onClick="addMission(this)" disabled="true" type="button">Add</button> <br/>
-	</div>
-
-	<!--div>Instructions:
-		<ul>
-			<li>Load xy tonnes of z
-			<li>Unload xy tonnes of y
-		</ul>
-	</div-->
-</div>
-
-</div>
+<div id="steps"></div>
 
 	<input type="button" onclick="compute()" value="Compute"/>
 </div>

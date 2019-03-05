@@ -6,15 +6,17 @@
 		var jsCheck = document.getElementById("jsCheck");
 		jsCheck.innerHTML = "";
 
+		addOrUpdateStep(null, 0);
+
 		// Basic jQuery check
 		$(document).ready(function() {
 			$("#jQueryCheck").html("");
 			
-			$('.systemsAutocomplete').autocomplete({
+			$('.systemAutocomplete').autocomplete({
     			source: "http://localhost:8000/systems",
     			minLength: 4
 			});
-			$('.stationsAutocomplete').autocomplete({
+			$('.stationAutocomplete').autocomplete({
     			source: "http://localhost:8000/stations",
     			minLength: 4
 			});
@@ -23,6 +25,23 @@
     			minLength: 3
 			});
 		});
+
+			testStep = {};
+			testStep.system = "Eravate";
+			testStep.station = "Russell Ring";
+			testStep.missions = [];
+			mission1 = {};
+			mission1.commodity = "Beryllium";
+			mission1.type = "Buy";
+			mission1.amount = "76";
+			mission2 = {};
+			mission2.commodity = "Basic Medicines";
+			mission2.type = "Buy";
+			mission2.amount = "12";
+			testStep.missions.push(mission1);
+			testStep.missions.push(mission2);
+
+			
   	}
 
   function removeMission(element) {
@@ -45,25 +64,48 @@
   		element.parentNode.appendChild(newDiv);
   	}
 
-    function addStep(step) {
-      steps = document.getElementById('steps');
-      var newStep = document.createElement('div');
-      newStep.setAttribute("class", "step");
-			// newStep.id = "step1";
-			
-			var content = document.createElement('p');
-			content.innerHTML = "System: " + step.systemId + " Station:" + step.stationId;
-			newStep.appendChild(content);  
-			
-			for( m in step["missions"]){	
-				mission = step["missions"][m]
-				var missionDiv = document.createElement('div');
-				missionDiv.innerHTML = mission["type"] + mission["amount"] + " of " + mission["commodity"] 
-				newStep.appendChild(missionDiv)
-			}
+		function addBox(label) {
+			div = document.createElement('div');
+			p = document.createElement('span');
+			input = document.createElement('input');
+			input.setAttribute("class", label+"Autocomplete");
+			input.id = label;
+			p.innerHTML = label+": ";
+			div.appendChild(p);
+			div.appendChild(input);
 
-         
-      steps.appendChild(newStep);
+			return div;
+		}
+
+    function addOrUpdateStep(stepJson, stepId) {
+			var step = document.getElementById( ("step"+stepId) );
+			if(!step){
+				steps = document.getElementById('steps');
+				step = document.createElement('div');
+				step.id = "step"+stepId;
+				step.setAttribute("class", "step");
+				step.appendChild(addBox("system"))
+				step.appendChild(addBox("station"))
+
+				missions = document.createElement('ul');
+				missions.innerHTML = 'Missions: <button onClick="addMission(this)" disabled="true" type="button">Add</button> <br/>';
+				step.appendChild(missions);
+
+				steps.appendChild(step);
+			}     
+			
+			if(stepJson) {
+				step.childNodes[0].childNodes[1].value = stepJson.system; 
+				step.childNodes[1].childNodes[1].value = stepJson.station;
+				
+				for( m in stepJson.missions){	
+					mission = stepJson.missions[m]
+					var missionDiv = document.createElement('li');
+					missionDiv.innerHTML = mission["type"] + " " + mission["amount"] + " Units of " + mission.commodity 
+					step.childNodes[2].appendChild(missionDiv)
+				}
+
+			}
     }
 
   	function compute() {
@@ -74,7 +116,7 @@
     	   data = JSON.parse(resp);
 
          for( step in data.route) {
-					addStep(data.route[step])
+					addOrUpdateStep(data.route[step], step)
 				 }		 
 				 
         } else {
@@ -89,8 +131,8 @@
       data.maxhops = document.getElementById('maxhops').value;
       data.route = [];
       var step0 = {};
-      step0.systemId = document.getElementById('startSystem').value;
-      step0.stationId = document.getElementById('startStation').value;
+      step0.systemId = document.getElementById('system').value;
+      step0.stationId = document.getElementById('station').value;
       data.route.push( step0 );
 
       // alert(JSON.stringify(data, null, 2));
@@ -108,10 +150,6 @@
 
 		// Great success! All the File APIs are supported. 
 	}
-
-
-
-
  
   function handleFileSelect(evt) {
     var files = evt.target.files; // FileList object
