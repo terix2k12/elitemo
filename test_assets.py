@@ -17,7 +17,7 @@ class TestAsset(unittest.TestCase):
 		self.assertEqual(len(systems), 4)		
 
 	def test_assets_stations(self):
-		stations = assets.systems("test/test-stations.json")
+		stations = assets.stations("test/test-stations.json")
 		# print [(s["name"],s["id"]) for s in stations]
 		self.assertEqual(len(stations), 20)
 

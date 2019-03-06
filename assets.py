@@ -23,10 +23,18 @@ def commodities(path):
 	return loadJSON("commodities", path)
 
 def systems(path):
-	return loadJSON("systems", path)
+	raw = loadJSON("systems", path)
+	systems = {}
+	for r in raw:
+		systems[r["id"]] = r
+	return systems
 
 def stations(path):
-	return loadJSON("stations", path)
+	raw = loadJSON("stations", path)
+	stations = {}
+	for r in raw:
+		stations[r["id"]] = r
+	return stations
 
 def markets(path):
 	items = loadCSV(path)
