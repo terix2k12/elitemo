@@ -1,32 +1,52 @@
-def nameOrId(entity, id, name):
-    if(id):
-        return int(entity["id"]) == int(id)
-    else:
-        return entity["name"] == name
+systemsByName = None
+stationsByName = None
+
+def systemId(name):
+    global systemsByName
+    if not systemsByName:
+        systemsByName = {}
+        for sys in systems.values():
+            systemsByName[sys["name"]] = sys["id"]
+    if name in systemsByName:
+        return systemsByName[name]
+    return 0
 
 def system(name=None, id=None, station=None):
     if(station):
         id = station["system_id"]
-    for sys in systems:
-        if( nameOrId(sys, id, name) ):
-            return sys
+    if(name):
+        id = systemId(name)
+    if id in systems:
+        return systems[int(id)]
     return { "id":0, "name" : "System " + str(id) + "/" + name + " not found."}
 
-def station(name=None, id=None, system=None, station=None):
+def stationId(name):
+    global stationsByName
+    if not stationsByName:
+        stationsByName = {}
+        for sta in stations.values():
+            stationsByName[sta["name"]] = sta["id"]
+    if name in stationsByName:
+        return stationsByName["name"]
+    return 0
+
+# def stationsIn(systemId):
+#     children = []
+#     for station in stations.values:
+#         if( int(station["system_id"]) == int(systemId)):
+#             children.append(station)
+
+def station(name=None, id=None, station=None):
     if(station):
         system = entities.systems(station["system_id"])
-    if(system):
-        id = system["id"]
-        children = []
-        for station in stations:
-            if(int(station["system_id"]) == int(id)):
-                children.append(station)
-        return children
-    else:
-        for sta in stations:
-            if( nameOrId(sta, id, name) ):
-                return sta
-    return { "id":0, "name" : "Station " + str(id) + "/" + name + " not found."}
+#    if(system): system=None,
+#        return stationsIn(system["id"])
+    if(name):
+        id = stationId(name)
+    id = int(id)
+    if id in stations:
+        return stations[id]
+    return { "id":0, "name" : "Station " + str(id) + "/" + str(name) + " not found."}
 
 def market(id):
     if(int(id) in markets):

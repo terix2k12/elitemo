@@ -19,9 +19,8 @@ class TestEntities(unittest.TestCase):
         self.assertEqual(system["name"], "Eravate")
 
     def test_entities_station_id(self):
-        self.assertEqual(5,5)
-#        station = entities.stations(id=232)
-#        self.assertEqual(station["name"], "Sylvester City")
+        station = entities.station(id=232)
+        self.assertEqual(station["name"], "Sylvester City")
 
     def test_entities_station_id_str(self):
          station = entities.station(id="232")
@@ -61,10 +60,10 @@ class TestEntities(unittest.TestCase):
 #        commodity = entities.commodity(market, name="Clothing")
 #        self.assertEqual("123", int(commodity["buy_price"]))
 
-    def test_entities_system_stations_id(self):
-        system = entities.system(id=4615)
-        stations = entities.station(system=system)
-        self.assertEqual(len(stations), 11)
+#    def test_entities_system_stations_id(self):
+#        system = entities.system(id=4615)
+#        stations = entities.station(system=system)
+#        self.assertEqual(len(stations), 11)
 
 # TODO does not work right now
 #    def test_entities_system_stations_name(self):
