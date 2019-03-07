@@ -1,3 +1,20 @@
+Next TODOs:
+    setting correct system when station is set
+    searching only stations in system    
+    server test
+    UI validation
+    UI design
+    1st mission type INTEL
+    2nd mission type SOURCE
+    3rd mission type DELIVER
+
+    vectorbox
+    intermediate stopps
+    landingpad = NONE has to be indicated
+
+    better datastructure, like a cubic thingy of systems or so
+
+
 Interchange API:
 
 cargohold
@@ -5,7 +22,7 @@ landingpad
 jumpdist
 maxjumps
 step0
-    system
-    station
+    system systemId
+    station stationId
     
 
