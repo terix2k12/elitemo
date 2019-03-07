@@ -1,5 +1,6 @@
 systemsByName = None
 stationsByName = None
+stationsBySystemId = None
 
 def systemId(name):
     global systemsByName
@@ -16,9 +17,10 @@ def system(name=None, id=None, station=None):
         id = station["system_id"]
     if(name):
         id = systemId(name)
+    id = int(id)
     if id in systems:
         return systems[int(id)]
-    return { "id":0, "name" : "System " + str(id) + "/" + name + " not found."}
+    return { "id":0, "name" : "System " + str(id) + "/" + str(name) + " not found."}
 
 def stationId(name):
     global stationsByName
@@ -27,20 +29,25 @@ def stationId(name):
         for sta in stations.values():
             stationsByName[sta["name"]] = sta["id"]
     if name in stationsByName:
-        return stationsByName["name"]
+        return stationsByName[name]
     return 0
 
-# def stationsIn(systemId):
-#     children = []
-#     for station in stations.values:
-#         if( int(station["system_id"]) == int(systemId)):
-#             children.append(station)
+def stationsIn(systemId):
+    global stationsBySystemId
+    if not stationsBySystemId:
+        stationsBySystemId = {}
+        for station in stations.values():
+            sid = station["system_id"]
+            if sid not in stationsBySystemId:
+                stationsBySystemId[sid] = []
+            stationsBySystemId[sid].append(station)
+    return stationsBySystemId[systemId]
 
-def station(name=None, id=None, station=None):
+def station(name=None, id=None, system=None, station=None):
     if(station):
         system = entities.systems(station["system_id"])
-#    if(system): system=None,
-#        return stationsIn(system["id"])
+    if(system): 
+        return stationsIn(system["id"])
     if(name):
         id = stationId(name)
     id = int(id)
@@ -56,21 +63,18 @@ def market(id):
 def commodity(market=None, id=None, name=None):
     if(market):
         for item in market:
-            if(id):
-                if(int(item["commodity_id"])==int(id)):
-                    return item
-#            else:
-#                c = commodity(market=None, id=None, name=name)
-#                id = c["id"]
-#                return commodity(market=market, id=id)
+            if name:
+                id = (commodity(name=name))["id"]
+            if(int(item["commodity_id"])==int(id)):
+                return item
     else:
-        for commodity in commodities:
+        for c in commodities:
             if(id):
-                if(int(commodity["id"]) == int(id)):
-                    return commodity
+                if(int(c["id"]) == int(id)):
+                    return c
             if(name):
-                if(commodity["name"] == name):
-                    return commodity
+                if(c["name"] == name):
+                    return c
     return { "id":id, "name":"Commodity "+ str(id) +"/"+ str(name) +" not found" }
 
 def systemLike(name):
