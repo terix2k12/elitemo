@@ -1,7 +1,8 @@
 import unittest
 import elite
+import assets
 
-class MyTestSuite(unittest.TestCase):
+class SlowTests(unittest.TestCase):
 
 	def dtest_elite_deals_real(self):
 		self.elite.markets = assets.markets("listings.csv")
@@ -43,6 +44,14 @@ class MyTestSuite(unittest.TestCase):
 	def slow_test_assets_markets_big(self):
 		markets = assets.markets("listings.csv")
 		self.assertEqual(len(markets), 53899)
+
+	def dtest_assets_systems_big(self):
+		systems = assets.systems("systems_populated.json")
+		self.assertEqual(len(systems), 20551)
+
+	def dtest_assets_stations_big(self):
+		stations = assets.stations("stations.json")
+		self.assertEqual(len(stations), 68598)
 
 if __name__ == "__main__":
 	unittest.main()
