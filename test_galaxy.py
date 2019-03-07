@@ -3,7 +3,7 @@ import assets
 import entities
 import galaxy
 
-class TestFilter(unittest.TestCase):
+class TestGalaxy(unittest.TestCase):
 
     def setUp(self):
         entities.markets = assets.markets("test/test-markets.csv")
@@ -11,17 +11,37 @@ class TestFilter(unittest.TestCase):
         entities.stations = assets.stations("test/test-stations.json")
         entities.commodities = assets.commodities("commodities.json")
 
-    def test_galaxy_stations(self):
+    def test_padsize(self):
+        self.assertEquals(3, galaxy.padsize("L"))
+        self.assertEquals(2, galaxy.padsize("M"))
+        self.assertEquals(1, galaxy.padsize(""))
+
+
+    def test_galaxy_proximity_system(self):
+        system = entities.system(name="Eravate")
+        opt = { "ly" : 15 }
+        systems = galaxy.proximity(system=system, options=opt)
+        self.assertEqual(len(systems), 3)
+
+    def test_galaxy_proximity_station(self):
+        station = entities.station(name="Russell Ring")
+        opt = { "ly" : 15 }
+        systems = galaxy.proximity(station=station, options=opt)
+        self.assertEqual(len(systems), 3)
+
+
+    def test_galaxy_hubs_system(self):
         system = entities.system(id=4615)
-        opt = { "ly":15, "landingpad":"L" }
-        stations = galaxy.stations(system=system, options=opt)
+        opt = { "ly": 15 }
+        stations = galaxy.hubs(system=system, options=opt)
         self.assertEqual(len(stations), 16)
 
-    def test_galaxy_system(self):
-        system = entities.system(name="Eravate")
-        opt = { "ly":15 }
-        proximity = galaxy.systems(system=system, options=opt)
-        self.assertEqual(len(proximity), 3)
+    def test_galaxy_hubs_station(self):
+        station = entities.station(name="Russell Ring")
+        opt = { "ly": 15, "landingpad":"L" }
+        stations = galaxy.hubs(station=station, options=opt)
+        self.assertEqual(len(stations), 9)
+
 
 if __name__ == "__main__":
     unittest.main()

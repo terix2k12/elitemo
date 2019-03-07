@@ -1,29 +1,40 @@
 import entities
 from numpy import linalg, array
 
-def systems(system=None, station=None, options={}):
-    if("ly" in options):
-        ly = options["ly"]
-        proximity = []
-        for sys in entities.systems:
-            if(ly > abs(distance(sys, system))):
-                proximity.append(sys)
-        return proximity
-    return []
+def proximity(system=None, station=None, options={}):
+    if station:
+        system = entities.system(station=station)
+    proximity = []
+    for sys in entities.systems.values():
+        if "ly" in options:
+            if int(options["ly"]) <= distance(sys, system):
+                continue
+        proximity.append(sys)
+    return proximity
 
-def stations(system=None, station=None, options={}):
+def hubs(system=None, station=None, options={}):
+    if station:
+        system = entities.system(station=station)
     proxies = []
-    for sys in systems(system=system, station=station, options=options):
+    for sys in proximity(system=system, station=station, options=options):
         for station in entities.station(system=sys):
-            if(options["landingpad"]):
-                if(options["landingpad"]!=station["max_landing_pad_size"]):
+            if "landingpad" in options:
+                if padsize(options["landingpad"]) > padsize(station["max_landing_pad_size"]):
                     continue
-#            if(options[""])
-            
             proxies.append(station)
-	return proxies
+    return proxies
+
+def padsize(pad):
+    if pad=="None":
+        return 4
+    if pad=="L":
+        return 3
+    if pad=="M":
+        return 2
+    return 1
 
 def distance(sys1, sys2):
-	a = array( (sys1[u'x'], sys1[u'y'], sys1[u'z']) )
-	b = array( (sys2[u'x'], sys2[u'y'], sys2[u'z']) )
-	return linalg.norm(a-b)
+    a = array( (sys1[u'x'], sys1[u'y'], sys1[u'z']) )
+    b = array( (sys2[u'x'], sys2[u'y'], sys2[u'z']) )
+    d = linalg.norm(a-b)
+    return abs(d)
