@@ -13,11 +13,12 @@ def systemId(name):
     return 0
 
 def system(name=None, id=None, station=None):
-    if(station):
+    if station:
         id = station["system_id"]
-    if(name):
+    if name:
         id = systemId(name)
-    id = int(id)
+    if id:
+        id = int(id)
     if id in systems:
         return systems[int(id)]
     return { "id":0, "name" : "System " + str(id) + "/" + str(name) + " not found."}

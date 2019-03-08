@@ -1,4 +1,10 @@
-  window.onload=onWindowLoad;
+window.onload=onWindowLoad;
+
+function getStepSys(element) {
+		parentId = element[0].parentNode.parentNode.id
+		stepId = parentId.slice(-1)
+    return $("#system"+stepId).val()
+}
 
  	function onWindowLoad()
   	{
@@ -12,13 +18,20 @@
 		$(document).ready(function() {
 			$("#jQueryCheck").html("");
 			
+			$('.stationAutocomplete').autocomplete({
+					source: function(request, response ) {
+						$.getJSON(
+							"http://localhost:8000/stations",
+							{ term: request.term,
+								system: getStepSys(this.element) }, 
+							response
+						);
+					},
+    			minLength: 2
+			});
 			$('.systemAutocomplete').autocomplete({
     			source: "http://localhost:8000/systems",
-    			minLength: 4
-			});
-			$('.stationAutocomplete').autocomplete({
-    			source: "http://localhost:8000/stations",
-    			minLength: 4
+    			minLength: 2
 			});
 			$('.commoditiesAutocomplete').autocomplete({
     			source: "http://localhost:8000/commodities",
@@ -64,12 +77,12 @@
   		element.parentNode.appendChild(newDiv);
   	}
 
-		function addBox(label) {
+		function addBox(label, stepId) {
 			div = document.createElement('div');
 			p = document.createElement('span');
 			input = document.createElement('input');
 			input.setAttribute("class", label+"Autocomplete");
-			input.id = label;
+			input.id = label + stepId;
 			p.innerHTML = label+": ";
 			div.appendChild(p);
 			div.appendChild(input);
@@ -84,8 +97,8 @@
 				step = document.createElement('div');
 				step.id = "step"+stepId;
 				step.setAttribute("class", "step");
-				step.appendChild(addBox("system"))
-				step.appendChild(addBox("station"))
+				step.appendChild(addBox("system", stepId))
+				step.appendChild(addBox("station", stepId))
 
 				missions = document.createElement('ul');
 				missions.innerHTML = 'Missions: <button onClick="addMission(this)" disabled="true" type="button">Add</button> <br/>';
