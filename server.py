@@ -16,6 +16,17 @@ PORT_NUMBER = 8000
 
 global elite
 
+def handleSystemQuery(query):
+	term = query.split("=")[1]
+	return ajaxAutocomplete(entities.systemLike(term))
+
+def ajaxAutocomplete(items):
+	response = []
+	for item in items:
+		dic = { "value" : item[u'name'], "data" : item[u'id'] }
+		response.append(dic)
+	return json.dumps(response)
+
 class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):	
 
 	def setCORSHeader(self):
@@ -49,9 +60,9 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 			self.wfile.write(self.ajaxAutocomplete(entities.commoditiyLike(term)))
 		elif(parse.path == "/systems"):
 			self.jsonOKHeader()
-			term = parse.query.split("=")[1]
+			response = handleSystemQuery(parse.query)
+			self.wfile.write(response)
 
-			self.wfile.write(self.ajaxAutocomplete(entities.systemLike(term)))
 		elif(parse.path == "/stations"):
 			self.jsonOKHeader()
 			term = parse.query.split("=")[1]
@@ -75,12 +86,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 			self.wfile.write("Access denied.")
 			pass
 
-	def ajaxAutocomplete(self, items):
-		response = []
-		for item in items:
-			dic = { "value" : item[u'name'], "data" : item[u'id'] }
-			response.append(dic)
-		return json.dumps(response)
+
 
 class server:
 	def __init__(self, nelite):
