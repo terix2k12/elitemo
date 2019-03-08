@@ -1,8 +1,9 @@
 import unittest
 
+import json
+
 import assets
 import entities
-
 import server
 
 class TestServer(unittest.TestCase):
@@ -28,12 +29,22 @@ class TestServer(unittest.TestCase):
     def test_autocomplete_stations(self):
         query = "term=Sylves"
         response = server.handleStationQuery(query)
-        self.assertEqual('[{"data": 232, "value": "Sylvester City"}]', response)
+        self.assertEqual('[{"data": 232, "system": "Eravate", "value": "Sylvester City"}]', response)
 
     def test_autocomplete_stations_broad(self):
         query = "term=eng"
         response = server.handleStationQuery(query)
-        self.assertEqual('[{"data": 47747, "value": "Linenger\'s Inheritance"}, {"data": 406, "value": "Engle Orbital"}]', response)
+        self.assertEqual('[{"data": 47747, "system": "Eravate", "value": "Linenger\'s Inheritance"}, {"data": 406, "system": "Frigaha", "value": "Engle Orbital"}]', response)
+
+    def test_autocomplete_stations_withSys(self):
+        query = "term=ma&system=Eravate"
+        response = server.handleStationQuery(query)
+        self.assertEqual(3, len(json.loads(response)))
+
+    def test_autocomplete_stations_withWrongSys(self):
+        query = "term=Sylv&system=Nixda"
+        response = server.handleStationQuery(query)
+        self.assertEqual('[{"data": 232, "system": "Eravate", "value": "Sylvester City"}]', response)
 
 
     def test_autocomplete_commodity(self):

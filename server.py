@@ -21,17 +21,27 @@ def handleSystemQuery(query):
 	return ajaxAutocomplete(entities.systemLike(term))
 
 def handleStationQuery(query):
-	term = query.split("=")[1]
-	return ajaxAutocomplete(entities.stationLike(term))	
+	f = lambda sta: entities.system(station=sta)["name"]
+	if query.find("&") > 0:
+		term = query.split("&")[0].split("=")[1]
+		systemName = query.split("&")[1].split("=")[1]
+		system = entities.system(name=systemName)
+		if system["id"] != 0:
+			return ajaxAutocomplete(entities.stationLike(term, system=system), [ ("system", f) ])
+	else:	
+		term = query.split("=")[1]
+	return ajaxAutocomplete(entities.stationLike(term), [ ("system", f)])	
 
 def handleCommodityQuery(query):
 	term = query.split("=")[1]
 	return ajaxAutocomplete(entities.commodityLike(term))	
 
-def ajaxAutocomplete(items):
+def ajaxAutocomplete(items, additional=[]):
 	response = []
 	for item in items:
 		dic = { "value" : item[u'name'], "data" : item[u'id'] }
+		for (k, f) in additional:
+			dic[k] = f(item)
 		response.append(dic)
 	return json.dumps(response)
 

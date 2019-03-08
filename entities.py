@@ -41,7 +41,9 @@ def stationsIn(systemId):
             if sid not in stationsBySystemId:
                 stationsBySystemId[sid] = []
             stationsBySystemId[sid].append(station)
-    return stationsBySystemId[systemId]
+    if systemId in stationsBySystemId:
+        return stationsBySystemId[systemId]
+    return []
 
 def station(name=None, id=None, system=None, station=None):
     if(station):
@@ -80,8 +82,11 @@ def commodity(market=None, id=None, name=None):
 def systemLike(name):
     return nameLike(name, systems.values())
 
-def stationLike(name):
-    return nameLike(name, stations.values())
+def stationLike(name, system=None):
+    if system:
+        return nameLike(name, station(system=system))
+    else:
+        return nameLike(name, stations.values())
 
 def commodityLike(name):
     return nameLike(name, commodities)
