@@ -24,7 +24,7 @@ def handleStationQuery(query):
 	f = lambda sta: sta["name"] + " (" + entities.system(station=sta)["name"] + ")"
 	if query.find("&") > 0:
 		term = query.split("&")[0].split("=")[1]
-		systemName = query.split("&")[1].split("=")[1]
+		systemName = (query.split("&")[1].split("=")[1]).replace("+"," ")
 		system = entities.system(name=systemName)
 		if system["id"] != 0:
 			return ajaxAutocomplete(entities.stationLike(term, system=system), [ ("label", f) ])
@@ -107,11 +107,6 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 
 class server:
-	def __init__(self, nelite):
-		global elite 
-		elite = nelite
-		pass
-
 	def runServer(self):
 		print "Starting Server"
 

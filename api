@@ -4,6 +4,8 @@ Next TODOs:
     server test
     UI validation
     UI design
+    auto download latest jsons
+    use zeromq
     1st mission type INTEL
     2nd mission type SOURCE
     3rd mission type DELIVER

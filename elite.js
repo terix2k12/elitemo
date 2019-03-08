@@ -34,8 +34,7 @@ function getStepSys(element) {
 								system: getStepSys(this.element) }, 
 							response
 						);
-					},
-    			minLength: 2
+					}
 			});
 			$('.systemAutocomplete').autocomplete({
     			source: "http://localhost:8000/systems",
@@ -61,8 +60,6 @@ function getStepSys(element) {
 			mission2.amount = "12";
 			testStep.missions.push(mission1);
 			testStep.missions.push(mission2);
-
-			
   	}
 
   function removeMission(element) {
@@ -152,8 +149,8 @@ function getStepSys(element) {
       data.maxhops = document.getElementById('maxhops').value;
       data.route = [];
       var step0 = {};
-      step0.systemId = document.getElementById('system').value;
-      step0.stationId = document.getElementById('station').value;
+      step0.systemId = document.getElementById('system0').value;
+      step0.stationId = document.getElementById('station0').value;
       data.route.push( step0 );
 
       // alert(JSON.stringify(data, null, 2));
