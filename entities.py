@@ -78,12 +78,12 @@ def commodity(market=None, id=None, name=None):
     return { "id":id, "name":"Commodity "+ str(id) +"/"+ str(name) +" not found" }
 
 def systemLike(name):
-    return nameLike(name, systems)
+    return nameLike(name, systems.values())
 
 def stationLike(name):
-    return nameLike(name, stations)
+    return nameLike(name, stations.values())
 
-def commoditiyLike(name):
+def commodityLike(name):
     return nameLike(name, commodities)
 
 def nameLike(name, items):

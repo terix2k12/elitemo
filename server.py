@@ -20,6 +20,14 @@ def handleSystemQuery(query):
 	term = query.split("=")[1]
 	return ajaxAutocomplete(entities.systemLike(term))
 
+def handleStationQuery(query):
+	term = query.split("=")[1]
+	return ajaxAutocomplete(entities.stationLike(term))	
+
+def handleCommodityQuery(query):
+	term = query.split("=")[1]
+	return ajaxAutocomplete(entities.commodityLike(term))	
+
 def ajaxAutocomplete(items):
 	response = []
 	for item in items:
@@ -55,9 +63,9 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 		if(parse.path == "/commodities"):
 			self.jsonOKHeader()
-			term = parse.query.split("=")[1]
+			response = handleCommodityQuery(parse.query)
+			self.wfile.write(response)
 
-			self.wfile.write(self.ajaxAutocomplete(entities.commoditiyLike(term)))
 		elif(parse.path == "/systems"):
 			self.jsonOKHeader()
 			response = handleSystemQuery(parse.query)
@@ -65,9 +73,9 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 		elif(parse.path == "/stations"):
 			self.jsonOKHeader()
-			term = parse.query.split("=")[1]
+			response = handleStationQuery(parse.query)
+			self.wfile.write(response)
 
-			self.wfile.write(self.ajaxAutocomplete(entities.stationLike(term)))
 		elif(parse.path == "/compute"):
 			self.jsonOKHeader()
 

@@ -25,5 +25,27 @@ class TestServer(unittest.TestCase):
         self.assertEqual('[{"data": 99, "value": "Eridiani"}, {"data": 4615, "value": "Eravate"}]', response)
 
 
+    def test_autocomplete_stations(self):
+        query = "term=Sylves"
+        response = server.handleStationQuery(query)
+        self.assertEqual('[{"data": 232, "value": "Sylvester City"}]', response)
+
+    def test_autocomplete_stations_broad(self):
+        query = "term=eng"
+        response = server.handleStationQuery(query)
+        self.assertEqual('[{"data": 47747, "value": "Linenger\'s Inheritance"}, {"data": 406, "value": "Engle Orbital"}]', response)
+
+
+    def test_autocomplete_commodity(self):
+        query = "term=Clothing"
+        response = server.handleCommodityQuery(query)
+        self.assertEqual('[{"data": 232, "value": "Sylvester City"}]', response)
+
+    def test_autocomplete_commodity(self):
+        query = "term=l weapo"
+        response = server.handleCommodityQuery(query)
+        self.assertEqual('[{"data": 78, "value": "Non-lethal Weapons"}, {"data": 79, "value": "Personal Weapons"}]', response)
+
+
 if __name__ == "__main__":
     unittest.main()
