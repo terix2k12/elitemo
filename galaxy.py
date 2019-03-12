@@ -21,6 +21,15 @@ def hubs(system=None, station=None, options={}):
             if "landingpad" in options:
                 if padsize(options["landingpad"]) > padsize(station["max_landing_pad_size"]):
                     continue
+            if "hasCommodity" in options:
+                isPresent = False
+                for (commodityId, amount) in options["hasCommodity"]:
+                    market = entities.market(station["id"])
+                    for item in market:
+                        if int(item["supply"]) >= amount and commodityId == int(item["commodity_id"]):
+                            isPresent = True
+                if not isPresent:
+                    continue
             proxies.append(station)
     return proxies
 
