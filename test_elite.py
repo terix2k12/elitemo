@@ -61,6 +61,9 @@ class TestElite(unittest.TestCase):
 		deals = elite.bestdealReturn(market, proxies, 150)
 		self.assertEqual(deals, (9000, [(4615, 0, 0, 0), (1081, '12', 60, 150)]))
 
+#	def test_elite_missions_intel(self):
+
+
 	def computeSetup(self):
 		entities.systems = assets.systems("test/test-systems2.json")
 		entities.stations = assets.stations("test/test-stations2.json")

@@ -15,6 +15,10 @@ class TestServer(unittest.TestCase):
         entities.stations = assets.stations("test/test-stations.json")
         entities.commodities = assets.commodities("commodities.json")
 
+    def test_autocomplete_missions(self):
+        query = "term=In"
+        response = server.handleMissionQuery(query)
+        self.assertEqual('[{"data": 1, "value": "Intel"}]', response)
 
     def test_autocomplete_systems(self):
         query = "term=Erav"

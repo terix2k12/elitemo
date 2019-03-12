@@ -16,6 +16,10 @@ PORT_NUMBER = 8000
 
 global elite
 
+def handleMissionQuery(query):
+	term = query.split("=")[1]
+	return ajaxAutocomplete(entities.missionLike(term))
+
 def handleSystemQuery(query):
 	term = query.split("=")[1]
 	return ajaxAutocomplete(entities.systemLike(term))
@@ -84,6 +88,11 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 		elif(parse.path == "/stations"):
 			self.jsonOKHeader()
 			response = handleStationQuery(parse.query)
+			self.wfile.write(response)
+
+		elif(parse.path == "/missions"):
+			self.jsonOKHeader()
+			response = handleMissionQuery(parse.query)
 			self.wfile.write(response)
 
 		elif(parse.path == "/compute"):

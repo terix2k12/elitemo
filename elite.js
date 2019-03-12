@@ -62,25 +62,62 @@ function getStepSys(element) {
 			testStep.missions.push(mission2);
   	}
 
-  function removeMission(element) {
-    var oldDiv = element.parentNode;
-		oldDiv.parentNode.removeChild(oldDiv);		
+function removeMission(element) {
+	var oldDiv = element.parentNode;
+	oldDiv.parentNode.removeChild(oldDiv);
+}
+
+function missiontype(element) {
+	if(element.value == "Delivery") {
+		var commodity = document.createElement('span');
+		commodity.innerHTML = "commodity"
+		element.parentNode.append( commodity );
+		var amount = document.createElement('span');
+		amount.innerHTML = "amount"
+		element.parentNode.append( amount );
+		var destination = document.createElement('span');
+		destination.innerHTML = "destination";
+		element.parentNode.append( destination );
+		var reward = document.createElement('span');
+		reward.innerHTML= "reward";
+		element.parentNode.append( reward );
 	}
-  	
-  	function addMission(element) {
-  		var newMission = "";
-		newMission += "	Type: <input list='missionDropdown' name='mission'>";
-		newMission += "	Commodity: <input class='commoditiesAutocomplete' name='commodity'>";
-		newMission += "	Target: <input class='stationsAutocomplete' name='commodity'/>";
-		newMission += "	Tonnes: <input name='tonnes'/>";
+}
+
+function addMission(element) {
+	var newMissionDiv = document.createElement('div');
+	element.parentNode.appendChild(newMissionDiv);
+
+	var removeButton = document.createElement('button');
+	removeButton.innerHTML = "Remove";
+	// removeButton.setAttribute("type", "button");
+	removeButton.setAttribute("onClick", "removeMission(this)");
+	newMissionDiv.append( removeButton );
+
+	//div = document.createElement('div');
+	//p = document.createElement('span');
+	input = document.createElement('input');
+	// input.setAttribute("class", "missionsAutocomplete");
+	input.setAttribute("onChange", "missiontype(this)");
+	$(input).autocomplete({
+		source: "http://localhost:8000/missions"
+	});
+	// input.id = label + stepId;
+	//p.innerHTML = label+": ";
+	//div.appendChild(p);
+	//div.appendChild(input);
+
+	newMissionDiv.append( input ); // use Validation API
+
+	var newMission = "";
+	  // newMission += "	Type: <input list='missionDropdown' name='mission'>";
+		// newMission += "	Commodity: <input class='commoditiesAutocomplete' name='commodity'>";
+		// newMission += "	Target: <input class='stationsAutocomplete' name='commodity'/>";
+		// newMission += "	Tonnes: <input name='tonnes'/>";
 		// newMission += "	Value: <input />";
-		newMission += " <button onClick='removeMission(this)' type='button'>Remove</button>";
+	
 
-		var newDiv = document.createElement('div');
-		newDiv.innerHTML = newMission;
-
-  		element.parentNode.appendChild(newDiv);
-  	}
+}
 
 		function addBox(label, stepId) {
 			div = document.createElement('div');
@@ -106,7 +143,7 @@ function getStepSys(element) {
 				step.appendChild(addBox("station", stepId))
 
 				missions = document.createElement('ul');
-				missions.innerHTML = 'Missions: <button onClick="addMission(this)" disabled="true" type="button">Add</button> <br/>';
+				missions.innerHTML = 'Missions: <button onClick="addMission(this)" type="button">Add</button> <br/>';
 				step.appendChild(missions);
 
 				steps.appendChild(step);

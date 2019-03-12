@@ -2,6 +2,8 @@ systemsByName = None
 stationsByName = None
 stationsBySystemId = None
 
+missions = [ { "id":1, "name":"Intel" }, { "id":2, "name":"Delivery" }, { "id":3, "name":"Source" } ]
+
 # This reset is needed for Unittests, because different mock data set on the module will interfere with each other.
 def reset():
     global systemsByName
@@ -91,6 +93,9 @@ def commodity(market=None, id=None, name=None):
 
 def systemLike(name):
     return nameLike(name, systems.values())
+
+def missionLike(name):
+    return nameLike(name, missions)
 
 def stationLike(name, system=None):
     if system:
