@@ -2,7 +2,11 @@ systemsByName = None
 stationsByName = None
 stationsBySystemId = None
 
+# This reset is needed for Unittests, because different mock data set on the module will interfere with each other.
 def reset():
+    global systemsByName
+    global stationsByName
+    global stationsBySystemId
     systemsByName = None
     stationsByName = None
     stationsBySystemId = None
