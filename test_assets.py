@@ -5,7 +5,7 @@ class TestAsset(unittest.TestCase):
 
 	def test_assets_markets(self):
 		markets = assets.markets("test/test-markets.csv")
-		self.assertEqual(len(markets), 2)
+		self.assertEqual(len(markets), 4)
 
 	def test_assets_commodities(self):
 		commodities = assets.commodities("commodities.json")

@@ -5,6 +5,7 @@ import entities
 class TestEntities(unittest.TestCase):
 
     def setUp(self):
+        entities.reset()
         entities.markets = assets.markets("test/test-markets.csv")
         entities.systems = assets.systems("test/test-systems.json")
         entities.stations = assets.stations("test/test-stations.json")

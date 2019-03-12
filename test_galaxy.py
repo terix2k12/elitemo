@@ -51,6 +51,8 @@ class TestGalaxy(unittest.TestCase):
         self.assertEqual(len(stations), 1)
         self.assertEqual(stations[0]["name"], "Green Keep")
 
+    # TODO expected more than one commodity
+
 
 if __name__ == "__main__":
     unittest.main()
