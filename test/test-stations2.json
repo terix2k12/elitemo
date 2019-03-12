@@ -1,0 +1,7 @@
+[
+    {"id":1, "name":"Russell Ring", "system_id":1, "max_landing_pad_size":"L" },
+    {"id":2, "name":"Lawson Orbital", "system_id":2, "max_landing_pad_size":"L" },
+    {"id":3, "name":"Bluford Station", "system_id":1, "max_landing_pad_size":"L" },
+    {"id":4, "name":"Chomsky Terminal", "system_id":2, "max_landing_pad_size":"L" },
+    {"id":5, "name":"Hutton Orbital", "system_id":3, "max_landing_pad_size":"L" }
+]
