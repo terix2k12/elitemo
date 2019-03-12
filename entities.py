@@ -2,6 +2,11 @@ systemsByName = None
 stationsByName = None
 stationsBySystemId = None
 
+def reset():
+    systemsByName = None
+    stationsByName = None
+    stationsBySystemId = None
+
 def systemId(name):
     global systemsByName
     if not systemsByName:

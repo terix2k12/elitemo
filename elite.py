@@ -5,7 +5,6 @@ from server import server
 import galaxy
 import entities
 
-
 def time(utc):
 	dt = datetime.datetime.fromtimestamp(int(utc))
 	return dt.strftime('%Y-%m-%d %H:%M:%S')
@@ -36,7 +35,27 @@ def deals(market1, market2):
 	profits.sort(key=lambda (i,t,p):t, reverse=True)
 	return profits 
 
-def bestdeals(marketId, proximity, cargohold):
+def bestdealOneway(marketId, proximity, cargohold):
+	profits = []
+	market1 = entities.market(marketId)
+	for target in proximity:
+		market2 = entities.market(target)
+		dealsTo = deals(market1, market2)
+		ct = p = s = x = e = 0
+		instructions = []
+		for (ct,p,s) in dealsTo:
+			if( x == cargohold):
+				break
+			if( x+s > cargohold):
+				s = cargohold - x
+			instructions.append( (marketId,target,ct,p*s,s) )
+			x += s
+			e += (p * s)
+		profits.append( (e,instructions) )
+	profits.sort(key=lambda (profit,instructions):profit, reverse=True)
+	return profits[0]
+
+def bestdealReturn(marketId, proximity, cargohold):
 	profits = []
 	market1 = entities.market(marketId)
 	for target in proximity:
@@ -68,69 +87,141 @@ def bestdeals(marketId, proximity, cargohold):
 			instructions.append( (target, 0,0,0) )
 
 	profits.sort(key=lambda (profit,instructions):profit, reverse=True)
-	return profits[0]
+	return profits[0]	
 
 def compute(data):
-	stationName = data["route"][0]["station"]
-	station = entities.station(name=stationName)
-	marketId = station["id"]
-	system = entities.system(id=station["system_id"])
-
-	cargo = 999
+	# Get basic parameters
+	cargo = 0
 	if "cargohold" in data:
 		if data["cargohold"]:
 			cargo = int(data["cargohold"])
-	ly = 100
+	ly = 50
 	if "jumprange" in data:
 		if data["jumprange"]:
 			ly = int(data["jumprange"])
-	
-	opt = { "ly": ly, "cargohold":cargo, "landingpad":data["landingpad"]}
-	prox = galaxy.hubs(system=system, options=opt)
-	proxies = [ p["id"] for p in prox] 
-	(gross, deals) = bestdeals(marketId, proxies, cargo)
-	step0 = data["route"][0]
-	missions = step0["missions"] = []
-	(t, c1, p, s) = deals[0]
-	mission = {}
-	mission["type"] = "Buy"
-	mission["amount"] = s
-	mission["commodity"] = entities.commodity(id=c1)["name"] 
-	missions.append(mission)
+	pad = "S"
+	if "landingpad" in data:
+		if data["landingpad"]:
+			pad = data["landingpad"]
+	maxstopps = 1
+	if "maxstopps" in data:
+		if data["maxstopps"]:
+			maxstopps = data["maxstopps"]
 
-	step1 = {}
-	(t, c2, p, s) = deals[1]
-	targetStation = entities.station(id=t)
-	targetSystem = entities.system(id=targetStation["system_id"])
-	step1["system"] = targetSystem["name"]
-	step1["station"] = targetStation["name"]
-	step1["missions"] = []
-	mission11 = {}
-	mission11["type"] = "Sell"
-	mission11["amount"] = s
-	mission11["commodity"] = entities.commodity(id=c1)["name"]			
-	mission12 = {}
-	mission12["type"] = "Buy"
-	mission12["amount"] = s
-	mission12["commodity"] = entities.commodity(id=c2)["name"]
-	step1["missions"].append(mission11)
-	step1["missions"].append(mission12)
-	data[u'route'].append(step1)
-	mission2 = {}
-	mission2["type"] = "Sell"
-	mission2["amount"] = s
-	mission2["commodity"] = entities.commodity(id=c2)["name"]
-	(t, c, p, s) = deals[0]
-	step2 = {}
-	targetStation = entities.station(id=t)
-	targetSystem = entities.system(id=targetStation["system_id"])
-	step2["system"] = targetSystem["name"]
-	step2["station"] = targetStation["name"]
-	step2["missions"] = []
-	step2["missions"].append(mission2)	
-	
-	data[u'route'].append(step2)
-	return data
+	opt = { "ly": ly, "cargohold": cargo, "landingpad": pad}
+
+	steps = data["steps"]
+
+	# Easy cases:
+
+	if maxstopps == 1:
+	# Case 1 - max 1 stopp
+		step0 = steps[0]
+		system = entities.system(name=step0["system"])
+
+		# Case 1.2 : 1 Stopp, 1 mission
+		if "missions" in step0:
+			for mission in step0["missions"]:
+				
+				# Case 1.2.a deliver mission
+				if mission["type"] == "deliver":
+					destination = mission["destination"]
+					startDeliveryStation = entities.station(name=destination)
+					prox = galaxy.hubs(station=startDeliveryStation, options=opt) 
+					proxies = [ p["id"] for p in prox]
+					(profit, instructions) = bestdealOneway(startDeliveryStation["id"], proxies, cargo)
+					inst = step0["instructions"] = []
+					inst.append( instructions )
+					return data
+
+				# Case 1.2.b single source mission
+				if mission["type"] == "source":
+					# suffice mission params:
+					forcecomm = entities.commodity(name=mission["commodity"])
+					sourceCommodityId = int(forcecomm["id"])
+					sourceAmount = mission["amount"]
+					reward = mission["reward"]
+					opt["hasCommodity"] = [ (sourceCommodityId, sourceAmount) ]
+					originStation = entities.station(name=step0["station"])
+					prox = galaxy.hubs(station=originStation, options=opt) 
+					sourceStationId = prox[0]["id"]
+					# TODO choose best proxies out of these
+					# TODO consider return payload too 
+					# proxies = [ p["id"] for p in prox]	
+					# (profit, instructions) = bestdealOneway(station["id"], proxies, cargo)
+					# (marketId,target,ct,cx,s) = instructions
+					inst = step0["instructions"] = []
+					inst.append( (sourceStationId, originStation["id"], sourceCommodityId, reward, sourceAmount) )
+					return data
+
+		# Case 1.1.a : 1 Stopp, no start, no target, no mission
+		if not "station" in step0:
+			prox = galaxy.hubs(system=system, options=opt)
+			proxies = [ p["id"] for p in prox] 
+			trades = []
+			for proxy in proxies:
+				(profit, instructions) = bestdealOneway(proxy, proxies, cargo)
+				trades.append( (profit, instructions) )
+			trades.sort(key=lambda (p,i):p, reverse=True)
+			(profit, instructions) = trades[0]
+		# Case 1.1.b : 1 stopp, start, no target, no mission
+		else:
+			station = entities.station(name=step0["station"])
+			prox = galaxy.hubs(system=system, options=opt)
+			proxies = [ p["id"] for p in prox] 
+			(profit, instructions) = bestdealOneway(station["id"], proxies, cargo)
+		
+		if not profit:
+			return data
+		inst = step0["instructions"] = []
+		inst.append( instructions )
+		return data
+
+		# Case 1.2 : 1 Jump, explicit commodity
+
+		# Case 1.3 : "deliver" 1 Jump, explicit target
+
+	# Case 2 - max 2 stopps
+
+
+#	for step in steps:
+#		if maxjumps <= len(steps)-1:
+#			break
+#
+#		if step["complete"]:
+#			continue
+#		
+#		if not len(step["missions"]):
+#
+#			if not gross:
+#				step["complete"] = 1
+#				continue
+#
+#			missions = step["missions"] = []
+#			(t, c1, p, s) = deals[0]
+#			mission = {}
+#			mission["type"] = "Buy"
+#			mission["amount"] = s
+#			mission["commodity"] = entities.commodity(id=c1)["name"] 
+#			missions.append(mission)
+#
+#			step1 = {}
+#			(t, c2, p, s) = deals[1]
+#			targetStation = entities.station(id=t)
+#			targetSystem = entities.system(id=targetStation["system_id"])
+#			step1["system"] = targetSystem["name"]
+#			step1["station"] = targetStation["name"]
+#			step1["missions"] = []
+#			mission11 = {}
+#			mission11["type"] = "Sell"
+#			mission11["amount"] = s
+#			mission11["commodity"] = entities.commodity(id=c1)["name"]			
+#			step1["missions"].append(mission11)
+#			step1["complete"] = 1	
+#
+#			data[u'route'].append(step1)
+#	return data
+
 
 if __name__ == "__main__":
 	print "Start Elite:Dangerous Mission Optimizer"
