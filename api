@@ -1,20 +1,28 @@
-Next TODOs:
+TODOs:
     setting correct system when station is set
-    searching only stations in system    
+    searching only stations in system, sonderfaelle commas hochstrings etc plus    
     server test
     UI validation
     UI design
     auto download latest jsons
     use zeromq
-    1st mission type INTEL
-    2nd mission type SOURCE
-    3rd mission type DELIVER
+    station muss nicht vorgegeben werden
 
+    TESTS are crashing when using DISCOVER
+
+    1st mission type INTEL
+    3rd mission type DELIVER
+    
+    2nd mission type SOURCE
+    
+    make it a python3 project
+    display ls from center in autocomplete
     vectorbox
     intermediate stopps
     landingpad = NONE has to be indicated
-
     better datastructure, like a cubic thingy of systems or so
+
+
 
 
 Interchange API:
@@ -24,7 +32,16 @@ landingpad
 jumpdist
 maxjumps
 step0
-    system systemId
-    station stationId
+    system 
+    station 
+
+    cargohold:
+    (stationFromId, stationToId, commodityId, reward, price, supply)
+
+Examples
+    Intel: (Bluford, Intel, 20000, 0, 0)
+    Deliver: (Bluford, Clothing, 200, 180, 10) -> buyPriceTotal = 1800 & sellPricePiece =  200
     
+
+MissionTypes: Source, Deliver, Transit/Intel, Trade,     
 
