@@ -18,14 +18,19 @@ function getStepSys(element) {
   	{
   		// Basic JS check
 		var jsCheck = document.getElementById("jsCheck");
-		jsCheck.innerHTML = "";
+		jsCheck.parentNode.removeChild(jsCheck);
 
 		addOrUpdateStep(null, 0);
 
 		// Basic jQuery check
 		$(document).ready(function() {
-			$("#jQueryCheck").html("");
-			
+		$("#jQueryCheck").html("");	
+			var jsCheck = document.getElementById("jQueryCheck");
+			if(jsCheck.innerHTML == "") {
+				jsCheck.parentNode.removeChild(jsCheck);
+			}
+	 
+
 			$('.stationAutocomplete').autocomplete({
 					source: function(request, response ) {
 						$.getJSON(
@@ -36,30 +41,22 @@ function getStepSys(element) {
 						);
 					}
 			});
-			$('.systemAutocomplete').autocomplete({
-    			source: "http://localhost:8000/systems",
-    			minLength: 2
-			});
-			$('.commoditiesAutocomplete').autocomplete({
-    			source: "http://localhost:8000/commodities",
-    			minLength: 3
-			});
 		});
 
-			testStep = {};
-			testStep.system = "Eravate";
-			testStep.station = "Russell Ring";
-			testStep.missions = [];
-			mission1 = {};
-			mission1.commodity = "Beryllium";
-			mission1.type = "Buy";
-			mission1.amount = "76";
-			mission2 = {};
-			mission2.commodity = "Basic Medicines";
-			mission2.type = "Buy";
-			mission2.amount = "12";
-			testStep.missions.push(mission1);
-			testStep.missions.push(mission2);
+//			testStep = {};
+//			testStep.system = "Eravate";
+//			testStep.station = "Russell Ring";
+//			testStep.missions = [];
+//			mission1 = {};
+//			mission1.commodity = "Beryllium";
+//			mission1.type = "Buy";
+//			mission1.amount = "76";
+//			mission2 = {};
+//			mission2.commodity = "Basic Medicines";
+//			mission2.type = "Buy";
+//			mission2.amount = "12";
+//			testStep.missions.push(mission1);
+//			testStep.missions.push(mission2);
   	}
 
 function removeMission(element) {
@@ -68,86 +65,93 @@ function removeMission(element) {
 }
 
 function missiontype(element) {
+	parent = element.parentNode;
 	if(element.value == "Delivery") {
-		var commodity = document.createElement('span');
-		commodity.innerHTML = "commodity"
-		element.parentNode.append( commodity );
-		var amount = document.createElement('span');
-		amount.innerHTML = "amount"
-		element.parentNode.append( amount );
-		var destination = document.createElement('span');
-		destination.innerHTML = "destination";
-		element.parentNode.append( destination );
-		var reward = document.createElement('span');
-		reward.innerHTML= "reward";
-		element.parentNode.append( reward );
+		addAutocompleteBox(parent, "commodity", "Commodity", "comodities");
+		addBox(parent, "missionXYamoun", "Amount");
+		addAutocompleteBox(parent, "targetSystem", "System", "systems");
+		addAutocompleteBox(parent, "targetStation", "Station", "stations");
+		addBox(parent, "reward", "Reward");
 	}
+	if(element.value == "Intel") {
+		addAutocompleteBox(parent, "system", "System", "systems");
+		addAutocompleteBox(parent, "station", "Station", "stations");
+		addBox(parent, "reward", "Reward");
+	}
+	if(element.value == "Source") {
+		addAutocompleteBox(parent, "commodity", "Commodity", "comodities");
+		addBox(parent, "amount", "Amount");
+		addBox(parent, "reward", "Reward");
+	}	
 }
 
-function addMission(element) {
-	var newMissionDiv = document.createElement('div');
-	element.parentNode.appendChild(newMissionDiv);
+function addMission(stepId) {
+	 step = document.getElementById("step"+stepId);
+	 missions = childById(step, "missions");
+	 missionId = missions.childElementCount;
+
+	mission = document.createElement('li');
+	mission.id = "step" + stepId + "mission" + missionId;
+	mission.setAttribute("class", "mission");
+	missions.appendChild(mission);
 
 	var removeButton = document.createElement('button');
 	removeButton.innerHTML = "Remove";
-	// removeButton.setAttribute("type", "button");
 	removeButton.setAttribute("onClick", "removeMission(this)");
-	newMissionDiv.append( removeButton );
+	mission.append( removeButton );
 
-	//div = document.createElement('div');
-	//p = document.createElement('span');
-	input = document.createElement('input');
-	// input.setAttribute("class", "missionsAutocomplete");
-	input.setAttribute("onChange", "missiontype(this)");
-	$(input).autocomplete({
-		source: "http://localhost:8000/missions"
-	});
-	// input.id = label + stepId;
-	//p.innerHTML = label+": ";
-	//div.appendChild(p);
-	//div.appendChild(input);
-
-	newMissionDiv.append( input ); // use Validation API
-
-	var newMission = "";
-	  // newMission += "	Type: <input list='missionDropdown' name='mission'>";
-		// newMission += "	Commodity: <input class='commoditiesAutocomplete' name='commodity'>";
-		// newMission += "	Target: <input class='stationsAutocomplete' name='commodity'/>";
-		// newMission += "	Tonnes: <input name='tonnes'/>";
-		// newMission += "	Value: <input />";
-	
-
+	input = addAutocompleteBox(mission, "type", "Task", "missions");
+	input.setAttribute("onChange", "missiontype(this)");  // use Validation API
 }
 
-		function addBox(label, stepId) {
-			div = document.createElement('div');
-			p = document.createElement('span');
-			input = document.createElement('input');
-			input.setAttribute("class", label+"Autocomplete");
-			input.id = label + stepId;
-			p.innerHTML = label+": ";
-			div.appendChild(p);
-			div.appendChild(input);
+function addBox(parent, id, label) {
+	span = document.createElement('span');
+	span.innerHTML = label+": ";
+	parent.appendChild(span);
 
-			return div;
-		}
+	input = document.createElement('input');
+	input.id = id;
+	parent.appendChild(input);
+}
 
-    function addOrUpdateStep(stepJson, stepId) {
-			var step = document.getElementById( ("step"+stepId) );
-			if(!step){
-				steps = document.getElementById('steps');
-				step = document.createElement('div');
-				step.id = "step"+stepId;
-				step.setAttribute("class", "step");
-				step.appendChild(addBox("system", stepId))
-				step.appendChild(addBox("station", stepId))
+function addAutocompleteBox(parent, id, label, mode) {
+	span = document.createElement('span');
+	span.innerHTML = label+": ";
+	parent.appendChild(span);
+
+	input = document.createElement('input');
+	input.id = id;
+	parent.appendChild(input);
+
+	$(input).autocomplete({
+		source: "http://localhost:8000/" + mode
+	});
+
+	return input;
+}
+
+function addOrUpdateStep(stepJson, stepId) {
+	var step = document.getElementById("step"+stepId);
+	if(!step) {
+		step = document.createElement('div');
+		step.id = "step"+stepId;
+		step.setAttribute("class", "step");
+		
+		addAutocompleteBox(step, "system", "System", "systems");
+		addAutocompleteBox(step, "station", "Station", "stations");
+
+				addButton = document.createElement("button");
+				addButton.setAttribute("onClick", "addMission("+stepId+")");
+				addButton.innerHTML = "Add Mission";
+				step.appendChild(addButton);
 
 				missions = document.createElement('ul');
-				missions.innerHTML = 'Missions: <button onClick="addMission(this)" type="button">Add</button> <br/>';
+				missions.id = "missions";
 				step.appendChild(missions);
 
+				steps = document.getElementById('steps');
 				steps.appendChild(step);
-			}     
+			}
 			
 			if(stepJson) {
 				step.childNodes[0].childNodes[1].value = stepJson.system; 
@@ -163,7 +167,7 @@ function addMission(element) {
 			}
     }
 
-  	function compute() {
+function compute() {
  		   var xhttp = new XMLHttpRequest();
  		   xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -184,70 +188,48 @@ function addMission(element) {
       data.landingpad = document.getElementById('landingpad').value;
       data.jumprange = document.getElementById('jumprange').value;
       data.maxhops = document.getElementById('maxhops').value;
-      data.route = [];
-      var step0 = {};
-      step0.systemId = document.getElementById('system0').value;
-      step0.stationId = document.getElementById('station0').value;
-      data.route.push( step0 );
+			data.steps = [];
+			
+			for( stepDiv of document.getElementById('steps').childNodes) {
+				var step = {};
+				step.system = childById(stepDiv, "system").value;
+				step.station = childById(stepDiv, "station").value;
+				step.missions = [];
+				for( missionLi of childById(stepDiv, "missions").childNodes) {
+					var mission = {};
+					mission.type = childById(missionLi, "type").value;
+					if(mission.type == "Intel") {
+						mission.reward = childById(missionLi, "reward").value;
+						mission.station = childById(missionLi, "station").value;
+						mission.system = childById(missionLi, "system").value;
+					}
+					if(mission.type == "Delivery") {
+						mission.reward = childById(missionLi, "reward").value;
+						mission.station = childById(missionLi, "station").value;
+						mission.system = childById(missionLi, "system").value;
+						mission.amount = childById(missionLi, "amount").value;
+						mission.commodity = childById(missionLi, "commodity").value;
+					}
+					if(mission.type == "Source") {
+						mission.reward = childById(missionLi, "reward").value;
+						mission.amount = childById(missionLi, "amount").value;
+						mission.commodity = childById(missionLi, "commodity").value;
+					}
+					step.missions.push(mission);
+				}
+				data.steps.push( step );
+			}
 
-      // alert(JSON.stringify(data, null, 2));
+     // alert(JSON.stringify(data, null, 2));
 
   		xhttp.open("GET", "http://localhost:8000/compute?data=" + JSON.stringify(data));
   		xhttp.send();  		
-  	}
-
-	function testApi() {
-		// Check for the various File API support.
-		
-		if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
-  			alert('The File APIs are not fully supported in this browser.');
 		}
-
-		// Great success! All the File APIs are supported. 
+		
+function childById(parent, id) {
+	for( child of parent.childNodes ) {
+		if(child.id == id) {
+			return child;
+		}
 	}
- 
-  function handleFileSelect(evt) {
-    var files = evt.target.files; // FileList object
-
-    // files is a FileList of File objects. List some properties.
-    var output = [];
-    for (var i = 0, f; f = files[i]; i++) {
-      output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
-                  f.size, ' bytes, last modified: ',
-                  f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
-                  '</li>');
- 
-
-	var reader = new FileReader();
-    reader.onload = function() {
- 	     
- 		var output = [];
- 	 
-       var jsonArray = JSON.parse(reader.result );//
-
-        var firstElem = jsonArray[0];
-        // output.push(firstElem.id);
-       for( x in jsonArray) {
-       	output.push( jsonArray[x].name );
-  
-         }
-
-			document.getElementById('contents').innerHTML = output.join('');
-       	};
-
- 	reader.readAsText(f);
- }
-    
-
-    document.getElementById('list').innerHTML = '<ul>' + output.join(' # ') + '</ul>';
-  }
-
-  function foo(){
-  	
-// get most recent from https://eddb.io/archive/v6/stations.json
-
-// infos about FileReader https://www.html5rocks.com/en/tutorials/file/dndfiles/
-
-
- document.getElementById('files').addEventListener('change', handleFileSelect, false);
-  }
+}

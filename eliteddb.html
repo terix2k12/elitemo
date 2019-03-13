@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
- <head>
+<head>
 	<meta charset="UTF-8"> 
  	<title>Elite:Dangerous - Mission Optimizer</title>
 	<link href="http://code.jquery.com/ui/1.10.3/jquery-ui.css" rel="stylesheet"/>
@@ -11,38 +11,21 @@
 	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 	<script src="elite.js"></script>
- </head>
- <body>
+</head>
+<body>
 	<div id="jsCheck">Your browser needs to allow javascript for this page.</div>
 	<div id="jQueryCheck">Your browser needs to allow jQuery for this page.</div>
- 	<h1>Elite:Dangerous - Mission Optimizer</h1>
-
-<div>
-<datalist id="landingpadDropdown">
-	<option value="S"></option>
-	<option value="M"></option>
-	<option value="L"></option>	
-</datalist>
-<datalist id="missionDropdown">	
-	<option value="Delivery"></option>
-	<option value="Source"></option>
-	<option value="Intel"></option>
-</datalist>
-
-<div id="general">
-	<h2>General</h2>
-	Cargohold: <input id="cargohold" name="maxCargohold" type="number"> <br>
-	Landingpad size: <input id="landingpad" list="landingpadDropdown" name="landingpad"> <br>
-	Jumprange (laden): <input id="jumprange" name="maxJumprange" type="number"> <br>
-	Max. hops from distance: <input id="maxhops" name="maxHopDistance" type="number"> <br>
-</div>
-
-<div id="steps"></div>
-
-	<input type="button" onclick="compute()" value="Compute"/>
-</div>
-
-
-  <div id="imprint">CMDR terix &copy; 2019</div>
- </body>
+	<h1>Elite:Dangerous - Mission Optimizer</h1>
+	<div>
+		<div id="general">
+			Cargohold: <input id="cargohold" name="maxCargohold" type="number"> <br>
+			min. landingpad : <input id="landingpad" list="landingpadDropdown" name="landingpad"> <br>
+			Jumprange (laden): <input id="jumprange" name="maxJumprange" type="number"> <br>
+			Max. hops: <input id="maxhops" name="maxHopDistance" type="number"> <br>
+		</div>
+		<div id="steps"></div>
+		<input type="button" onclick="compute()" value="Compute"/>
+	</div>
+	<div id="imprint">CMDR terix &copy; 2019</div>
+</body>
 </html>

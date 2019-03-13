@@ -3,6 +3,10 @@ div {
 	margin: 5px;
 }
 
+input {
+	width: 120px;
+}
+
 #general {
 	border : 1px solid black;
 }
@@ -18,4 +22,8 @@ div {
 .ui-menu-item {
 	border: 1px solid red;
 	border-color : #f00;
+}
+
+.mission {
+	border: 1px solid grey;
 }
