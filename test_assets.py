@@ -21,5 +21,13 @@ class TestAsset(unittest.TestCase):
 		# print [(s["name"],s["id"]) for s in stations]
 		self.assertEqual(len(stations), 20)
 
+	def slow_test_assets_doPickle(self):
+		stations = assets.stations("stations.json")
+		assets.doPickle(stations, "stations.pic")
+
+	def slow_test_assets_unPickle(self):
+		stations = assets.unPickle("stations.pic")
+		self.assertEqual(len(stations), 68598)
+
 if __name__ == "__main__":
 	unittest.main()

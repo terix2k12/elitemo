@@ -1,5 +1,6 @@
 import json
 import csv
+import cPickle
 
 def loadJSON(name, path):
 	print "Loading " + name + ":"
@@ -17,6 +18,7 @@ def loadCSV(path):
 	for row in csvrows:
 		content.append(row)
 	print str(len(content)) + " parsed from CSV"
+	f.close()
 	return content
 
 def commodities(path):
@@ -46,3 +48,14 @@ def markets(path):
 		market = markets[marketId]
 		market.append(item) 
 	return markets
+
+def doPickle(dict, filename): 
+	outfile = open(filename,'wb')
+	cPickle.dump(dict,outfile)
+	outfile.close()
+
+def unPickle(filename):
+	infile = open(filename,'rb')
+	dict = cPickle.load(infile)
+	infile.close()
+	return dict
