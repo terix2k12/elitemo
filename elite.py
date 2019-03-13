@@ -118,10 +118,20 @@ def compute(data):
 	# Case 1 - max 1 stopp
 		step0 = steps[0]
 		system = entities.system(name=step0["system"])
+		inst = step0["instructions"] = []
 
 		# Case 1.2 : 1 Stopp, 1 mission
 		if "missions" in step0:
 			for mission in step0["missions"]:
+
+				if mission["type"] == "Intel":
+					station = entities.station(name=step0["station"])
+					targetSystem = entities.system(name= mission["system"] )
+					targetStation = entities.station(name= mission["station"] )
+					reward = mission["reward"]
+					instructions =  (station["name"], targetStation["name"], 0, reward, 0, 0)
+					inst.append( instructions )
+					return data
 				
 				# Case 1.2.a deliver mission
 				if mission["type"] == "deliver":

@@ -61,9 +61,6 @@ class TestElite(unittest.TestCase):
 		deals = elite.bestdealReturn(market, proxies, 150)
 		self.assertEqual(deals, (9000, [(4615, 0, 0, 0), (1081, '12', 60, 150)]))
 
-#	def test_elite_missions_intel(self):
-
-
 	def computeSetup(self):
 		entities.systems = assets.systems("test/test-systems2.json")
 		entities.stations = assets.stations("test/test-stations2.json")
@@ -133,6 +130,20 @@ class TestElite(unittest.TestCase):
 		expected = {'cargohold': 16, 'steps': [{'station': 'Russell Ring', 'system': 'Eravate', 'missions': [{'amount': 8, 'reward': 120000, 'type': 'source', 'commodity': 'Clothing'}], 'instructions': [(3, 1, 5, 120000, 8)]}]}
 		self.assertEqual(result, expected)
 
+	def test_compute_i(self):
+		self.computeSetup()
+		step0 = self.data["steps"][0]
+		step0["system"] = "Eravate"
+		step0["station"] = "Russell Ring"
+		mission1 = {}
+		mission1["type"] = "Intel"
+		mission1["system"] = "Frigaha" 
+		mission1["station"] = "Lawson Orbital"
+		mission1["reward"] = 120000
+		step0["missions"] = [mission1]
+		result = elite.compute(self.data)
+		expected = {'cargohold': 16, 'steps': [{'station': 'Russell Ring', 'system': 'Eravate', 'missions': [{'station': 'Lawson Orbital', 'type': 'Intel', 'system': 'Frigaha', 'reward': 120000}], 'instructions': [(u'Russell Ring', u'Lawson Orbital', 0, 120000, 0, 0)]}]}
+		self.assertEqual(result, expected)
 
 if __name__ == "__main__":
 	unittest.main()
