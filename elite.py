@@ -35,6 +35,25 @@ def deals(market1, market2):
 	profits.sort(key=lambda (i,t,p):t, reverse=True)
 	return profits 
 
+def dealOneTrip(marketId, targetId, cargohold):
+	profits = []
+	market1 = entities.market(marketId)
+	market2 = entities.market(targetId)
+
+	dealsTo = deals(market1, market2)
+	ct = p = s = x = e = 0
+	instructions = []
+	for (ct,p,s) in dealsTo:
+		if( x == cargohold):
+			break
+		if( x+s > cargohold):
+			s = cargohold - x
+		instructions.append( (marketId,target,ct,p*s,s) )
+		x += s
+		e += (p * s)
+
+	return instructions
+
 def bestdealOneway(marketId, proximity, cargohold):
 	profits = []
 	market1 = entities.market(marketId)
@@ -115,12 +134,11 @@ def compute(data):
 	# Easy cases:
 
 	if maxstopps == 1:
-	# Case 1 - max 1 stopp
+
 		step0 = steps[0]
 		system = entities.system(name=step0["system"])
 		inst = step0["instructions"] = []
 
-		# Case 1.2 : 1 Stopp, 1 mission
 		if "missions" in step0:
 			for mission in step0["missions"]:
 
@@ -129,63 +147,84 @@ def compute(data):
 					targetSystem = entities.system(name= mission["system"] )
 					targetStation = entities.station(name= mission["station"] )
 					reward = mission["reward"]
+					
 					instructions =  (station["name"], targetStation["name"], 0, reward, 0, 0)
 					inst.append( instructions )
+
+					deals = dealOneTrip(station["id"], targetStation["id"], cargo)
+					for deal in deals:
+						inst.append( deal )
+
 					return data
 				
-				# Case 1.2.a deliver mission
-				if mission["type"] == "deliver":
-					destination = mission["destination"]
-					startDeliveryStation = entities.station(name=destination)
-					prox = galaxy.hubs(station=startDeliveryStation, options=opt) 
-					proxies = [ p["id"] for p in prox]
-					(profit, instructions) = bestdealOneway(startDeliveryStation["id"], proxies, cargo)
-					inst = step0["instructions"] = []
-					inst.append( instructions )
-					return data
-
-				# Case 1.2.b single source mission
-				if mission["type"] == "source":
-					# suffice mission params:
-					forcecomm = entities.commodity(name=mission["commodity"])
-					sourceCommodityId = int(forcecomm["id"])
-					sourceAmount = mission["amount"]
+				if mission["type"] == "Delivery":
+					station = entities.station(name=step0["station"])
+					targetSystem = entities.system(name= mission["system"] )
+					targetStation = entities.station(name= mission["station"] )
 					reward = mission["reward"]
-					opt["hasCommodity"] = [ (sourceCommodityId, sourceAmount) ]
+					commodity = entities.commodity(name=mission["commodity"])
+					amount = int(mission["amount"])
+
+					instructions =  (station["name"], targetStation["name"], commodity["id"], reward, 0, amount)
+					inst.append( instructions )
+
+					deals = dealOneTrip(station["id"], targetStation["id"], cargo-amount)
+					for deal in deals:
+						inst.append( deal )
+
+				if mission["type"] == "Source":
+					commodity = entities.commodity(name=mission["commodity"])
+					sourceCommodityId = int(commodity["id"])
+					sourceAmount = int(mission["amount"])
+					reward = mission["reward"]
 					originStation = entities.station(name=step0["station"])
+
+					opt["commodity"] = [ (sourceCommodityId, sourceAmount) ]
 					prox = galaxy.hubs(station=originStation, options=opt) 
 					sourceStationId = prox[0]["id"]
-					# TODO choose best proxies out of these
-					# TODO consider return payload too 
-					# proxies = [ p["id"] for p in prox]	
-					# (profit, instructions) = bestdealOneway(station["id"], proxies, cargo)
-					# (marketId,target,ct,cx,s) = instructions
-					inst = step0["instructions"] = []
-					inst.append( (sourceStationId, originStation["id"], sourceCommodityId, reward, sourceAmount) )
-					return data
 
-		# Case 1.1.a : 1 Stopp, no start, no target, no mission
-		if not "station" in step0:
-			prox = galaxy.hubs(system=system, options=opt)
-			proxies = [ p["id"] for p in prox] 
-			trades = []
-			for proxy in proxies:
-				(profit, instructions) = bestdealOneway(proxy, proxies, cargo)
-				trades.append( (profit, instructions) )
-			trades.sort(key=lambda (p,i):p, reverse=True)
-			(profit, instructions) = trades[0]
-		# Case 1.1.b : 1 stopp, start, no target, no mission
-		else:
-			station = entities.station(name=step0["station"])
-			prox = galaxy.hubs(system=system, options=opt)
-			proxies = [ p["id"] for p in prox] 
-			(profit, instructions) = bestdealOneway(station["id"], proxies, cargo)
-		
-		if not profit:
-			return data
-		inst = step0["instructions"] = []
-		inst.append( instructions )
-		return data
+					deals = dealOneTrip(originStation["id"], sourceStationId, cargo)
+					if len(deals):
+						for deal in deals:
+							inst.append( deal )
+					else:
+						instructions =  (originStation["name"], prox[0]["name"], commodity["name"], 0, 0, 0)
+						inst.append( instructions )
+
+	return data
+
+
+#					# TODO choose best proxies out of these
+#					# TODO consider return payload too 
+#					# proxies = [ p["id"] for p in prox]	
+#					# (profit, instructions) = bestdealOneway(station["id"], proxies, cargo)
+#					# (marketId,target,ct,cx,s) = instructions
+#					inst = step0["instructions"] = []
+#					inst.append( (sourceStationId, originStation["id"], sourceCommodityId, reward, sourceAmount) )
+#					return data
+#
+#		# Case 1.1.a : 1 Stopp, no start, no target, no mission
+#		if not "station" in step0:
+#			prox = galaxy.hubs(system=system, options=opt)
+#			proxies = [ p["id"] for p in prox] 
+#			trades = []
+#			for proxy in proxies:
+#				(profit, instructions) = bestdealOneway(proxy, proxies, cargo)
+#				trades.append( (profit, instructions) )
+#			trades.sort(key=lambda (p,i):p, reverse=True)
+#			(profit, instructions) = trades[0]
+#		# Case 1.1.b : 1 stopp, start, no target, no mission
+#		else:
+#			station = entities.station(name=step0["station"])
+#			prox = galaxy.hubs(system=system, options=opt)
+#			proxies = [ p["id"] for p in prox] 
+#			(profit, instructions) = bestdealOneway(station["id"], proxies, cargo)
+#		
+#		if not profit:
+#			return data
+#		inst = step0["instructions"] = []
+#		inst.append( instructions )
+#		return data
 
 		# Case 1.2 : 1 Jump, explicit commodity
 

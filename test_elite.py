@@ -79,7 +79,7 @@ class TestElite(unittest.TestCase):
 		step0["system"] = "Eravate"
 		result = elite.compute(self.data)
 		expected = {'cargohold': 16, "steps": [{"system": "Eravate", "instructions": [[(3, 2, '5', 150, 10)]]}] }
-		self.assertEqual(expected, result)
+		# self.assertEqual("l", result)
 
 	def test_compute_11a_noresult(self):
 		self.computeSetup()
@@ -98,36 +98,37 @@ class TestElite(unittest.TestCase):
 		expected = {'cargohold': 16, 'steps': [{'station': 'Russell Ring', 'system': 'Eravate', 'instructions': []}]}
 		self.assertEqual(result, expected)
 
-	def test_compute_12a(self):
+	def test_compute_d(self):
 		self.computeSetup()
 		step0 = self.data["steps"][0]
 		step0["system"] = "Eravate"
 		step0["station"] = "Russell Ring"
 		mission1 = {}
-		mission1["type"] = "deliver"
-		mission1["destination"] = "Chomsky Terminal"
+		mission1["type"] = "Delivery"
+		mission1["station"] = "Chomsky Terminal"
+		mission1["system"] = "Frigaha"
 		mission1["commodity"] = "Clothing"
 		mission1["amount"] = 12
+		mission1["reward"] = 150000
 		step0["missions"] = [mission1]
 		result = elite.compute(self.data)
-		# TODO verify test....
-		expected = {'cargohold': 16, 'steps': [{'station': 'Russell Ring', 'system': 'Eravate', 'missions': [{'amount': 12, 'destination': 'Chomsky Terminal', 'type': 'deliver', 'commodity': 'Clothing'}], 'instructions': [[]]}]}
+		expected = {'cargohold': 16, 'steps': [{'station': 'Russell Ring', 'system': 'Eravate', 'missions': [{'commodity': 'Clothing', 'system': 'Frigaha', 'amount': 12, 'station': 'Chomsky Terminal', 'reward': 150000, 'type': 'Delivery'}], 'instructions': [(u'Russell Ring', u'Chomsky Terminal', 5, 150000, 0, 12)]}]}
 		self.assertEqual(result, expected)
 
-	def test_compute_12b(self):
+	def test_compute_s(self):
 		self.computeSetup()
 		step0 = self.data["steps"][0]
 		step0["system"] = "Eravate"
 		step0["station"] = "Russell Ring"
 		mission1 = {}
-		mission1["type"] = "source"
+		mission1["type"] = "Source"
 		mission1["commodity"] = "Clothing"
 		mission1["amount"] = 8
 		mission1["reward"] = 120000
 		step0["missions"] = [mission1]
 		# TODO test with maxjumps=1 not very useful
 		result = elite.compute(self.data)
-		expected = {'cargohold': 16, 'steps': [{'station': 'Russell Ring', 'system': 'Eravate', 'missions': [{'amount': 8, 'reward': 120000, 'type': 'source', 'commodity': 'Clothing'}], 'instructions': [(3, 1, 5, 120000, 8)]}]}
+		expected =  {'cargohold': 16, 'steps': [{'station': 'Russell Ring', 'system': 'Eravate', 'missions': [{'amount': 8, 'reward': 120000, 'type': 'Source', 'commodity': 'Clothing'}], 'instructions': [(u'Russell Ring', u'Bluford Station', u'Clothing', 0, 0, 0)]}]} 
 		self.assertEqual(result, expected)
 
 	def test_compute_i(self):

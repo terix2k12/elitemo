@@ -46,7 +46,7 @@ class TestGalaxy(unittest.TestCase):
     def test_galaxy_hubs_expectedCommodity(self):
         station = entities.station(name="Russell Ring")
         commodity = entities.commodity(id=8)
-        opt = { "hasCommodity": [ (commodity["id"], 12) ] }
+        opt = { "commodity": [ (commodity["id"], 12) ] }
         stations = galaxy.hubs(station=station, options=opt)
         self.assertEqual(len(stations), 1)
         self.assertEqual(stations[0]["name"], "Green Keep")

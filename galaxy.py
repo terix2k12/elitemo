@@ -21,12 +21,12 @@ def hubs(system=None, station=None, options={}):
             if "landingpad" in options:
                 if padsize(options["landingpad"]) > padsize(station["max_landing_pad_size"]):
                     continue
-            if "hasCommodity" in options:
+            if "commodity" in options:
                 isPresent = False
-                for (commodityId, amount) in options["hasCommodity"]:
+                for (commodityId, amount) in options["commodity"]:
                     market = entities.market(station["id"])
                     for item in market:
-                        if int(item["supply"]) >= amount and commodityId == int(item["commodity_id"]):
+                        if int(item["supply"]) >= int(amount) and int(commodityId) == int(item["commodity_id"]):
                             isPresent = True
                 if not isPresent:
                     continue
