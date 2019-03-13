@@ -1,19 +1,22 @@
 TODOs:
     setting correct system when station is set
-    searching only stations in system, sonderfaelle commas hochstrings etc plus    
-    server test
-    UI validation
+    searching only stations in system, 
+    test station systems sonderfaelle commas hochstrings etc plus    
+    UI validation API
     UI design
     auto download latest jsons
     use zeromq
     station muss nicht vorgegeben werden
-
-    TESTS are crashing when using DISCOVER
-
-    1st mission type INTEL
-    3rd mission type DELIVER
     
-    2nd mission type SOURCE
+    github bauen lassen!?
+
+maxjumps 1
+    mission type INTEL
+    mission type TRADE (with target)
+    mission type DELIVER
+
+maxjumps 2    
+    mission type SOURCE
     
     make it a python3 project
     display ls from center in autocomplete
@@ -23,6 +26,7 @@ TODOs:
     better datastructure, like a cubic thingy of systems or so
 
 
+// get most recent from https://eddb.io/archive/v6/stations.json
 
 
 Interchange API:
@@ -34,14 +38,16 @@ maxjumps
 step0
     system 
     station 
-
-    cargohold:
-    (stationFromId, stationToId, commodityId, reward, price, supply)
+    missions:
+        ...
+    cargohold state / "instructions":
+        (stationFromId, stationToId, commodityId, reward, price, supply)
 
 Examples
     Intel: (Bluford, Intel, 20000, 0, 0)
     Deliver: (Bluford, Clothing, 200, 180, 10) -> buyPriceTotal = 1800 & sellPricePiece =  200
     
+    intel is commodity 0
 
 MissionTypes: Source, Deliver, Transit/Intel, Trade,     
 
