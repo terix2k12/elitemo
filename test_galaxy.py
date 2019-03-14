@@ -53,23 +53,35 @@ class TestGalaxy(unittest.TestCase):
 
     # TODO expected more than one commodity
 
-    def slow_test_galaxy_minipickle(self):
+
+    def test_galaxy_minipickle(self):
         entities.reset()
         entities.systems = assets.systems("systems_populated.json")
         entities.stations = assets.systems("stations.json")
+        entities.markets = assets.markets("listings.csv")
 
         eravate = entities.system(name="Eravate")
 
         opt = { "ly": 100 }
 
-        systems = galaxy.proximity(system=eravate, options=opt)
+        systems = {}
+        for system in galaxy.proximity(system=eravate, options=opt):
+            systems[ system["id"] ] = system
         self.assertEqual(len(systems), 3678)
 
-        stations = galaxy.hubs(system=eravate, options=opt)
+        stations = {}
+        for station in galaxy.hubs(system=eravate, options=opt):
+            stations[ station["id"] ] = station
         self.assertEqual(len(stations), 13683)
+
+        markets = {}
+        for station in stations.values():
+            markets[ station["id"] ] = entities.market(station["id"])
+        self.assertEqual(len(markets), 13683)
 
         assets.doPickle(systems, "systems-mini.pic")
         assets.doPickle(stations, "stations-mini.pic")
+        assets.doPickle(markets, "markets-mini.pic")
 
 if __name__ == "__main__":
     unittest.main()

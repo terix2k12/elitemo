@@ -58,4 +58,5 @@ def unPickle(filename):
 	infile = open(filename,'rb')
 	dict = cPickle.load(infile)
 	infile.close()
+	print "Unpickled " + str( len(dict) )
 	return dict
