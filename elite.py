@@ -1,4 +1,5 @@
 import datetime
+import sys
 
 import assets
 from server import server
@@ -275,9 +276,16 @@ def compute(data):
 if __name__ == "__main__":
 	print "Start Elite:Dangerous Mission Optimizer"
 
-	entities.stations = assets.stations("stations.json")
-	entities.systems = assets.systems("systems_populated.json")
-	entities.markets = assets.markets("listings.csv")
+	if sys.argv[1] == "--mini":
+		print "Limited Edition"
+		entities.systems = assets.unPickle("systems-mini.pic")
+		entities.stations = assets.unPickle("stations-mini.pic")
+		entities.markets = assets.unPickle("markets-mini.pic")
+	else:
+		entities.stations = assets.stations("stations.json")
+		entities.systems = assets.systems("systems_populated.json")
+		entities.markets = assets.markets("listings.csv")
+	
 	entities.commodities = assets.commodities("commodities.json") 
 
 	server().runServer()
