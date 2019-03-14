@@ -4,3 +4,4 @@ stations.json
 systems_populated.json
 commodities.json
 .vscode/*
+*.pic
