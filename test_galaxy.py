@@ -54,7 +54,7 @@ class TestGalaxy(unittest.TestCase):
     # TODO expected more than one commodity
 
 
-    def test_galaxy_minipickle(self):
+    def slow_test_galaxy_minipickle(self):
         entities.reset()
         entities.systems = assets.systems("systems_populated.json")
         entities.stations = assets.systems("stations.json")
