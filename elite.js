@@ -10,12 +10,7 @@ window.onerror = function(msg, url, line, col, error) {
 
 var serviceurl = "http://localhost:8000/";
 var stationStorage = {};
-
-function getStepSys(element) {
-		parentId = element[0].parentNode.parentNode.id
-		stepId = parentId.slice(-1)
-    return $("#system"+stepId).val()
-}
+var systemStorage = {};
 
  	function onWindowLoad()
   	{
@@ -87,7 +82,7 @@ function addMission(stepId) {
 	mission = document.createElement('li');
 	mission.id = "step" + stepId + "mission" + missionId;
 	mission.setAttribute("class", "mission");
-	missions.appendChild(mission);
+	missions.append(mission);
 
 	var removeButton = document.createElement('button');
 	removeButton.innerHTML = "Remove";
@@ -136,7 +131,7 @@ function addSystemBox(parent) {
 	$(systemInput).autocomplete({
 		source: serviceurl + "systems",
 		select: function(event, ui) {
-			systemInput.setAttribute("systemId", ui.item.data);
+			systemInput.setAttribute("systemid", ui.item.data);
 		}
 	});
 
@@ -157,16 +152,23 @@ function addStationBox(parent, systemBox) {
 			$.getJSON(
 				serviceurl + "stations",
 				{ term: request.term,
-					system: systemBox.getAttribute("systemId") }, 
+					system: systemBox.getAttribute("systemid") }, 
 				response
 			);
 		},
 		select: function(event, ui) {
-			stationInput.setAttribute("stationId", ui.item.data);
+			stationInput.setAttribute("stationid", ui.item.data);
+			stationInput.setAttribute("systemid", ui.item.systemId);
 			systemBox.value = ui.item.systemName;
-			systemBox.setAttribute("systemId", ui.item.systemId);
+			systemBox.setAttribute("systemid", ui.item.systemId);
 		}
 	});
+
+	systemBox.addEventListener("change", function(){
+		if( systemBox.getAttribute("systemid") != stationInput.getAttribute("systemid") ) {
+			stationInput.value = "";
+		}
+	}); 
 
 	return stationInput;
 }
