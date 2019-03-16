@@ -140,6 +140,10 @@ function addStationBox(parent, systemBox) {
 					system: systemBox.value }, 
 				response
 			);
+		},
+		select: function(event, ui) {
+			selectedStation = ui.item.value;
+			systemBox.value = ui.item.label;
 		}
 	});
 
