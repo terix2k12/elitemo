@@ -8,6 +8,8 @@ window.onerror = function(msg, url, line, col, error) {
     return false;
 };
 
+var serviceurl = "http://localhost:8000/";
+
 function getStepSys(element) {
 		parentId = element[0].parentNode.parentNode.id
 		stepId = parentId.slice(-1)
@@ -34,7 +36,7 @@ function getStepSys(element) {
 			$('.stationAutocomplete').autocomplete({
 					source: function(request, response ) {
 						$.getJSON(
-							"http://localhost:8000/stations",
+							serviceurl + "stations",
 							{ term: request.term,
 								system: getStepSys(this.element) }, 
 							response
@@ -124,7 +126,7 @@ function addAutocompleteBox(parent, id, label, mode) {
 	parent.appendChild(input);
 
 	$(input).autocomplete({
-		source: "http://localhost:8000/" + mode
+		source: serviceurl + mode
 	});
 
 	return input;
@@ -222,7 +224,7 @@ function compute() {
 
      // alert(JSON.stringify(data, null, 2));
 
-  		xhttp.open("GET", "http://localhost:8000/compute?data=" + JSON.stringify(data));
+  		xhttp.open("GET", serviceurl + "compute?data=" + JSON.stringify(data));
   		xhttp.send();  		
 		}
 		
