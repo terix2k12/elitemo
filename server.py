@@ -34,7 +34,16 @@ def handleStationQuery(query):
 			return ajaxAutocomplete(entities.stationLike(term, system=system), [ ("label", f) ])
 	else:	
 		term = query.split("=")[1]
-	return ajaxAutocomplete(entities.stationLike(term), [ ("label", f)])	
+
+	stations = entities.stationLike(term)
+
+	response = []
+	for station in stations:
+		system = entities.system(station=station)
+		label = station["name"] + " (" + system["name"] + ")"
+		dic = { "label":label, "value":station["name"], "data":station["id"], "systemName":system["name"], "systemId":system["id"] }
+		response.append(dic)
+	return json.dumps(response)
 
 def handleCommodityQuery(query):
 	term = query.split("=")[1]

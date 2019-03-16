@@ -9,6 +9,7 @@ window.onerror = function(msg, url, line, col, error) {
 };
 
 var serviceurl = "http://localhost:8000/";
+var stationStorage = {};
 
 function getStepSys(element) {
 		parentId = element[0].parentNode.parentNode.id
@@ -142,8 +143,9 @@ function addStationBox(parent, systemBox) {
 			);
 		},
 		select: function(event, ui) {
-			selectedStation = ui.item.value;
-			systemBox.value = ui.item.label;
+			input.setAttribute("stationId", ui.item.data);
+			systemBox.value = ui.item.systemName;
+			systemBox.setAttribute("systemId", ui.item.systemId);
 		}
 	});
 

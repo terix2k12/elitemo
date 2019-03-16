@@ -34,12 +34,14 @@ class TestServer(unittest.TestCase):
     def test_autocomplete_stations(self):
         query = "term=Sylves"
         response = server.handleStationQuery(query)
-        self.assertEqual('[{"data": 232, "value": "Sylvester City", "label": "Sylvester City (Eravate)"}]', response)
+        expected = '[{"systemId": 4615, "systemName": "Eravate", "data": 232, "value": "Sylvester City", "label": "Sylvester City (Eravate)"}]'
+        self.assertEqual(expected, response)
 
     def test_autocomplete_stations_broad(self):
         query = "term=eng"
         response = server.handleStationQuery(query)
-        self.assertEqual('[{"data": 47747, "value": "Linenger\'s Inheritance", "label": "Linenger\'s Inheritance (Eravate)"}, {"data": 406, "value": "Engle Orbital", "label": "Engle Orbital (Frigaha)"}]', response)
+        expected = '[{"systemId": 4615, "systemName": "Eravate", "data": 47747, "value": "Linenger\'s Inheritance", "label": "Linenger\'s Inheritance (Eravate)"}, {"systemId": 4857, "systemName": "Frigaha", "data": 406, "value": "Engle Orbital", "label": "Engle Orbital (Frigaha)"}]'
+        self.assertEqual(expected, response)
 
     def test_autocomplete_stations_withSys(self):
         query = "term=ma&system=Eravate"
@@ -54,7 +56,8 @@ class TestServer(unittest.TestCase):
     def test_autocomplete_stations_withWrongSys(self):
         query = "term=Sylv&system=Nixda"
         response = server.handleStationQuery(query)
-        self.assertEqual('[{"data": 232, "value": "Sylvester City", "label": "Sylvester City (Eravate)"}]', response)
+        expected = '[{"systemId": 4615, "systemName": "Eravate", "data": 232, "value": "Sylvester City", "label": "Sylvester City (Eravate)"}]'
+        self.assertEqual(expected, response)
 
 
     def test_autocomplete_commodity(self):
