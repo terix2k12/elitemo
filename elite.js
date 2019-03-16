@@ -58,13 +58,13 @@ function missiontype(element) {
 	if(element.value == "Delivery") {
 		addAutocompleteBox(parent, "commodity", "Commodity", "comodities");
 		addBox(parent, "missionXYamoun", "Amount");
-		addAutocompleteBox(parent, "targetSystem", "System", "systems");
-		addAutocompleteBox(parent, "targetStation", "Station", "stations");
+		sysBox = addSystemBox(parent);
+		addStationBox(parent, sysBox);
 		addBox(parent, "reward", "Reward");
 	}
 	if(element.value == "Intel") {
-		addAutocompleteBox(parent, "system", "System", "systems");
-		addAutocompleteBox(parent, "station", "Station", "stations");
+		sysBox = addSystemBox(parent);
+		addStationBox(parent, sysBox);
 		addBox(parent, "reward", "Reward");
 	}
 	if(element.value == "Source") {
