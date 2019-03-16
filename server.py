@@ -1,6 +1,7 @@
 import time
 import json
 import entities
+import string
 
 from urlparse import urlparse
 import urllib
@@ -22,20 +23,33 @@ def handleMissionQuery(query):
 
 def handleSystemQuery(query):
 	term = query.split("=")[1]
-	return ajaxAutocomplete(entities.systemLike(term))
+
+	systems = entities.systemLike(term)
+
+	response = []
+	for system in systems:
+		stations = entities.station(system=system)
+		hubs = []
+		for station in stations:
+			hubs.append(station["name"])
+		label = system["name"] + " (" + ",".join(hubs) + ")"
+		dic = { "label":label, "value":system["name"], "data":system["id"] }
+		response.append(dic)
+
+	return json.dumps(response)
 
 def handleStationQuery(query):
-	f = lambda sta: sta["name"] + " (" + entities.system(station=sta)["name"] + ")"
 	if query.find("&") > 0:
 		term = query.split("&")[0].split("=")[1]
-		systemName = (query.split("&")[1].split("=")[1]).replace("+"," ")
-		system = entities.system(name=systemName)
+		systemId = (query.split("&")[1].split("=")[1]).replace("+"," ")
+		system = entities.system(id=systemId)
 		if system["id"] != 0:
-			return ajaxAutocomplete(entities.stationLike(term, system=system), [ ("label", f) ])
-	else:	
+			stations = entities.stationLike(term, system=system)
+		else:
+			stations = entities.stationLike(term)
+	else:
 		term = query.split("=")[1]
-
-	stations = entities.stationLike(term)
+		stations = entities.stationLike(term)
 
 	response = []
 	for station in stations:

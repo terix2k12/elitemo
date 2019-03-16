@@ -23,12 +23,14 @@ class TestServer(unittest.TestCase):
     def test_autocomplete_systems(self):
         query = "term=Erav"
         response = server.handleSystemQuery(query)
-        self.assertEqual('[{"data": 4615, "value": "Eravate"}]', response)
+        expected = '[{"data": 4615, "value": "Eravate", "label": "Eravate (Linenger\'s Inheritance,Russell Ring,McMahon Dock,Ackerman Market,Maine Hub,Toll Holdings,Cleve Hub,Sylvester City,Scott Prospect,Tiptree Gateway,Bradshaw Vision)"}]'
+        self.assertEqual(expected, response)
 
     def test_autocomplete_systems_broad(self):
         query = "term=Er"
         response = server.handleSystemQuery(query)
-        self.assertEqual('[{"data": 99, "value": "Eridiani"}, {"data": 4615, "value": "Eravate"}]', response)
+        expected = '[{"data": 99, "value": "Eridiani", "label": "Eridiani ()"}, {"data": 4615, "value": "Eravate", "label": "Eravate (Linenger\'s Inheritance,Russell Ring,McMahon Dock,Ackerman Market,Maine Hub,Toll Holdings,Cleve Hub,Sylvester City,Scott Prospect,Tiptree Gateway,Bradshaw Vision)"}]'
+        self.assertEqual(expected, response)
 
 
     def test_autocomplete_stations(self):
@@ -44,7 +46,7 @@ class TestServer(unittest.TestCase):
         self.assertEqual(expected, response)
 
     def test_autocomplete_stations_withSys(self):
-        query = "term=ma&system=Eravate"
+        query = "term=ma&system=4615"
         response = server.handleStationQuery(query)
         self.assertEqual(3, len(json.loads(response)))
 

@@ -124,32 +124,51 @@ function addAutocompleteBox(parent, id, label, mode) {
 	return input;
 }
 
+function addSystemBox(parent) {
+	span = document.createElement('span');
+	span.innerHTML = "System: ";
+	parent.appendChild(span);
+
+	systemInput = document.createElement('input');
+	systemInput.id = "system";
+	parent.appendChild(systemInput);
+
+	$(systemInput).autocomplete({
+		source: serviceurl + "systems",
+		select: function(event, ui) {
+			systemInput.setAttribute("systemId", ui.item.data);
+		}
+	});
+
+	return systemInput;
+}
+
 function addStationBox(parent, systemBox) {
 	span = document.createElement('span');
 	span.innerHTML = "Station: ";
 	parent.appendChild(span);
 
-	input = document.createElement('input');
-	input.id = "station";
-	parent.appendChild(input);
+	stationInput = document.createElement('input');
+	stationInput.id = "station";
+	parent.appendChild(stationInput);
 
-	$(input).autocomplete({
+	$(stationInput).autocomplete({
 		source: function(request, response ) {
 			$.getJSON(
 				serviceurl + "stations",
 				{ term: request.term,
-					system: systemBox.value }, 
+					system: systemBox.getAttribute("systemId") }, 
 				response
 			);
 		},
 		select: function(event, ui) {
-			input.setAttribute("stationId", ui.item.data);
+			stationInput.setAttribute("stationId", ui.item.data);
 			systemBox.value = ui.item.systemName;
 			systemBox.setAttribute("systemId", ui.item.systemId);
 		}
 	});
 
-	return input;
+	return stationInput;
 }
 
 function addOrUpdateStep(stepJson, stepId) {
@@ -159,8 +178,9 @@ function addOrUpdateStep(stepJson, stepId) {
 		step.id = "step"+stepId;
 		step.setAttribute("class", "step");
 		
-		systemBox = addAutocompleteBox(step, "system", "System", "systems");
-		addStationBox(step, systemBox);
+		systemBox = addSystemBox(step);
+		stationBox = addStationBox(step, systemBox);
+		systemBox.station = stationBox;
 
 				addButton = document.createElement("button");
 				addButton.setAttribute("onClick", "addMission("+stepId+")");

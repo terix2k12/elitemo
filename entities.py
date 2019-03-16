@@ -29,7 +29,10 @@ def system(name=None, id=None, station=None):
     if name:
         id = systemId(name)
     if id:
-        id = int(id)
+        try:
+            id = int(id)
+        except:
+            id = 0
     if id in systems:
         return systems[int(id)]
     return { "id":0, "name" : "System " + str(id) + "/" + str(name) + " not found."}
