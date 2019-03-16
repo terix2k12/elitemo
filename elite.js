@@ -33,16 +33,7 @@ function getStepSys(element) {
 			}
 	 
 
-			$('.stationAutocomplete').autocomplete({
-					source: function(request, response ) {
-						$.getJSON(
-							serviceurl + "stations",
-							{ term: request.term,
-								system: getStepSys(this.element) }, 
-							response
-						);
-					}
-			});
+
 		});
 
 //			testStep = {};
@@ -132,6 +123,29 @@ function addAutocompleteBox(parent, id, label, mode) {
 	return input;
 }
 
+function addStationBox(parent, systemBox) {
+	span = document.createElement('span');
+	span.innerHTML = "Station: ";
+	parent.appendChild(span);
+
+	input = document.createElement('input');
+	input.id = "station";
+	parent.appendChild(input);
+
+	$(input).autocomplete({
+		source: function(request, response ) {
+			$.getJSON(
+				serviceurl + "stations",
+				{ term: request.term,
+					system: systemBox.value }, 
+				response
+			);
+		}
+	});
+
+	return input;
+}
+
 function addOrUpdateStep(stepJson, stepId) {
 	var step = document.getElementById("step"+stepId);
 	if(!step) {
@@ -139,8 +153,8 @@ function addOrUpdateStep(stepJson, stepId) {
 		step.id = "step"+stepId;
 		step.setAttribute("class", "step");
 		
-		addAutocompleteBox(step, "system", "System", "systems");
-		addAutocompleteBox(step, "station", "Station", "stations");
+		systemBox = addAutocompleteBox(step, "system", "System", "systems");
+		addStationBox(step, systemBox);
 
 				addButton = document.createElement("button");
 				addButton.setAttribute("onClick", "addMission("+stepId+")");
