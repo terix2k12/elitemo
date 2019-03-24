@@ -54,3 +54,6 @@ Examples
 
 MissionTypes: Source, Deliver, Transit/Intel, Trade,     
 
+
+
+pip install wget

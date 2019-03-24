@@ -1,5 +1,6 @@
 import unittest
 import assets
+import os
 
 class TestAsset(unittest.TestCase):
 
@@ -20,6 +21,23 @@ class TestAsset(unittest.TestCase):
 		stations = assets.stations("test/test-stations.json")
 		# print [(s["name"],s["id"]) for s in stations]
 		self.assertEqual(len(stations), 20)
+
+	def test_asset_update(self):
+		filename = "commodities.json"
+		success = assets.update(filename)
+		exists = os.path.isfile(filename)
+		self.assertEqual(success and exists, True)
+
+	def test_asset_update_fail(self):
+		filename = "xzynono"
+		success = assets.update(filename)
+		exists = os.path.isfile(filename)
+		self.assertEqual(success, False)		
+
+	def slow_test_asset_install(self):
+		assets.update("stations.json")
+		assets.update("systems_populated.json")
+		assets.update("listings.csv")
 
 	def slow_test_assets_doPickle(self):
 		stations = assets.stations("stations.json")
