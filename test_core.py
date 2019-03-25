@@ -14,12 +14,14 @@ class TestCore(unittest.TestCase):
 
     def test_core_deliver(self):
         missioninput = []
+
+        options = {"cargo" : 16}
         
         # Deliver
         currentStation = 1
-        missioninput.append( (1, 5, 3) ) 
+        missioninput.append( (1, 5, 3, 8, 23000, 'deliver') ) 
         
-        elitecore.compute(currentStation, missioninput)
+        elitecore.compute(currentStation, missioninput, options)
 
         self.assertEqual(3, 3)
 
