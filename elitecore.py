@@ -16,14 +16,19 @@ def compute(currentStation, missiongoals, options):
     #   mg aktualisieren
     # 
 
-    nodeset = []
+    nodeset = [] # holds tuples of (source, target, profit, modifier, commodity, supply)
     cargohold = []
     maxcargospace = options["cargo"]
     cargospace = maxcargospace
 
     while len(missiongoals) > 0:
 
-        # Apply missiongal modifier to nodeset
+        # Reset modifiers
+        for node in nodeset:
+            (source, target, profit, modifier, commodity, supply) = node
+            node = (source, target, profit, 0, commodity, supply)
+
+        # Apply missiongoals modifier to nodeset
         for missiongoal in missiongoals:
             (source, target, commodity, amount, reward, missiontype) = missiongoal
             if missiontype == 'deliver':
@@ -32,19 +37,39 @@ def compute(currentStation, missiongoals, options):
         # nodeset.sort(key=lambda i: int(i[option]), reverse=True)
 
         # Select target
-        (s, target, r, d, c, a) = nodeset[0]
+        (s, targetStation, r, d, c, a) = nodeset[0]
 
-        newinstrucions = []
+        newinstructions = []
 
         # Load cargohold
         for node in nodeset:
-            cargohold.append( (currentStation, target, c, a) )
-            cargospace -= a
+            (source, target, profit, modifier, commodity, supply) = node
 
-            newinstrucions.append( (currentStation, target, c, a) )
+            if source != currentStation:
+                break
+
+            if supply >= cargospace:
+                loading = cargospace
+            else:
+                loading = supply
+
+            transfer = (source, target, commodity, loading)
+
+            cargohold.append( transfer )
+            cargospace -= loading
+
+            newinstructions.append( transfer )
+
+            if supply-loading == 0:
+                nodeset.remove(node)
+            else:
+                node = (source, target, profit, modifier, commodity, supply-loading)
 
             if cargospace == 0:
                 break
+
+        for i in newinstructions:
+            instructions.append( i )
 
         # Update mission goals
         missiongoals = []

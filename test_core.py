@@ -21,9 +21,10 @@ class TestCore(unittest.TestCase):
         currentStation = 1
         missioninput.append( (1, 5, 3, 8, 23000, 'deliver') ) 
         
-        elitecore.compute(currentStation, missioninput, options)
+        instructions = elitecore.compute(currentStation, missioninput, options)
 
-        self.assertEqual(3, 3)
+        self.assertEqual( len(instructions) , 1)
+        self.assertEqual( instructions, [(1, 5, 3, 8)] )
 
 if __name__ == "__main__":
 	unittest.main()
