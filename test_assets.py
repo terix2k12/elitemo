@@ -32,11 +32,11 @@ class TestAsset(unittest.TestCase):
 		filename = "xzynono"
 		success = assets.update(filename)
 		exists = os.path.isfile(filename)
-		self.assertEqual(success, False)		
+		self.assertEqual(not (success and exists), False)		
 
-	def slow_test_asset_install(self):
-		assets.update("stations.json")
-		assets.update("systems_populated.json")
+	def test_asset_install(self):
+		# assets.update("stations.json")
+		# assets.update("systems_populated.json")
 		assets.update("listings.csv")
 
 	def slow_test_assets_doPickle(self):
