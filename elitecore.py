@@ -1,8 +1,9 @@
 import assets
 import galaxy
 import entities
+import elite
 
-def compute(currentStation, missiongoals, options):
+def compute(currentStationId, missiongoals, options):
     instructions = []
 
     # pseudocode
@@ -21,6 +22,18 @@ def compute(currentStation, missiongoals, options):
     maxcargospace = options["cargo"]
     cargospace = maxcargospace
 
+    currentStation = entities.station(id=currentStationId)
+    neighbors = galaxy.hubs(station=currentStation)
+
+    for neighbor in neighbors:
+        market1 = entities.market(currentStationId)
+        market2 = entities.market(neighbor["id"])
+        deals = elite.deals(market1, market2)
+
+        for deal in deals:
+            (commodityId, profit, supply) = deal
+            nodeset.append( (currentStationId, neighbor["id"], profit, 0, commodityId, supply) )
+
     while len(missiongoals) > 0:
 
         # Reset modifiers
@@ -31,10 +44,11 @@ def compute(currentStation, missiongoals, options):
         # Apply missiongoals modifier to nodeset
         for missiongoal in missiongoals:
             (source, target, commodity, amount, reward, missiontype) = missiongoal
-            if missiontype == 'deliver':
+            if missiontype in ['deliver', 'intel']:
                 nodeset.append( (source, target, reward, 10000, commodity, amount) )
 
-        # nodeset.sort(key=lambda i: int(i[option]), reverse=True)
+        # Sorting
+        nodeset.sort(key=lambda (s, t, profit, d, c, a): profit, reverse=True)
 
         # Select target
         (s, targetStation, r, d, c, a) = nodeset[0]
@@ -42,10 +56,11 @@ def compute(currentStation, missiongoals, options):
         newinstructions = []
 
         # Load cargohold
+        completed = []
         for node in nodeset:
             (source, target, profit, modifier, commodity, supply) = node
 
-            if source != currentStation:
+            if source != currentStationId:
                 break
 
             if supply >= cargospace:
@@ -61,12 +76,15 @@ def compute(currentStation, missiongoals, options):
             newinstructions.append( transfer )
 
             if supply-loading == 0:
-                nodeset.remove(node)
+                completed.append(node)
             else:
                 node = (source, target, profit, modifier, commodity, supply-loading)
 
             if cargospace == 0:
                 break
+
+        for i in completed:
+            nodeset.remove(i)
 
         for i in newinstructions:
             instructions.append( i )
