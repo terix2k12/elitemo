@@ -25,7 +25,7 @@ class TestCore(unittest.TestCase):
         self.assertEqual( len(instructions) , 1)
         self.assertEqual( instructions, [(1, 5, 3, 8)] )
 
-    def test_core_intel(self):
+    def _test_core_intel(self):
         missioninput = []
         options = {"cargo" : 16}
 
@@ -37,6 +37,19 @@ class TestCore(unittest.TestCase):
 
         self.assertEqual( len(instructions) , 2)
         self.assertEqual( instructions, [(5, 1, 0, 0), (5, 1, '10', 10)] )
+
+    def test_core_source(self):
+        missioninput = []
+        options = {"cargo" : 16}
+
+        # Intel
+        currentStation = 5
+        missioninput.append( (0, 5, 8, 10, 23000, 'source') )
+
+        instructions = elitecore.compute(currentStation, missioninput, options)
+
+        self.assertEqual( len(instructions) , 3)
+        self.assertEqual( instructions, [(5, [('collect', (1, 10, 10))]),  (1, [('drop', (1, 10, 10)), ('collect', (5, 8, 10))]), (5, [('drop', (5, 8, 10))])] )
 
 if __name__ == "__main__":
 	unittest.main()

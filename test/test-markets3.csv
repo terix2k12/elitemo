@@ -3,3 +3,4 @@ id,station_id,commodity_id,supply,buy_price,sell_price
 2,5,10,10,205,195
 3,5,0,0,230,220
 4,1,10,0,190,210
+5,1,8,10,100,100
