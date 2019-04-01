@@ -1,15 +1,14 @@
 TODOs:
-    setting correct system when station is set
-    searching only stations in system, 
+    - extra service for station/system with ID
+    - fetch station/system when needed
+ 
     test station systems sonderfaelle commas hochstrings etc plus    
     UI validation API
     UI design
     auto download latest jsons
     use zeromq
     station muss nicht vorgegeben werden
-    
     github bauen lassen!?
-
     assets.pickle....automatically
     creating smaller listing.csv
 

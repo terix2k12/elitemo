@@ -18,8 +18,6 @@ var systemStorage = {};
 		var jsCheck = document.getElementById("jsCheck");
 		jsCheck.parentNode.removeChild(jsCheck);
 
-		addOrUpdateStep(null, 0);
-
 		// Basic jQuery check
 		$(document).ready(function() {
 		$("#jQueryCheck").html("");	
@@ -27,10 +25,9 @@ var systemStorage = {};
 			if(jsCheck.innerHTML == "") {
 				jsCheck.parentNode.removeChild(jsCheck);
 			}
-	 
-
-
 		});
+
+		addOrUpdateStep(null, 0);
 
 //			testStep = {};
 //			testStep.system = "Eravate";
@@ -231,7 +228,8 @@ function compute() {
       data.cargohold = document.getElementById('cargohold').value;
       data.landingpad = document.getElementById('landingpad').value;
       data.jumprange = document.getElementById('jumprange').value;
-      data.maxhops = document.getElementById('maxhops').value;
+			data.maxhops = document.getElementById('maxhops').value;
+			
 			data.steps = [];
 			
 			for( stepDiv of document.getElementById('steps').childNodes) {
