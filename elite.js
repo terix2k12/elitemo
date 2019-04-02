@@ -227,7 +227,7 @@ function compute() {
 			var data = {};
 			
 			var options = {};
-      options.cargohold = document.getElementById('cargohold').value;
+      options.cargospace = document.getElementById('cargohold').value;
       options.landingpad = document.getElementById('landingpad').value;
       options.jumprange = document.getElementById('jumprange').value;
 			options.maxhops = document.getElementById('maxhops').value;
@@ -256,8 +256,9 @@ function compute() {
 						targetStationId = childById(missionLi, "station").getAttribute("systemid");
 						amount = childById(missionLi, "amount").value;
 						commodityId = childById(missionLi, "commodity").value;
+						reward = childById(missionLi, "reward").value;
 
-						mission = {"source":stationId, "target":targetStationId, "commodity":commodityId, "amount":amount, "type":"deliver"}
+						mission = {"source":stationId, "target":targetStationId, "reward": reward, "commodity":commodityId, "amount":amount, "type":"deliver"}
 					}
 					if(type == "Source") {
 						mission.reward = childById(missionLi, "reward").value;
