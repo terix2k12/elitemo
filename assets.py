@@ -1,6 +1,8 @@
 import json
 import csv
 import cPickle
+import wget
+import os
 
 def loadJSON(name, path):
 	print "Loading " + name + ":"
@@ -60,3 +62,17 @@ def unPickle(filename):
 	infile.close()
 	print "Unpickled " + str( len(dict) )
 	return dict
+
+def update(filename):
+	exists = os.path.isfile(filename)
+	if exists:
+		# Store configuration file values
+		pass
+	else:
+		try:
+			url = "https://eddb.io/archive/v6/" + filename  
+			wget.download(url, filename)
+			return True
+		except Exception:
+			pass
+	return False

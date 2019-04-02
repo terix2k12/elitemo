@@ -13,7 +13,7 @@ class TestServer(unittest.TestCase):
         entities.markets = assets.markets("test/test-markets.csv")
         entities.systems = assets.systems("test/test-systems.json")
         entities.stations = assets.stations("test/test-stations.json")
-        entities.commodities = assets.commodities("commodities.json")
+        entities.commodities = assets.commodities("res/commodities.json")
 
     def test_autocomplete_missions(self):
         query = "term=In"
@@ -72,6 +72,13 @@ class TestServer(unittest.TestCase):
         response = server.handleCommodityQuery(query)
         self.assertEqual('[{"data": 78, "value": "Non-lethal Weapons"}, {"data": 79, "value": "Personal Weapons"}]', response)
 
+    def test_compute(self):
+        missioninput = []
+        options = {"cargo" : 16}
+        currentStationId = 42180
+        missioninput.append( (1, 5, 3, 8, 23000, 'deliver') )
+
+        server.handleCompute(currentStationId, missioninput, options)
 
 if __name__ == "__main__":
     unittest.main()

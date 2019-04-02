@@ -9,7 +9,7 @@ class TestEntities(unittest.TestCase):
         entities.markets = assets.markets("test/test-markets.csv")
         entities.systems = assets.systems("test/test-systems.json")
         entities.stations = assets.stations("test/test-stations.json")
-        entities.commodities = assets.commodities("commodities.json")
+        entities.commodities = assets.commodities("res/commodities.json")
 
 
     def test_entities_system_name(self):

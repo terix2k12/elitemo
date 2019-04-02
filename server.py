@@ -1,6 +1,5 @@
 import time
 import json
-import entities
 import string
 
 from urlparse import urlparse
@@ -8,14 +7,16 @@ import urllib
 import BaseHTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 
+import entities
+import elite
+import elitecore
+
 #// CORS is prohibiting access to external APIs
 # // http://localhost:8000/
 # // python -m SimpleHTTPServer
 
 HOST_NAME = "localhost" #// "127.0.0.1" 
 PORT_NUMBER = 8000
-
-global elite
 
 def handleMissionQuery(query):
 	term = query.split("=")[1]
@@ -61,7 +62,11 @@ def handleStationQuery(query):
 
 def handleCommodityQuery(query):
 	term = query.split("=")[1]
-	return ajaxAutocomplete(entities.commodityLike(term))	
+	return ajaxAutocomplete(entities.commodityLike(term))
+
+def handleCompute(currentStationId, inputData, options):
+	# TODO retrieve from json
+	return elitecore.compute(currentStationId, inputData, options)
 
 def ajaxAutocomplete(items, additional=[]):
 	response = []
@@ -120,22 +125,18 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 		elif(parse.path == "/compute"):
 			self.jsonOKHeader()
-
 			term = parse.query.split("=")[1]
 			decoded = urllib.unquote(term)
-
-			data = json.loads(decoded)
-
-			data = elite.compute(data)
-
-			self.wfile.write(json.dumps(data))
+			inputData = json.loads(decoded)
+			result = handleCompute(inputData)
+			response = json.dumps(result)
+			self.wfile.write(response)
 		else:
 			self.send_response(500)
 			self.send_header("Content-type", "text/plain")
 			self.setCORSHeader()
 			self.wfile.write("Access denied.")
 			pass
-
 
 
 class server:

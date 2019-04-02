@@ -2,9 +2,11 @@ import datetime
 import sys
 
 import assets
-from server import server
+
 import galaxy
 import entities
+
+from eliteserver import eserver
 
 def time(utc):
 	dt = datetime.datetime.fromtimestamp(int(utc))
@@ -278,16 +280,16 @@ if __name__ == "__main__":
 
 	if sys.argv[1] == "--mini":
 		print "Limited Edition"
-		entities.systems = assets.unPickle("systems-mini.pic")
-		entities.stations = assets.unPickle("stations-mini.pic")
-		entities.markets = assets.unPickle("markets-mini.pic")
+		entities.systems = assets.unPickle("res/systems-mini.pic")
+		entities.stations = assets.unPickle("res/stations-mini.pic")
+		entities.markets = assets.unPickle("res/markets-mini.pic")
 	else:
 		entities.stations = assets.stations("stations.json")
 		entities.systems = assets.systems("systems_populated.json")
 		entities.markets = assets.markets("listings.csv")
 	
-	entities.commodities = assets.commodities("commodities.json") 
+	entities.commodities = assets.commodities("res/commodities.json") 
 
-	server().runServer()
+	eserver().runServer()
 
 	print "End Elite:D-MO"
