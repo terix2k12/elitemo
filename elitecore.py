@@ -1,7 +1,23 @@
 import assets
 import galaxy
 import entities
-import elite
+
+def getdeals(market1, market2):
+	profits = []
+	for item1 in market1:
+		i1Id = item1["commodity_id"]
+		buyPrice = int(item1["buy_price"])
+		supply = int(item1["supply"])
+		if(supply > 0):
+			sellPrice = 0
+			for item2 in market2:
+				if(item2["commodity_id"] == i1Id):
+					sellPrice = int(item2["sell_price"])
+					diff =  sellPrice - buyPrice
+					if(diff > 0): 
+						profits.append((i1Id, diff, supply))
+	profits.sort(key=lambda (i,t,p):t, reverse=True)
+	return profits 
 
 def compute(currentStationId, missiongoals, options):
     
@@ -20,7 +36,7 @@ def compute(currentStationId, missiongoals, options):
 
     nodeset = [] # holds tuples of (source, target, profit, modifier, commodity, supply)
     cargohold = [] # holds tuples of (source, target, commodity, loading)
-    maxcargospace = options["cargo"]
+    maxcargospace = options["cargospace"]
     cargospace = maxcargospace
 
     currentStation = entities.station(id=currentStationId)
@@ -32,7 +48,7 @@ def compute(currentStationId, missiongoals, options):
         market2 = entities.market(neighborId)
 
         # Apply deals
-        deals = elite.deals(market1, market2)
+        deals = getdeals(market1, market2)
         for deal in deals:
             (commodityId, profit, supply) = deal
             nodeset.append( (currentStationId, neighborId, profit, 0, int(commodityId), supply) )

@@ -6,7 +6,7 @@ import assets
 import galaxy
 import entities
 
-from eliteserver import eserver
+from server import server
 
 def time(utc):
 	dt = datetime.datetime.fromtimestamp(int(utc))
@@ -21,22 +21,7 @@ def age(utc):
 def sortMarket(market, option):
 	market.sort(key=lambda i: int(i[option]), reverse=True)
 
-def deals(market1, market2):
-	profits = []
-	for item1 in market1:
-		i1Id = item1["commodity_id"]
-		buyPrice = int(item1["buy_price"])
-		supply = int(item1["supply"])
-		if(supply > 0):
-			sellPrice = 0
-			for item2 in market2:
-				if(item2["commodity_id"] == i1Id):
-					sellPrice = int(item2["sell_price"])
-					diff =  sellPrice - buyPrice
-					if(diff > 0): 
-						profits.append((i1Id, diff, supply))
-	profits.sort(key=lambda (i,t,p):t, reverse=True)
-	return profits 
+
 
 def dealOneTrip(marketId, targetId, cargohold):
 	profits = []
@@ -290,6 +275,6 @@ if __name__ == "__main__":
 	
 	entities.commodities = assets.commodities("res/commodities.json") 
 
-	eserver().runServer()
+	server().runServer()
 
 	print "End Elite:D-MO"

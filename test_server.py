@@ -74,9 +74,9 @@ class TestServer(unittest.TestCase):
 
     def test_compute(self):
         missioninput = []
-        options = {"cargo" : 16}
+        options = {"cargospace" : 16}
         currentStationId = 42180
-        missioninput.append( (1, 5, 3, 8, 23000, 'deliver') )
+        missioninput.append( { "source":1, "target":5, "commodity":3, "amount":8, "reward":23000, 'type':'deliver' } )
 
         inputData = {}
         inputData["options"] = options

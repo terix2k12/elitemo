@@ -14,7 +14,7 @@ class TestCore(unittest.TestCase):
 
     def xy_test_core_deliver(self):
         missioninput = []
-        options = {"cargo" : 16}
+        options = {"cargospace" : 16}
         
         # Deliver
         currentStation = 1
@@ -27,7 +27,7 @@ class TestCore(unittest.TestCase):
 
     def _test_core_intel(self):
         missioninput = []
-        options = {"cargo" : 16}
+        options = {"cargospace" : 16}
 
         # Intel
         currentStation = 5
@@ -40,7 +40,7 @@ class TestCore(unittest.TestCase):
 
     def test_core_source(self):
         missioninput = []
-        options = {"cargo" : 16}
+        options = {"cargospace" : 16}
 
         # Intel
         currentStation = 5

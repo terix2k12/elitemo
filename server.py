@@ -8,7 +8,6 @@ import BaseHTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 
 import entities
-import elite
 import elitecore
 
 #// CORS is prohibiting access to external APIs
@@ -68,7 +67,12 @@ def handleCompute(inputData):
 	currentStationId = inputData["stationId"]
 	options = inputData["options"]
 	missions = inputData["missions"]
-	return elitecore.compute(currentStationId, missions, options)
+
+	missiongoals = []
+	for mission in missions:
+		missiongoals.append( ( mission["source"], mission["target"], mission["commodity"], mission["amount"], mission["reward"], mission["type"]  ) )
+
+	return elitecore.compute(currentStationId, missiongoals, options)
 
 def ajaxAutocomplete(items, additional=[]):
 	response = []
