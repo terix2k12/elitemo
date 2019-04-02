@@ -54,7 +54,7 @@ function missiontype(element) {
 	parent = element.parentNode;
 	if(element.value == "Delivery") {
 		addAutocompleteBox(parent, "commodity", "Commodity", "comodities");
-		addBox(parent, "missionXYamoun", "Amount");
+		addBox(parent, "amount", "Amount");
 		sysBox = addSystemBox(parent);
 		addStationBox(parent, sysBox);
 		addBox(parent, "reward", "Reward");
@@ -224,48 +224,54 @@ function compute() {
     		}
   		};
 
-      var data = {};
-      data.cargohold = document.getElementById('cargohold').value;
-      data.landingpad = document.getElementById('landingpad').value;
-      data.jumprange = document.getElementById('jumprange').value;
-			data.maxhops = document.getElementById('maxhops').value;
+			var data = {};
 			
-			data.steps = [];
+			var options = {};
+      options.cargohold = document.getElementById('cargohold').value;
+      options.landingpad = document.getElementById('landingpad').value;
+      options.jumprange = document.getElementById('jumprange').value;
+			options.maxhops = document.getElementById('maxhops').value;
 			
-			for( stepDiv of document.getElementById('steps').childNodes) {
-				var step = {};
-				step.system = childById(stepDiv, "system").value;
-				step.station = childById(stepDiv, "station").value;
-				step.missions = [];
+			data.options = options;
+			
+			data.missions = [];
+			
+			for( stepDiv of document.getElementById('steps').childNodes ) {
+
+				stationInput = childById(stepDiv, "station");
+				stationId = stationInput.getAttribute("systemid");
+				
+				data.stationId = stationId; // check here
+
 				for( missionLi of childById(stepDiv, "missions").childNodes) {
 					var mission = {};
-					mission.type = childById(missionLi, "type").value;
-					if(mission.type == "Intel") {
+					type = childById(missionLi, "type").value;
+					if(type == "Intel") {
 						mission.reward = childById(missionLi, "reward").value;
 						mission.station = childById(missionLi, "station").value;
 						mission.system = childById(missionLi, "system").value;
 					}
-					if(mission.type == "Delivery") {
+					if(type == "Delivery") {
+						reward = childById(missionLi, "reward").value;
+						targetStationId = childById(missionLi, "station").getAttribute("systemid");
+						amount = childById(missionLi, "amount").value;
+						commodityId = childById(missionLi, "commodity").value;
+
+						mission = {"source":stationId, "target":targetStationId, "commodity":commodityId, "amount":amount, "type":"deliver"}
+					}
+					if(type == "Source") {
 						mission.reward = childById(missionLi, "reward").value;
-						mission.station = childById(missionLi, "station").value;
-						mission.system = childById(missionLi, "system").value;
 						mission.amount = childById(missionLi, "amount").value;
 						mission.commodity = childById(missionLi, "commodity").value;
 					}
-					if(mission.type == "Source") {
-						mission.reward = childById(missionLi, "reward").value;
-						mission.amount = childById(missionLi, "amount").value;
-						mission.commodity = childById(missionLi, "commodity").value;
-					}
-					step.missions.push(mission);
+					data.missions.push(mission);
 				}
-				data.steps.push( step );
 			}
 
-     // alert(JSON.stringify(data, null, 2));
+      // alert(JSON.stringify(data, null, 2));
 
   		xhttp.open("GET", serviceurl + "compute?data=" + JSON.stringify(data));
-  		xhttp.send();  		
+  		xhttp.send();
 		}
 		
 function childById(parent, id) {
