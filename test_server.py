@@ -78,7 +78,12 @@ class TestServer(unittest.TestCase):
         currentStationId = 42180
         missioninput.append( (1, 5, 3, 8, 23000, 'deliver') )
 
-        server.handleCompute(currentStationId, missioninput, options)
+        inputData = {}
+        inputData["options"] = options
+        inputData["stationId"] = currentStationId
+        inputData["missions"] = missioninput
+
+        server.handleCompute(inputData)
 
 if __name__ == "__main__":
     unittest.main()

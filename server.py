@@ -64,9 +64,11 @@ def handleCommodityQuery(query):
 	term = query.split("=")[1]
 	return ajaxAutocomplete(entities.commodityLike(term))
 
-def handleCompute(currentStationId, inputData, options):
-	# TODO retrieve from json
-	return elitecore.compute(currentStationId, inputData, options)
+def handleCompute(inputData):
+	currentStationId = inputData["stationId"]
+	options = inputData["options"]
+	missions = inputData["missions"]
+	return elitecore.compute(currentStationId, missions, options)
 
 def ajaxAutocomplete(items, additional=[]):
 	response = []
