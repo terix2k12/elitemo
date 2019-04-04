@@ -70,7 +70,7 @@ class TestServer(unittest.TestCase):
     def test_autocomplete_commodity(self):
         query = "term=l weapo"
         response = server.handleCommodityQuery(query)
-        self.assertEqual('[{"data": 78, "value": "Non-lethal Weapons"}, {"data": 79, "value": "Personal Weapons"}]', response)
+        self.assertEqual('[{"data": 78, "value": "Non-lethal Weapons", "label": "Non-lethal Weapons (Weapons)"}, {"data": 79, "value": "Personal Weapons", "label": "Personal Weapons (Weapons)"}]', response)
 
     def test_compute(self):
         missioninput = []

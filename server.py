@@ -61,7 +61,14 @@ def handleStationQuery(query):
 
 def handleCommodityQuery(query):
 	term = query.split("=")[1]
-	return ajaxAutocomplete(entities.commodityLike(term))
+
+	response = []
+	for commodity in entities.commodityLike(term):
+		label = commodity["name"] + " (" + commodity["category"]["name"] + ")"
+		dic = { "label":label, "value":commodity["name"], "data":commodity["id"] }
+		response.append(dic)
+
+	return json.dumps(response)
 
 def handleCompute(inputData):
 	currentStationId = inputData["stationId"]

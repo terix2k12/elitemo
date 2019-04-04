@@ -53,7 +53,7 @@ function removeMission(element) {
 function missiontype(element) {
 	parent = element.parentNode;
 	if(element.value == "Delivery") {
-		addAutocompleteBox(parent, "commodity", "Commodity", "comodities");
+		addCommodityBox(parent);
 		addBox(parent, "amount", "Amount");
 		sysBox = addSystemBox(parent);
 		addStationBox(parent, sysBox);
@@ -65,7 +65,7 @@ function missiontype(element) {
 		addBox(parent, "reward", "Reward");
 	}
 	if(element.value == "Source") {
-		addAutocompleteBox(parent, "commodity", "Commodity", "comodities");
+		addCommodityBox(parent);
 		addBox(parent, "amount", "Amount");
 		addBox(parent, "reward", "Reward");
 	}	
@@ -114,6 +114,25 @@ function addAutocompleteBox(parent, id, label, mode) {
 	});
 
 	return input;
+}
+
+function addCommodityBox(parent) {
+	span = document.createElement('span');
+	span.innerHTML = "Commodity: ";
+	parent.appendChild(span);
+
+	commodityInput = document.createElement('input');
+	commodityInput.id = "commodity";
+	parent.appendChild(commodityInput);
+
+	$(commodityInput).autocomplete({
+		source: serviceurl + "commodities",
+		select: function(event, ui) {
+			commodityInput.setAttribute("commodityid", ui.item.data);
+		}
+	});
+
+	return commodityInput;
 }
 
 function addSystemBox(parent) {
