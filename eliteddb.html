@@ -2,11 +2,11 @@
 <html>
 <head>
 	<meta charset="UTF-8"> 
- 	<title>Elite:Dangerous - Mission Optimizer</title>
+	<title>Elite:Dangerous - Mission Optimizer</title>
 	<link href="http://code.jquery.com/ui/1.10.3/jquery-ui.css" rel="stylesheet"/>
 	<link href="stylesheet.css" rel="stylesheet"/>
 
- 	<!-- script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script -->
+	<!-- script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script -->
 
 	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
@@ -16,15 +16,33 @@
 	<div id="jsCheck">Your browser needs to allow javascript for this page.</div>
 	<div id="jQueryCheck">Your browser needs to allow jQuery for this page.</div>
 	<h1>Elite:Dangerous - Mission Optimizer</h1>
-	<div>
-		<div id="general">
-			Cargohold: <input id="cargohold" name="maxCargohold" type="number"> <br>
+	<div id="filteroptions">
+		<h3>Filter options: </h3> 
+		Planetary: <br>
+		Distance from star: <br>
+		Allegiance: <br>
+		Max. hops: <input id="maxhops" name="maxHopDistance" type="number"> <br>
+	</div>
+	<div id="shipconfiguration">
+			<h3>Ship Configuration</h3>
+			Model: <input id="ship"> <br>
 			min. landingpad : <input id="landingpad" list="landingpadDropdown" name="landingpad"> <br>
 			Jumprange (laden): <input id="jumprange" name="maxJumprange" type="number"> <br>
-			Max. hops: <input id="maxhops" name="maxHopDistance" type="number"> <br>
-		</div>
-		<div id="steps"></div>
+	</div>
+	<div id ="cargomanifest">
+		<h3>Cargohold</h3>
+		<span id="emptycargospace"> </span> of <input id="cargospace" name="maxCargohold" type="number"> <br>
+		<ul id="cargo"></ul>
+	</div>
+	<div id="missionboard">
+		<h3>Missionboard</h3>
+		<ul id="missions"></ul>
 		<input type="button" onclick="compute()" value="Compute"/>
+		<input type="button" onclick="test()" value="Test"/>
+	</div>
+	<div id="instructionsboard">
+		<h3>Instructions</h3>
+		<div id="steps"></div>
 	</div>
 	<div id="imprint">CMDR terix &copy; 2019</div>
 </body>
