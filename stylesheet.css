@@ -10,9 +10,9 @@ input {
 
 #missionboard, #filteroptions, #shipconfiguration, #cargomanifest {
 	border : 1px solid black;
-	width : 40%;
+	/*width : 40%;
 	float: left;
-	height: 35%; 
+	height: 35%;*/ 
 }
 
 #instructionsboard {

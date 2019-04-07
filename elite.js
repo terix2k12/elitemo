@@ -25,9 +25,10 @@ function onWindowLoad() {
 			jsCheck.parentNode.removeChild(jsCheck);
 		}
 	});
-
-	addOrUpdateStep(null, 0);
-
+	
+	current = document.getElementById("shipconfiguration");
+	sysBox = addSystemBox(current);
+	addStationBox(current, sysBox);
 }
 
 function test() {
@@ -106,10 +107,25 @@ function removeMission(element) {
 function missiontype(element) {
 	parent = element.parentNode;
 	if(element.value == "Delivery") {
+		parent.appendChild(document.createElement('br'));
+		fromSystemBox = addSystemBox(parent);
+		fromSystemBox.id = "systemFrom";
+		fromStationBox = addStationBox(parent, fromSystemBox);
+		fromStationBox.id = "stationFrom";
+
+		parent.appendChild(document.createElement('br'));
 		addAutocompleteBox(parent, "commodity", "Commodity", "comodities");
 		addBox(parent, "amount", "Amount");
-		sysBox = addSystemBox(parent);
-		addStationBox(parent, sysBox);
+		
+
+		
+		parent.appendChild(document.createElement('br'));
+		toSystemBox = addSystemBox(parent);
+		toSystemBox.id = "systemTo";
+		toStationBox = addStationBox(parent, toSystemBox);
+		toStationBox.id = "stationTo";
+		
+		parent.appendChild(document.createElement('br'));
 		addBox(parent, "reward", "Reward");
 	}
 	if(element.value == "Intel") {
@@ -124,23 +140,24 @@ function missiontype(element) {
 	}	
 }
 
-function addMission(stepId) {
-	 step = document.getElementById("step"+stepId);
-	 missions = childById(step, "missions");
-	 missionId = missions.childElementCount;
+function addMission() {
+	ship = document.getElementById("shipconfiguration");
+	station = childById(ship, "system");
+	stationId = station.getAttribute("systemid");
 
 	mission = document.createElement('li');
-	mission.id = "step" + stepId + "mission" + missionId;
 	mission.setAttribute("class", "mission");
-	missions.append(mission);
 
 	var removeButton = document.createElement('button');
 	removeButton.innerHTML = "Remove";
-	removeButton.setAttribute("onClick", "removeMission(this)");
+	removeButton.setAttribute("onClick", "removeMission(this.parent)");
 	mission.append( removeButton );
 
 	input = addAutocompleteBox(mission, "type", "Task", "missions");
 	input.setAttribute("onChange", "missiontype(this)");  // use Validation API
+
+	missions = document.getElementById("missions");
+	missions.append(mission);
 }
 
 function addBox(parent, id, label) {
@@ -234,11 +251,6 @@ function addOrUpdateStep(step, stepId) {
 		stationBox = addStationBox(stepDiv, systemBox);
 		systemBox.station = stationBox;
 
-		addButton = document.createElement("button");
-		addButton.setAttribute("onClick", "addMission("+stepId+")");
-		addButton.innerHTML = "Add Mission";
-		stepDiv.appendChild(addButton);
-
 		tasks = document.createElement('ul');
 		tasks.id = "tasks";
 		stepDiv.appendChild(tasks);
@@ -305,39 +317,36 @@ function compute() {
 		};
 	}
 
-	var data = {};
-	
-	var options = {};
-    options.cargospace = document.getElementById('cargospace').value;
-    options.landingpad = document.getElementById('landingpad').value;
-    options.jumprange = document.getElementById('jumprange').value;
-	options.maxhops = document.getElementById('maxhops').value;
-	data.options = options;
-	
-	data.missions = [];
-
 	start = document.getElementById('step0');
 	stationInput = childById(start, "station");
 	stationId = stationInput.getAttribute("stationid");
 
-	data.stationId = stationId;
+	var options = {};
+	options.cargospace = document.getElementById('cargospace').value;
+	options.landingpad = document.getElementById('landingpad').value;
+	options.jumprange = document.getElementById('jumprange').value;
+	options.maxhops = document.getElementById('maxhops').value;
+	options.currentStationId = stationId;
 
-	for( missionLi of document.getElementById('missions')) {
+	var data = {};
+	data.options = options;
+	data.cargohold = {};
+	data.missions = [];
 
- 
-					var mission = {};
-					type = childById(missionLi, "type").value;
-					if(type == "Intel") {
-						mission.reward = childById(missionLi, "reward").value;
-						mission.station = childById(missionLi, "station").value;
-						mission.system = childById(missionLi, "system").value;
-					}
-					if(type == "Delivery") {
-						reward = childById(missionLi, "reward").value;
-						targetStationId = childById(missionLi, "station").getAttribute("systemid");
-						amount = childById(missionLi, "amount").value;
-						commodityId = childById(missionLi, "commodity").value;
-						reward = childById(missionLi, "reward").value;
+	for( missionLi of document.getElementById('missions').childNodes) {
+		var mission = {};
+		type = childById(missionLi, "type").value;
+		if(type == "Intel") {
+			mission.reward = childById(missionLi, "reward").value;
+			mission.station = childById(missionLi, "station").value;
+			mission.system = childById(missionLi, "system").value;
+		}
+		if(type == "Delivery") {
+			reward = childById(missionLi, "reward").value;
+			targetStationId = childById(missionLi, "station").getAttribute("systemid");
+			amount = childById(missionLi, "amount").value;
+			commodityId = childById(missionLi, "commodity").value;
+			reward = childById(missionLi, "reward").value;
 
 						mission = {"source":stationId, "target":targetStationId, "reward": reward, "commodity":commodityId, "amount":amount, "type":"deliver"}
 					}
@@ -351,7 +360,7 @@ function compute() {
 			}
 
     alert(JSON.stringify(data, null, 2));
-
+	// TODO http POST
 	xhttp.open("GET", serviceurl + "compute?data=" + JSON.stringify(data));
 	xhttp.send();
 }

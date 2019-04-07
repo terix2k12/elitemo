@@ -30,13 +30,14 @@
 			Jumprange (laden): <input id="jumprange" name="maxJumprange" type="number"> <br>
 	</div>
 	<div id ="cargomanifest">
-		<h3>Cargohold</h3>
-		<span id="emptycargospace"> </span> of <input id="cargospace" name="maxCargohold" type="number"> <br>
+		<h3>Cargomanifest</h3>
+		Capacity available <span id="emptycargospace">0</span> of <input id="cargospace" name="maxCargohold" type="number"> tonnes. <br>
 		<ul id="cargo"></ul>
 	</div>
 	<div id="missionboard">
 		<h3>Missionboard</h3>
 		<ul id="missions"></ul>
+		<input type="button" onclick="addMission()" value="Add mission"/>
 		<input type="button" onclick="compute()" value="Compute"/>
 		<input type="button" onclick="test()" value="Test"/>
 	</div>
