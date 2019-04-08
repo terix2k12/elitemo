@@ -83,7 +83,9 @@ class TestServer(unittest.TestCase):
         inputData["stationId"] = currentStationId
         inputData["missions"] = missioninput
 
-        server.handleCompute(inputData)
+        response = server.handleCompute(inputData)
+
+        self.assertEqual(response, [(42180, [])] )
 
 if __name__ == "__main__":
     unittest.main()

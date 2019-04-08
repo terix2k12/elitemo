@@ -232,11 +232,13 @@ function compute() {
  		   xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
 			   var resp = this.responseText;
-    	   data = JSON.parse(resp);
+				 data = JSON.parse(resp);
+				 
+				 alert(JSON.stringify(data, null, 2));
 
-         for( step in data.route) {
-					addOrUpdateStep(data.route[step], step)
-				 }		 
+        // for( step in data.route) {
+				//	addOrUpdateStep(data.route[step], step)
+				// }		 
 				 
         } else {
     			// document.getElementById("demo").innerHTML = "Error on commodities receive " + this.readyState + " " + this.status;
@@ -258,7 +260,7 @@ function compute() {
 			for( stepDiv of document.getElementById('steps').childNodes ) {
 
 				stationInput = childById(stepDiv, "station");
-				stationId = stationInput.getAttribute("systemid");
+				stationId = stationInput.getAttribute("stationid");
 				
 				data.stationId = stationId; // check here
 
@@ -275,20 +277,21 @@ function compute() {
 						targetStationId = childById(missionLi, "station").getAttribute("systemid");
 						amount = childById(missionLi, "amount").value;
 						commodityId = childById(missionLi, "commodity").value;
-						reward = childById(missionLi, "reward").value;
 
-						mission = {"source":stationId, "target":targetStationId, "reward": reward, "commodity":commodityId, "amount":amount, "type":"deliver"}
+						mission = {"source":stationId, "target":targetStationId, "reward": reward, "commodity":commodityId, "amount":amount, "type":"deliver"};
 					}
 					if(type == "Source") {
-						mission.reward = childById(missionLi, "reward").value;
-						mission.amount = childById(missionLi, "amount").value;
-						mission.commodity = childById(missionLi, "commodity").value;
+						reward = childById(missionLi, "reward").value;
+						amount = childById(missionLi, "amount").value;
+						commodityId = childById(missionLi, "commodity").getAttribute("commodityid");
+
+						mission = {"source":0, "target":stationId, "reward": reward, "commodity":commodityId, "amount":amount, "type":"Source"};
 					}
 					data.missions.push(mission);
 				}
 			}
 
-      // alert(JSON.stringify(data, null, 2));
+       alert(JSON.stringify(data, null, 2));
 
   		xhttp.open("GET", serviceurl + "compute?data=" + JSON.stringify(data));
   		xhttp.send();

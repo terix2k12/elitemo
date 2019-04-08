@@ -263,7 +263,7 @@ def compute(data):
 if __name__ == "__main__":
 	print "Start Elite:Dangerous Mission Optimizer"
 
-	if sys.argv[1] == "--mini":
+	if len(sys.argv) == 1 or sys.argv[1] != "--maxi":
 		print "Limited Edition"
 		entities.systems = assets.unPickle("res/systems-mini.pic")
 		entities.stations = assets.unPickle("res/stations-mini.pic")

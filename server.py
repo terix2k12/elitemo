@@ -77,7 +77,7 @@ def handleCompute(inputData):
 
 	missiongoals = []
 	for mission in missions:
-		missiongoals.append( ( mission["source"], mission["target"], mission["commodity"], mission["amount"], mission["reward"], mission["type"]  ) )
+		missiongoals.append( ( int(mission["source"]), int(mission["target"]), int(mission["commodity"]), mission["amount"], mission["reward"], mission["type"]  ) )
 
 	return elitecore.compute(currentStationId, missiongoals, options)
 
