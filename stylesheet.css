@@ -7,8 +7,18 @@ input {
 	width: 120px;
 }
 
-#general {
+
+#missionboard, #filteroptions, #shipconfiguration, #cargomanifest {
 	border : 1px solid black;
+	/*width : 40%;
+	float: left;
+	height: 35%;*/ 
+}
+
+#instructionsboard {
+	border : 1px solid black;
+	float: none;
+	clear: both;
 }
 
 .step {
