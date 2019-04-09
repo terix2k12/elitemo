@@ -20,7 +20,7 @@ def getdeals(market1, market2):
 	return profits 
 
 def compute(options, gcargohold, missiongoals):
-    currentStationId = options["currentStationId"]
+    currentStationId = int(options["currentStationId"])
 
     steps = []
 
@@ -46,9 +46,9 @@ def compute(options, gcargohold, missiongoals):
     currentStation = entities.station(id=currentStationId)
     neighbors = galaxy.hubs(station=currentStation, options=options)
 
+    market1 = entities.market(currentStationId)
     for neighbor in neighbors:
         neighborId = int(neighbor["id"])
-        market1 = entities.market(currentStationId)
         market2 = entities.market(neighborId)
 
         # Apply deals
@@ -60,7 +60,7 @@ def compute(options, gcargohold, missiongoals):
         # Apply 'source' mission modifiers
         for missiongoal in missiongoals:
             (missionSource, missionTarget, missionCommodityId, missionAmount, missionReward, missionType) = missiongoal
-            if missionType in ['source']:
+            if missionType in ["Source"]:
                 for item in market2:
                     commodityId = int(item["commodity_id"])
                     if missionCommodityId == commodityId:
@@ -87,7 +87,7 @@ def compute(options, gcargohold, missiongoals):
                 # if missionType in ['Deliver', 'Intel'] and missionTarget == nodeSource:
                 #    nodeModifier = 10000
                 #    break
-                if missionType in ["Source"] and missionCommodityId == nodeCommodityId: # TODO stations needs commodity, not node
+                if missionType in ["Source"] and missionCommodityId == nodeCommodityId:
                     nodeModifier = 10000
                     break
             clone.append( (nodeSource, nodeTarget, nodeProfit, nodeModifier, nodeCommodityId, nodeSupply) )
@@ -118,7 +118,7 @@ def compute(options, gcargohold, missiongoals):
 
         # Select next target
         if len(nodeset) > 0:
-            nodeset.sort(key=lambda (s, t, profit, modifier, c, a): (profit+modifier+ (100000000 if s == currentStationId else 0) ), reverse=True)
+            nodeset.sort(key=lambda (s, t, profit, modifier, c, a): (profit+modifier+ (100000 if s == currentStationId else 0) ), reverse=True)
             (s, targetStationId, r, d, c, a) = nodeset[0]
         elif len(cargohold) > 0:
             (newTarget, c, a) = cargohold[0]
@@ -135,10 +135,10 @@ def compute(options, gcargohold, missiongoals):
                 clone.append(node)
                 continue
 
-            if supply >= cargospace:
+            if nodeSupply >= cargospace:
                 loading = cargospace
             else:
-                loading = supply
+                loading = nodeSupply
 
             transfer = (nodeTarget, nodeCommodityId, loading)
 
@@ -148,7 +148,7 @@ def compute(options, gcargohold, missiongoals):
             instructions.append( ('collect',transfer) )
 
             if supply-loading > 0:
-                clone.append( (nodeSource, nodeTarget, nodeProfit, nodeModifier, nodeCommodityId,  supply-loading) )
+                clone.append( (nodeSource, nodeTarget, nodeProfit, nodeModifier, nodeCommodityId,  nodeSupply-loading) )
         nodeset = clone
 
         # Continue the journey

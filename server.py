@@ -79,7 +79,9 @@ def handleCompute(inputData):
 	for mission in missions:
 		missiongoals.append( ( int(mission["source"]), int(mission["target"]), int(mission["commodity"]), int(mission["amount"]), int(mission["reward"]), mission["type"]  ) )
 
-	return elitecore.compute(options, cargohold, missiongoals)
+	instructions =  elitecore.compute(options, cargohold, missiongoals)
+
+	return {"cargohold": [], "instructions":instructions, "missions": []}
 
 def ajaxAutocomplete(items, additional=[]):
 	response = []

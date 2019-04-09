@@ -279,20 +279,21 @@ function addOrUpdateStep(step, stepId) {
 	}
 
 	if(step) {
-		childById(stepDiv, "station").value = step.stationId;
+		childById(stepDiv, "station").value = step[0] // TODO .stationId;
 		// TODO dont just set the ID, set station and system
 		
 		var taskUl = childById(stepDiv, "tasks");
-		for(task of step.tasks){
+		for(task of step[1]){ // TODO .tasks
 			var taskLi = document.createElement('li');
-			taskLi.innerHTML = task.type + " " + task.volume + " Units of " + task.commodityId 
+			// taskLi.innerHTML = task.type + " " + task.volume + " Units of " + task.commodityId 
+			taskLi.innerHTML = task[0] + " " + task[1] + " Units of " + task[2] 
 			taskUl.appendChild(taskLi)
 		}
 	}
 }
 
 function handleCargohold(cargohold) {
-	if(!cargohold) {
+	if(!cargohold.cargo) {
 		return;
 	}
 
@@ -307,10 +308,6 @@ function handleCargohold(cargohold) {
 }
 
 function handleInstructions(instructions) {
-	if(!instructions) {
-		return;
-	}
-
 	for(stepId in instructions) {
 		step = instructions[stepId];
 		addOrUpdateStep(step, stepId);
@@ -318,10 +315,6 @@ function handleInstructions(instructions) {
 }
 
 function handleMissions(missions) {
-	if(!missions) {
-		return;
-	}
-
 	missionDiv = document.getElementById('missionboard');
 	for(mission of missions) {
 		newmission = document.createElement('li');
