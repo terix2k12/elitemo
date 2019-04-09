@@ -86,7 +86,7 @@ class TestServer(unittest.TestCase):
 
         response = server.handleCompute(inputData)
 
-        self.assertEqual(response, [(42180, [])] )
+        self.assertEqual(response, {'cargohold': [], 'missions': [], 'instructions': [(42180, [])] } )
 
 if __name__ == "__main__":
     unittest.main()

@@ -43,7 +43,7 @@ class TestCore(unittest.TestCase):
         options = {"ly":1000, "currentStationId":currentStationId }
         cargohold = {"cargospace" : 16}
         missiongoals = []
-        missiongoals.append( (0, 5, 8, 10, 23000, 'source') )
+        missiongoals.append( (0, 5, 8, 10, 23000, 'Source') )
 
         instructions = elitecore.compute(options, cargohold, missiongoals)
 
