@@ -72,7 +72,7 @@ class TestServer(unittest.TestCase):
         response = server.handleCommodityQuery(query)
         self.assertEqual('[{"data": 78, "value": "Non-lethal Weapons", "label": "Non-lethal Weapons (Weapons)"}, {"data": 79, "value": "Personal Weapons", "label": "Personal Weapons (Weapons)"}]', response)
 
-    def test_compute(self):
+    def test_compute_json(self):
         missiongoals = []
         currentStationId = 42180
         options = {"ly":30, "currentStationId":currentStationId}
@@ -87,6 +87,16 @@ class TestServer(unittest.TestCase):
         response = server.handleCompute(inputData)
 
         self.assertEqual(response, {'cargohold': [], 'missions': [], 'instructions': [(42180, [])] } )
+
+    def test_compute_string(self):
+        inputData = assets.loadJSON("Integration Test String", "test/integration.json" )
+
+        # TODO use javascript frontend to generate that string
+
+        response = server.handleCompute(inputData)
+
+        self.assertEqual(response, {'cargohold': [], 'missions': [], 'instructions': [(68, [])] } )
+
 
 if __name__ == "__main__":
     unittest.main()

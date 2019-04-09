@@ -1,0 +1,22 @@
+{
+    "options": {
+      "landingpad": "",
+      "jumprange": "",
+      "maxhops": "",
+      "currentStationId": "68",
+      "currentSystemId": "4615"
+    },
+    "cargohold": {
+      "cargospace": "5"
+    },
+    "missions": [
+      {
+        "source": 0,
+        "target": "68",
+        "reward": "9999",
+        "commodity": "31",
+        "amount": "5",
+        "type": "Source"
+      }
+    ]
+  }
