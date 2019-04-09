@@ -39,14 +39,13 @@ class TestCore(unittest.TestCase):
         self.assertEqual( instructions, [(5, 1, 0, 0), (5, 1, '10', 10)] )
 
     def test_core_source(self):
-        missioninput = []
-        options = {"cargospace" : 16}
+        currentStationId = 5
+        options = {"ly":1000, "currentStationId":currentStationId }
+        cargohold = {"cargospace" : 16}
+        missiongoals = []
+        missiongoals.append( (0, 5, 8, 10, 23000, 'source') )
 
-        # Intel
-        currentStation = 5
-        missioninput.append( (0, 5, 8, 10, 23000, 'source') )
-
-        instructions = elitecore.compute(currentStation, missioninput, options)
+        instructions = elitecore.compute(options, cargohold, missiongoals)
 
         self.assertEqual( len(instructions) , 3)
         self.assertEqual( instructions, [(5, [('collect', (1, 10, 10))]),  (1, [('drop', (1, 10, 10)), ('collect', (5, 8, 10))]), (5, [('drop', (5, 8, 10))])] )

@@ -73,15 +73,16 @@ class TestServer(unittest.TestCase):
         self.assertEqual('[{"data": 78, "value": "Non-lethal Weapons", "label": "Non-lethal Weapons (Weapons)"}, {"data": 79, "value": "Personal Weapons", "label": "Personal Weapons (Weapons)"}]', response)
 
     def test_compute(self):
-        missioninput = []
-        options = {"cargospace" : 16}
+        missiongoals = []
         currentStationId = 42180
-        missioninput.append( { "source":1, "target":5, "commodity":3, "amount":8, "reward":23000, 'type':'deliver' } )
+        options = {"ly":30, "currentStationId":currentStationId}
+
+        missiongoals.append( { "source":1, "target":5, "commodity":3, "amount":8, "reward":23000, 'type':'deliver' } )
 
         inputData = {}
         inputData["options"] = options
-        inputData["stationId"] = currentStationId
-        inputData["missions"] = missioninput
+        inputData["cargohold"] = {"cargospace":16} 
+        inputData["missions"] = missiongoals
 
         response = server.handleCompute(inputData)
 

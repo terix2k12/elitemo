@@ -25,7 +25,7 @@ function onWindowLoad() {
 			jsCheck.parentNode.removeChild(jsCheck);
 		}
 	});
-	
+
 	current = document.getElementById("shipconfiguration");
 	sysBox = addSystemBox(current);
 	addStationBox(current, sysBox);
@@ -107,9 +107,7 @@ function removeMission(element) {
 function missiontype(element) {
 	parent = element.parentNode;
 	if(element.value == "Delivery") {
-<<<<<<< HEAD
-		addCommodityBox(parent);
-=======
+		
 		parent.appendChild(document.createElement('br'));
 		fromSystemBox = addSystemBox(parent);
 		fromSystemBox.id = "systemFrom";
@@ -118,11 +116,9 @@ function missiontype(element) {
 
 		parent.appendChild(document.createElement('br'));
 		addAutocompleteBox(parent, "commodity", "Commodity", "comodities");
->>>>>>> e6ef0d4b0376674e4e1b09c83a59c9cd1cc04d42
+		addCommodityBox(parent);
 		addBox(parent, "amount", "Amount");
-		
 
-		
 		parent.appendChild(document.createElement('br'));
 		toSystemBox = addSystemBox(parent);
 		toSystemBox.id = "systemTo";
@@ -296,6 +292,10 @@ function addOrUpdateStep(step, stepId) {
 }
 
 function handleCargohold(cargohold) {
+	if(!cargohold) {
+		return;
+	}
+
 	document.getElementById('emptycargospace').innerHTML = cargohold.emptycargospace;
 	document.getElementById('cargospace').value = cargohold.cargospace;
 	cargo = document.getElementById('cargo');
@@ -307,6 +307,10 @@ function handleCargohold(cargohold) {
 }
 
 function handleInstructions(instructions) {
+	if(!instructions) {
+		return;
+	}
+
 	for(stepId in instructions) {
 		step = instructions[stepId];
 		addOrUpdateStep(step, stepId);
@@ -314,6 +318,10 @@ function handleInstructions(instructions) {
 }
 
 function handleMissions(missions) {
+	if(!missions) {
+		return;
+	}
+
 	missionDiv = document.getElementById('missionboard');
 	for(mission of missions) {
 		newmission = document.createElement('li');
@@ -334,26 +342,32 @@ function compute() {
 		if (this.readyState == 4 && this.status == 200) {
 		var resp = this.responseText;
 		data = JSON.parse(resp);
+
+		alert(JSON.stringify(data, null, 2));
+
 		handleResponse(data);
 		} else {
 			// document.getElementById("demo").innerHTML = "Error on commodities receive " + this.readyState + " " + this.status;
 		};
 	}
 
-	start = document.getElementById('step0');
+	start = document.getElementById("shipconfiguration");
 	stationInput = childById(start, "station");
 	stationId = stationInput.getAttribute("stationid");
+	systemInput = childById(start, "system");
+	systemId = systemInput.getAttribute("systemid");
 
 	var options = {};
-	options.cargospace = document.getElementById('cargospace').value;
 	options.landingpad = document.getElementById('landingpad').value;
 	options.jumprange = document.getElementById('jumprange').value;
 	options.maxhops = document.getElementById('maxhops').value;
 	options.currentStationId = stationId;
+	options.currentSystemId = systemId;
 
 	var data = {};
 	data.options = options;
 	data.cargohold = {};
+	data.cargohold.cargospace = document.getElementById('cargospace').value;
 	data.missions = [];
 
 	for( missionLi of document.getElementById('missions').childNodes) {
@@ -371,18 +385,18 @@ function compute() {
 			commodityId = childById(missionLi, "commodity").value;
 			reward = childById(missionLi, "reward").value;
 
-						mission = {"source":stationId, "target":targetStationId, "reward": reward, "commodity":commodityId, "amount":amount, "type":"deliver"};
-					}
-					if(type == "Source") {
-						reward = childById(missionLi, "reward").value;
-						amount = childById(missionLi, "amount").value;
-						commodityId = childById(missionLi, "commodity").getAttribute("commodityid");
+			mission = {"source":stationId, "target":targetStationId, "reward": reward, "commodity":commodityId, "amount":amount, "type":"deliver"};
+		}
+		if(type == "Source") {
+			reward = childById(missionLi, "reward").value;
+			amount = childById(missionLi, "amount").value;
+			commodityId = childById(missionLi, "commodity").getAttribute("commodityid");
 
-						mission = {"source":0, "target":stationId, "reward": reward, "commodity":commodityId, "amount":amount, "type":"Source"};
-					}
-					data.missions.push(mission);
+			mission = {"source":0, "target":stationId, "reward": reward, "commodity":commodityId, "amount":amount, "type":"Source"};
+		}
+		data.missions.push(mission);
 
-			}
+	}
 
     alert(JSON.stringify(data, null, 2));
 	// TODO http POST

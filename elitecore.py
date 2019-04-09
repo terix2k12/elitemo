@@ -19,8 +19,9 @@ def getdeals(market1, market2):
 	profits.sort(key=lambda (i,t,p):t, reverse=True)
 	return profits 
 
-def compute(currentStationId, missiongoals, options):
-    
+def compute(options, gcargohold, missiongoals):
+    currentStationId = options["currentStationId"]
+
     steps = []
 
     # pseudocode
@@ -36,11 +37,14 @@ def compute(currentStationId, missiongoals, options):
 
     nodeset = [] # holds tuples of (source, target, profit, modifier, commodity, supply)
     cargohold = [] # holds tuples of (source, target, commodity, loading)
-    maxcargospace = options["cargospace"]
-    cargospace = maxcargospace
+    maxcargospace = int(gcargohold["cargospace"])
+    cargospace = maxcargospace # compute gcargohold["emptycargospace"]
+
+    if "ly" not in options:
+        options["ly"] = 50
 
     currentStation = entities.station(id=currentStationId)
-    neighbors = galaxy.hubs(station=currentStation)
+    neighbors = galaxy.hubs(station=currentStation, options=options)
 
     for neighbor in neighbors:
         neighborId = int(neighbor["id"])
@@ -62,7 +66,9 @@ def compute(currentStationId, missiongoals, options):
                     if missionCommodityId == commodityId:
                         nodeset.append( (neighborId, missionTarget, missionReward, 0, missionCommodityId, int(item["supply"])) )
 
-    while len(missiongoals) > 0:
+    failsafe = 0
+    while len(missiongoals) > 0 and failsafe < 5:
+        failsafe += 1
         instructions = []
 
         # Reset modifiers
@@ -78,10 +84,10 @@ def compute(currentStationId, missiongoals, options):
             (nodeSource, nodeTarget, nodeProfit, nodeModifier, nodeCommodityId, nodeSupply) = node
             for missiongoal in missiongoals:
                 (missionSource, missionTarget, missionCommodityId, missionVolume, missionReward, missionType) = missiongoal
-                if missionType in ['deliver', 'intel']:
-                    nodeModifier = 10000
-                    break
-                if missionType in ['source'] and missionCommodityId == nodeCommodityId:
+                # if missionType in ['Deliver', 'Intel'] and missionTarget == nodeSource:
+                #    nodeModifier = 10000
+                #    break
+                if missionType in ["Source"] and missionCommodityId == nodeCommodityId: # TODO stations needs commodity, not node
                     nodeModifier = 10000
                     break
             clone.append( (nodeSource, nodeTarget, nodeProfit, nodeModifier, nodeCommodityId, nodeSupply) )
