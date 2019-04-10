@@ -54,34 +54,34 @@ class TestGalaxy(unittest.TestCase):
     # TODO expected more than one commodity
 
 
-    def slow_test_galaxy_minipickle(self):
+    def slow_test_create_galaxy_minipickle(self):
         entities.reset()
-        #entities.systems = assets.systems("res/systems_populated.json")
+        entities.systems = assets.systems("res/systems_populated.json")
         entities.stations = assets.systems("res/stations.json")
-        #entities.markets = assets.markets("res/listings.csv")
+        entities.markets = assets.markets("res/listings.csv")
 
         eravate = entities.system(name="Eravate")
 
-        opt = { "ly": 100 }
+        opt = { "ly": 50 }
 
-        #systems = {}
-        #for system in galaxy.proximity(system=eravate, options=opt):
-        #    systems[ system["id"] ] = system
-        #self.assertEqual(len(systems), 3678)
+        systems = {}
+        for system in galaxy.proximity(system=eravate, options=opt):
+            systems[ system["id"] ] = system
+        self.assertEqual(len(systems), 519)
 
         stations = {}
         for station in galaxy.hubs(system=eravate, options=opt):
             stations[ station["id"] ] = station
-        self.assertEqual(len(stations), 13683)
+        self.assertEqual(len(stations), 2081)
 
-        #markets = {}
-        #for station in stations.values():
-        #    markets[ station["id"] ] = entities.market(station["id"])
-        #self.assertEqual(len(markets), 13683)
+        markets = {}
+        for station in stations.values():
+            markets[ station["id"] ] = entities.market(station["id"])
+        self.assertEqual(len(markets), 2081)
 
-        #assets.doPickle(systems, "systems-mini.pic")
-        assets.doPickle(stations, "stations-mini.pic")
-        #assets.doPickle(markets, "markets-mini.pic")
+        assets.doPickle(systems, "res/systems-mini-50.pic")
+        assets.doPickle(stations, "res/stations-mini-50.pic")
+        assets.doPickle(markets, "res/markets-mini-50.pic")
 
 if __name__ == "__main__":
     unittest.main()

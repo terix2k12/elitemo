@@ -265,9 +265,9 @@ if __name__ == "__main__":
 
 	if len(sys.argv) == 1 or sys.argv[1] != "--maxi":
 		print "Limited Edition"
-		entities.systems = assets.unPickle("res/systems-mini.pic")
-		entities.stations = assets.unPickle("res/stations-mini.pic")
-		entities.markets = assets.unPickle("res/markets-mini.pic")
+		entities.systems = assets.unPickle("res/systems-mini-50.pic")
+		entities.stations = assets.unPickle("res/stations-mini-50.pic")
+		entities.markets = assets.unPickle("res/markets-mini-50.pic")
 	else:
 		entities.stations = assets.stations("stations.json")
 		entities.systems = assets.systems("systems_populated.json")
