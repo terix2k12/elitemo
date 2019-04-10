@@ -43,12 +43,24 @@ class TestCore(unittest.TestCase):
         options = {"ly":1000, "currentStationId":currentStationId }
         cargohold = {"cargospace" : 16}
         missiongoals = []
-        missiongoals.append( (0, 5, 8, 10, 23000, 'Source') )
+        missiongoals.append( (0, 5, 1, 10, 23000, 'Source') )
 
         instructions = elitecore.compute(options, cargohold, missiongoals)
 
         self.assertEqual( len(instructions) , 3)
-        self.assertEqual( instructions, [(5, [('collect', (1, 10, 10))]),  (1, [('drop', (1, 10, 10)), ('collect', (5, 8, 10))]), (5, [('drop', (5, 8, 10))])] )
+        self.assertEqual( instructions, [
+            (5,
+                [('collect', (1, 2, 10))]
+            ),
+            
+            (1,
+                [('drop', (1, 2, 10)), ('collect', (5, 1, 10)), ('collect', (5, 3, 6))]
+            ),
+            
+            (5,
+                [('drop', (5, 1, 10)), ('drop', (5, 3, 6))]
+            )
+        ])
 
 if __name__ == "__main__":
 	unittest.main()

@@ -35,7 +35,7 @@ def compute(options, gcargohold, missiongoals):
     #   mg aktualisieren
     # 
 
-    nodeset = [] # holds tuples of (source, target, profit, modifier, commodity, supply)
+    missionnodeset = [] # holds tuples of (source, target, profit, modifier, commodity, supply)
     cargohold = [] # holds tuples of (source, target, commodity, loading)
     maxcargospace = int(gcargohold["cargospace"])
     cargospace = maxcargospace # compute gcargohold["emptycargospace"]
@@ -51,12 +51,6 @@ def compute(options, gcargohold, missiongoals):
         neighborId = int(neighbor["id"])
         market2 = entities.market(neighborId)
 
-        # Apply deals
-        deals = getdeals(market1, market2)
-        for deal in deals:
-            (commodityId, profit, supply) = deal
-            nodeset.append( (currentStationId, neighborId, profit, 0, int(commodityId), supply) )
-
         # Apply 'source' mission modifiers
         for missiongoal in missiongoals:
             (missionSource, missionTarget, missionCommodityId, missionAmount, missionReward, missionType) = missiongoal
@@ -64,12 +58,30 @@ def compute(options, gcargohold, missiongoals):
                 for item in market2:
                     commodityId = int(item["commodity_id"])
                     if missionCommodityId == commodityId:
-                        nodeset.append( (neighborId, missionTarget, missionReward, 0, missionCommodityId, int(item["supply"])) )
+                        missionnodeset.append( (neighborId, missionTarget, missionReward, 0, missionCommodityId, int(item["supply"])) )
 
     failsafe = 0
     while len(missiongoals) > 0 and failsafe < 5:
         failsafe += 1
         instructions = []
+
+        nodeset = []
+        for node in missionnodeset:
+            nodeset.append(node)
+
+        currentStation = entities.station(id=currentStationId)
+        neighbors = galaxy.hubs(station=currentStation, options=options)
+
+        market1 = entities.market(currentStationId)
+        for neighbor in neighbors:
+            neighborId = int(neighbor["id"])
+            market2 = entities.market(neighborId)
+
+            # Apply deals
+            deals = getdeals(market1, market2)
+            for deal in deals:
+                (commodityId, profit, supply) = deal
+                nodeset.append( (currentStationId, neighborId, profit, 0, int(commodityId), supply) )        
 
         # Reset modifiers
         clone = []
@@ -126,30 +138,31 @@ def compute(options, gcargohold, missiongoals):
         else:
             targetStationId = 0
 
-        # Load cargohold
-        clone = []
-        for node in nodeset:
-            (nodeSource, nodeTarget, nodeProfit, nodeModifier, nodeCommodityId, nodeSupply) = node
+        if len(missiongoals) > 0:
+            # Load cargohold
+            clone = []
+            for node in nodeset:
+                (nodeSource, nodeTarget, nodeProfit, nodeModifier, nodeCommodityId, nodeSupply) = node
 
-            if nodeSource != currentStationId or cargospace == 0:
-                clone.append(node)
-                continue
+                if nodeSource != currentStationId or cargospace == 0:
+                    clone.append(node)
+                    continue
 
-            if nodeSupply >= cargospace:
-                loading = cargospace
-            else:
-                loading = nodeSupply
+                if nodeSupply >= cargospace:
+                    loading = cargospace
+                else:
+                    loading = nodeSupply
 
-            transfer = (nodeTarget, nodeCommodityId, loading)
+                transfer = (nodeTarget, nodeCommodityId, loading)
 
-            cargohold.append( transfer )
-            cargospace -= loading
+                cargohold.append( transfer )
+                cargospace -= loading
 
-            instructions.append( ('collect',transfer) )
+                instructions.append( ('collect',transfer) )
 
-            if supply-loading > 0:
-                clone.append( (nodeSource, nodeTarget, nodeProfit, nodeModifier, nodeCommodityId,  nodeSupply-loading) )
-        nodeset = clone
+                if nodeSupply-loading > 0:
+                    clone.append( (nodeSource, nodeTarget, nodeProfit, nodeModifier, nodeCommodityId,  nodeSupply-loading) )
+            nodeset = clone
 
         # Continue the journey
         steps.append( (currentStationId, instructions) )
