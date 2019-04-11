@@ -46,6 +46,7 @@ def compute(options, gcargohold, missiongoals):
     currentStation = entities.station(id=currentStationId)
     neighbors = galaxy.hubs(station=currentStation, options=options)
 
+    clone = []
     market1 = entities.market(currentStationId)
     for neighbor in neighbors:
         neighborId = int(neighbor["id"])
@@ -57,8 +58,13 @@ def compute(options, gcargohold, missiongoals):
             if missionType in ["Source"]:
                 for item in market2:
                     commodityId = int(item["commodity_id"])
-                    if missionCommodityId == commodityId:
-                        missionnodeset.append( (neighborId, missionTarget, missionReward, 0, missionCommodityId, int(item["supply"])) )
+                    supply = int(item["supply"])
+                    if supply > 0 and missionCommodityId == commodityId:
+                        if neighborId==currentStationId:
+                            print "Bringt nix"
+                        clone.append(neighbor)
+                        missionnodeset.append( (neighborId, missionTarget, missionReward, 0, missionCommodityId, supply) )
+    neighbors = clone
 
     failsafe = 0
     while len(missiongoals) > 0 and failsafe < 5:
