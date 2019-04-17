@@ -44,40 +44,66 @@ def compute(options, gcargohold, missiongoals):
         options["ly"] = 50
 
     currentStation = entities.station(id=currentStationId)
-    neighbors = galaxy.hubs(station=currentStation, options=options)
-
-    clone = []
-    market1 = entities.market(currentStationId)
-    for neighbor in neighbors:
-        neighborId = int(neighbor["id"])
-        market2 = entities.market(neighborId)
-
-        # Apply 'source' mission modifiers
-        for missiongoal in missiongoals:
-            (missionSource, missionTarget, missionCommodityId, missionAmount, missionReward, missionType) = missiongoal
-            if missionType in ["Source"]:
-                for item in market2:
-                    commodityId = int(item["commodity_id"])
-                    supply = int(item["supply"])
-                    if supply > 0 and missionCommodityId == commodityId:
-                        if neighborId==currentStationId:
-                            print "Bringt nix"
-                        clone.append(neighbor)
-                        missionnodeset.append( (neighborId, missionTarget, missionReward, 0, missionCommodityId, supply) )
-    neighbors = clone
+    allNeighbors = galaxy.hubs(station=currentStation, options=options)
 
     failsafe = 0
-    while len(missiongoals) > 0 and failsafe < 5:
+    while  failsafe < 5:
         failsafe += 1
         instructions = []
 
+        # Unload cargohold
+        clone = []
+        newinstructions = []
+        dropped = {}
+        for cargo in cargohold:
+            (cargoTarget, cargoCommodityId, cargoVolume) = cargo
+            if cargoTarget == currentStationId:
+                instructions.append( ('drop',cargo) )
+                newinstructions.append( (cargoTarget, cargoCommodityId) )
+                if cargoCommodityId not in dropped:
+                    dropped[cargoCommodityId] = 0
+                dropped[cargoCommodityId] += cargoVolume
+                cargospace += cargoVolume
+            else:
+                clone.append(cargo)
+        cargohold = clone
+
+        # Update mission goals
+        clone = []
+        for mission in missiongoals:
+            (missionSource, missionTarget, missionCommodityId, missionVolume, missionReward, missionType) = mission
+            if missionCommodityId in dropped:
+                droppedAmount = dropped[missionCommodityId]
+                if droppedAmount < missionVolume:
+                    clone.append( (missionSource, missionTarget, missionCommodityId, missionVolume-droppedAmount, missionReward, missionType) )
+            else:
+                clone.append(mission)
+        missiongoals = clone
+
+        if len(missiongoals) == 0:
+            steps.append( (currentStationId, instructions) )
+            return steps
+
+        # Only use neighbors with a missiongoal
+        clone = []
+        # market1 = entities.market(currentStationId)
+        for neighbor in allNeighbors:
+            neighborId = int(neighbor["id"])
+            for missiongoal in missiongoals:
+                (missionSource, missionTarget, missionCommodityId, missionAmount, missionReward, missionType) = missiongoal
+                # TODO other missiontypes
+                if missionType in ["Source"]:
+                    market2 = entities.market(neighborId)
+                    for item in market2:
+                        commodityId = int(item["commodity_id"])
+                        supply = int(item["supply"])
+                        if supply > 0 and missionCommodityId == commodityId:
+                            clone.append(neighbor)
+        neighbors = clone
+
         nodeset = []
-        for node in missionnodeset:
-            nodeset.append(node)
 
         currentStation = entities.station(id=currentStationId)
-        neighbors = galaxy.hubs(station=currentStation, options=options)
-
         market1 = entities.market(currentStationId)
         for neighbor in neighbors:
             neighborId = int(neighbor["id"])
@@ -87,14 +113,9 @@ def compute(options, gcargohold, missiongoals):
             deals = getdeals(market1, market2)
             for deal in deals:
                 (commodityId, profit, supply) = deal
-                nodeset.append( (currentStationId, neighborId, profit, 0, int(commodityId), supply) )        
-
-        # Reset modifiers
-        clone = []
-        for node in nodeset:
-            (source, target, profit, modifier, commodityId, supply) = node
-            clone.append( (source, target, profit, 0, commodityId, supply) )
-        nodeset = clone
+                nodeset.append( (currentStationId, neighborId, profit, 0, int(commodityId), supply) )
+                
+            # TODO mission commodity is missing in deals......
 
         # Apply missiongoals modifier to nodeset
         clone = []
@@ -105,34 +126,11 @@ def compute(options, gcargohold, missiongoals):
                 # if missionType in ['Deliver', 'Intel'] and missionTarget == nodeSource:
                 #    nodeModifier = 10000
                 #    break
-                if missionType in ["Source"] and missionCommodityId == nodeCommodityId:
-                    nodeModifier = 10000
+                if missionType in ["Source"] and missionCommodityId == nodeCommodityId and nodeTarget == missionTarget:
+                    nodeModifier = 100000
                     break
             clone.append( (nodeSource, nodeTarget, nodeProfit, nodeModifier, nodeCommodityId, nodeSupply) )
         nodeset = clone
-
-        # Unload cargohold
-        clone = []
-        newinstructions = []
-        for cargo in cargohold:
-            (cargoTarget, cargoCommodityId, cargoVolume) = cargo
-            if cargoTarget == currentStationId:
-                instructions.append( ('drop',cargo) )
-                newinstructions.append(cargo)
-                cargospace += cargoVolume
-            else:
-                clone.append(cargo)
-        cargohold = clone
-
-        # Update mission goals
-        clone = []
-        for mission in missiongoals:
-            (missionSource, missionTarget, missionCommodityId, missionVolume, missionReward, missionType) = missiongoal
-            node = (missionTarget, missionCommodityId, missionVolume)
-            missionCompleted = node in newinstructions
-            if not missionCompleted:
-                clone.append(mission)
-        missiongoals = clone
 
         # Select next target
         if len(nodeset) > 0:
