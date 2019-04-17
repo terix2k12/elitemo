@@ -63,16 +63,20 @@ def unPickle(filename):
 	print "Unpickled " + str( len(dict) )
 	return dict
 
-def update(filename):
+def update(filename, force=False):
 	exists = os.path.isfile(filename)
 	if exists:
-		# Store configuration file values
-		pass
-	else:
-		try:
-			url = "https://eddb.io/archive/v6/" + filename  
-			wget.download(url, filename)
-			return True
-		except Exception:
-			pass
+		if not force:
+			print "Resource already present, ignore update for " + filename
+			return False
+		print "Updating resource " + filename
+		os.remove(filename)
+	print "Downloading resource " + filename
+	try:
+		fileurl = filename.split("/")[1]
+		url = "https://eddb.io/archive/v6/" + fileurl
+		wget.download(url, filename)
+		return True
+	except Exception:
+		return False
 	return False

@@ -33,10 +33,10 @@ class TestAsset(unittest.TestCase):
 		self.assertEqual(not (success and exists), False)		
 
 	def slow_test_asset_install(self):
-		assets.update("commodities.json")
-		assets.update("stations.json")
-		assets.update("systems_populated.json")
-		assets.update("listings.csv")
+		assets.update("res/commodities.json", True)
+		assets.update("res/stations.json", True)
+		assets.update("res/systems_populated.json", True)
+		assets.update("res/listings.csv", True)
 
 	def slow_test_assets_doPickle(self):
 		stations = assets.stations("stations.json")

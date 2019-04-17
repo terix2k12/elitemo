@@ -263,6 +263,12 @@ def compute(data):
 if __name__ == "__main__":
 	print "Start Elite:Dangerous Mission Optimizer"
 
+	if len(sys.argv) == 1 and sys.argv[1] == "--update":
+		assets.update("res/commodities.json", True)
+		assets.update("res/stations.json")
+		assets.update("res/systems_populated.json")
+		assets.update("res/listings.csv")
+
 	if len(sys.argv) == 1 or sys.argv[1] != "--maxi":
 		print "Limited Edition"
 		entities.systems = assets.unPickle("res/systems-mini-50.pic")
