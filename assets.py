@@ -12,6 +12,16 @@ def loadJSON(name, path):
 	f.close()
 	return j
 
+def loadJSONl(name, path):
+	print "Loading with line break" + name + ":"
+	jsonList = []
+	with open(path) as f:
+		for line in f:
+			j = json.loads(line)
+			jsonList.append(j)
+	print str(len(j)) + " " + name + " parsed from JSON"
+	return jsonList
+
 def loadCSV(path):
 	print "Loading " + path + ":"
 	f = open(path, "r")

@@ -53,7 +53,7 @@ class TestAsset(unittest.TestCase):
 	def test_profile_and_improve(self):
 		
 		start = time.time()
-		inmemoryjson = assets.loadJSON("testbig", "res/stations.json")
+		inmemoryjson = assets.loadJSONl("testbig", "res/stations.jsonl")
 		dicbytes = sys.getsizeof(inmemoryjson)
 
 		print "Structure size is " + str( dicbytes / 1024 ) + " kB"
@@ -73,7 +73,7 @@ class TestAsset(unittest.TestCase):
 		end = time.time()
 		print("iteration time: " + str(end - start) )
 
-		self.assertEqual(len(inmemoryjson), 68749)
+		self.assertEqual(len(inmemoryjson), 68768)
 
 if __name__ == "__main__":
 	unittest.main()
