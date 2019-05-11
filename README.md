@@ -4,6 +4,8 @@ based on the game Elite:Dangerous from Frontier https://www.frontier.co.uk/
 
 powered by data aquired from  https://eddb.io
 
+currently running on AWS  http://ec2-3-14-6-94.us-east-2.compute.amazonaws.com:8080  
+
 More details later ;)
 
 ## What is this for ?!

@@ -75,31 +75,6 @@ class TestElite(unittest.TestCase):
 		step0["instructions"] = []
 		self.data["steps"].append( step0 )
 
-	def test_compute_11a(self):
-		self.computeSetup()
-		step0 = self.data["steps"][0]
-		step0["system"] = "Eravate"
-		result = elite.compute(self.data)
-		expected = {'cargohold': 16, "steps": [{"system": "Eravate", "instructions": [[(3, 2, '5', 150, 10)]]}] }
-		# self.assertEqual("l", result)
-
-	def test_compute_11a_noresult(self):
-		self.computeSetup()
-		step0 = self.data["steps"][0]
-		step0["system"] = "Adw System"
-		result = elite.compute(self.data)
-		expected = {'cargohold': 16, "steps": [{"system": "Adw System", "instructions": []}] }
-		self.assertEqual(result, expected)
-
-	def test_compute_11b(self):
-		self.computeSetup()
-		step0 = self.data["steps"][0]
-		step0["system"] = "Eravate"
-		step0["station"] = "Russell Ring"
-		result = elite.compute(self.data)
-		expected = {'cargohold': 16, 'steps': [{'station': 'Russell Ring', 'system': 'Eravate', 'instructions': []}]}
-		self.assertEqual(result, expected)
-
 	def xtest_compute_d(self):
 		self.computeSetup()
 		step0 = self.data["steps"][0]

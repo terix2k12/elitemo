@@ -84,9 +84,11 @@ def compute(options, gcargohold, missiongoals):
             steps.append( (currentStationId, instructions) )
             return steps
 
+        nodeset = []
+
         # Only use neighbors with a missiongoal
         clone = []
-        # market1 = entities.market(currentStationId)
+
         for neighbor in allNeighbors:
             neighborId = int(neighbor["id"])
             for missiongoal in missiongoals:
@@ -99,23 +101,21 @@ def compute(options, gcargohold, missiongoals):
                         supply = int(item["supply"])
                         if supply > 0 and missionCommodityId == commodityId:
                             clone.append(neighbor)
+                            nodeset.append( (neighborId, missionTarget, missionReward, 0, int(commodityId), missionAmount) )
         neighbors = clone
 
-        nodeset = []
-
+        # Apply deals
         currentStation = entities.station(id=currentStationId)
         market1 = entities.market(currentStationId)
         for neighbor in neighbors:
             neighborId = int(neighbor["id"])
             market2 = entities.market(neighborId)
-
-            # Apply deals
             deals = getdeals(market1, market2)
             for deal in deals:
                 (commodityId, profit, supply) = deal
                 nodeset.append( (currentStationId, neighborId, profit, 0, int(commodityId), supply) )
                 
-            # TODO mission commodity is missing in deals......
+        # TODO mission commodity is missing in deals......
 
         # Apply missiongoals modifier to nodeset
         clone = []
@@ -127,7 +127,7 @@ def compute(options, gcargohold, missiongoals):
                 #    nodeModifier = 10000
                 #    break
                 if missionType in ["Source"] and missionCommodityId == nodeCommodityId and nodeTarget == missionTarget:
-                    nodeModifier = 100000
+                    nodeModifier = 10000
                     break
             clone.append( (nodeSource, nodeTarget, nodeProfit, nodeModifier, nodeCommodityId, nodeSupply) )
         nodeset = clone
