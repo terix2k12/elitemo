@@ -2,6 +2,10 @@ import unittest
 import assets
 import os
 
+# For benchmarks:
+import time
+import sys
+
 class TestAsset(unittest.TestCase):
 
 	def test_assets_markets(self):
@@ -45,6 +49,31 @@ class TestAsset(unittest.TestCase):
 	def slow_test_assets_unPickle(self):
 		stations = assets.unPickle("stations.pic")
 		self.assertEqual(len(stations), 68598)
+
+	def test_profile_and_improve(self):
+		
+		start = time.time()
+		inmemoryjson = assets.loadJSON("testbig", "res/stations.json")
+		dicbytes = sys.getsizeof(inmemoryjson)
+
+		print "Structure size is " + str( dicbytes / 1024 ) + " kB"
+		# print "Total size is " + str( allbytes / 1024 ) + " kB"
+
+		end = time.time()		
+		print("loading time: " + str(end - start) )
+
+		start = time.time()
+
+		systems = {}
+		for r in inmemoryjson:
+			systems[r["id"]] = r
+		
+		print "Structure size is " + str( sys.getsizeof(systems) / 1024 ) + " kB"
+
+		end = time.time()
+		print("iteration time: " + str(end - start) )
+
+		self.assertEqual(len(inmemoryjson), 68749)
 
 if __name__ == "__main__":
 	unittest.main()
