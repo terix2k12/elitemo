@@ -17,11 +17,11 @@ class TestAsset(unittest.TestCase):
 		self.assertEqual(len(commodities), 355)
 
 	def test_assets_systems(self):
-		systems = assets.systems("test/test-systems.json")
+		systems = assets.systems_full("test/test-systems.json")
 		self.assertEqual(len(systems), 5)		
 
 	def test_assets_stations(self):
-		stations = assets.stations("test/test-stations.json")
+		stations = assets.stations_full("test/test-stations.json")
 		self.assertEqual(len(stations), 20)
 
 	def slow_test_asset_update(self):
@@ -50,28 +50,30 @@ class TestAsset(unittest.TestCase):
 		stations = assets.unPickle("stations.pic")
 		self.assertEqual(len(stations), 68598)
 
+	def test_deepsize(self):
+		print "empty list is size " + str(assets.deepsize([]))
+		print "integer is size " + str(sys.getsizeof(5))
+		print "integer is deepsize " + str(assets.deepsize(5))
+
+		self.assertEqual(assets.deepsize([4]), 104)
+		self.assertEqual(assets.deepsize({}), 280)
+		self.assertEqual(assets.deepsize({ "id": 6}), 343)
+		self.assertEqual(assets.deepsize({ "id": [6]}), 423)
+		self.assertEqual(assets.deepsize([{ "id": [6]}]), 503)
+
 	def test_profile_and_improve(self):
-		
 		start = time.time()
-		inmemoryjson = assets.loadJSONl("testbig", "res/stations.jsonl")
+		inmemoryjson = assets.stations("res/stations.jsonl")
 		dicbytes = sys.getsizeof(inmemoryjson)
 
+		print "start deepsize:"
+		allbytes = assets.deepsize(inmemoryjson)
+
 		print "Structure size is " + str( dicbytes / 1024 ) + " kB"
-		# print "Total size is " + str( allbytes / 1024 ) + " kB"
+		print "Total size is " + str( allbytes /1024 ) + " kB"
 
 		end = time.time()		
 		print("loading time: " + str(end - start) )
-
-		start = time.time()
-
-		systems = {}
-		for r in inmemoryjson:
-			systems[r["id"]] = r
-		
-		print "Structure size is " + str( sys.getsizeof(systems) / 1024 ) + " kB"
-
-		end = time.time()
-		print("iteration time: " + str(end - start) )
 
 		self.assertEqual(len(inmemoryjson), 68768)
 

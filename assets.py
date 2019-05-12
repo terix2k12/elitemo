@@ -3,24 +3,28 @@ import csv
 import cPickle
 import wget
 import os
+import sys
 
 def loadJSON(name, path):
-	print "Loading " + name + ":"
+	print "Loading '" + name + "':"
 	f = open(path,"r")
 	j = json.load(f)
 	print str(len(j)) + " " + name + " parsed from JSON"
 	f.close()
 	return j
 
-def loadJSONl(name, path):
-	print "Loading with line break" + name + ":"
-	jsonList = []
+def loadJSONl(path, properties):
+	print "Loading with line break '" + path + "':"
+	mapping = {}
 	with open(path) as f:
 		for line in f:
-			j = json.loads(line)
-			jsonList.append(j)
-	print str(len(j)) + " " + name + " parsed from JSON"
-	return jsonList
+			fulljson = json.loads(line)
+			smalljson = {}
+			for prop in properties:
+				smalljson[prop] = fulljson[prop]
+			mapping[smalljson["id"]] = smalljson
+	print str(len(mapping.keys())) + " parsed from JSONL " + path
+	return mapping
 
 def loadCSV(path):
 	print "Loading " + path + ":"
@@ -36,19 +40,27 @@ def loadCSV(path):
 def commodities(path):
 	return loadJSON("commodities", path)
 
-def systems(path):
+def systems_full(path):
 	raw = loadJSON("systems", path)
 	systems = {}
 	for r in raw:
 		systems[r["id"]] = r
 	return systems
 
-def stations(path):
+def systems(path):
+	properties = ["id", "name", "x","y","z","needs_permit"]
+	return loadJSONl(path, properties)
+
+def stations_full(path):
 	raw = loadJSON("stations", path)
 	stations = {}
 	for r in raw:
 		stations[r["id"]] = r
 	return stations
+
+def stations(path):
+	properties = ["id", "name", "system_id", "market_updated_at", "max_landing_pad_size","is_planetary","distance_to_star"]
+	return loadJSONl(path, properties)
 
 def markets(path):
 	items = loadCSV(path)
@@ -90,3 +102,14 @@ def update(filename, force=False):
 	except Exception:
 		return False
 	return False
+
+def deepsize(element):
+	size = sys.getsizeof(element)
+	if type(element) is list:
+		for item in element:
+			size += deepsize(item)
+	if type(element) is dict:
+		for key in element.keys():
+			size += sys.getsizeof(key)
+			size += deepsize(element[key])
+	return size
